@@ -1,0 +1,16 @@
+---
+mails:
+  - name: test
+    description: Test
+    sender: John Doe <john.doe@example.com>
+    recipients:
+      - Jane Doe <jane.doe@example.com>
+      - recipient@example.com
+    subject: Test
+    headers:
+      X-Mailer: hermodr
+    text_body: |
+        Test Message
+    attachments:
+      - test.txt
+      - test.png

@@ -1,0 +1,23 @@
+# Byte-compiled/optimized
+__pycache__/
+*.py[cod]
+
+# Distribution/packaging
+dist/
+build/
+*.egg-info
+*.pot
+
+# Unit test/coverage reports
+.coverage
+.tox/
+coverage.xml
+htmlcov/
+
+# Virtualenv
+venv/
+
+# Logs and databases
+*.sql
+*.sqlite3
+*.log

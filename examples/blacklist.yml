@@ -1,0 +1,16 @@
+---
+defaults:
+  sender: sender@example.com
+  recipients: recipient@example.com
+
+vars:
+  blacklisted_senders:
+    - Blacklist Sender <blacklist@example.com>
+
+mails:
+  - name: Blacklisted Senders
+    description: Send mails with addresses from blacklist
+    sender: '{{ item }}'
+    subject: Blacklisted Sender
+    text_body: The sender is blacklisted and the mail should be filtered.
+    loop: '{{ blacklisted_senders }}'

@@ -1,0 +1,14 @@
+---
+defaults:
+  sender: sender@example.com
+  recipients: recipient@example.com
+
+mails:
+  - name: Bad Reply-To addresses
+    description: Known bad reply to domains
+    subject: 'Bad Reply-To - {{ item }}'
+    headers:
+      Reply-To: 'impostor@{{ item }}'
+    loop:
+      - secureserver.net
+      - gmail.com

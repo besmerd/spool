@@ -1,0 +1,24 @@
+---
+defaults:
+  sender: sender@example.com
+  recipients: recipient@example.com
+
+mails:
+  - name: HTML with iFrames
+    description: HTML mails containing iFrames with different targets
+    subject: 'Testmail with frame - {{ item.desc }}'
+    html_body: |
+        <html>
+          <body>
+            <iframe src="{{ item.url }}"></iframe>
+          </body>
+        </html>
+    loop:
+      - desc: 'HTTPS URL'
+        url: 'https://www.example.com'
+      - desc: 'about:blank URL'
+        url: 'about:blank'
+      - desc: 'File URL'
+        url: 'file:///etc/passwd'
+      - desc: 'Data URL'
+        url: 'data:text/plain;charset=utf-8;base64,Q29udGVudCBmcm9tIGRhdGEgVVJM'

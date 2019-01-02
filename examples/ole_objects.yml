@@ -1,0 +1,25 @@
+---
+defaults:
+  sender: sender@example.com
+  recipients: recipient@example.com
+
+mails:
+  - name: Attachment with OLE Object
+    description: Microsoft Office documents with OLE objects
+    subject: 'OLE Check - {{ item | basename }}'
+    text_body: This message contains an attachment with a ole object.
+    attachments: '{{ item }}'
+    loop:
+      - ole/with_ole.docx
+      - ole/with_ole.xlsx
+      - ole/with_ole.pptx
+
+  - name: Attachment without OLE Object
+    description: Microsoft Office documents with OLE objects
+    subject: 'Non OLE Check - {{ item | basename }}'
+    text_body: This message contains an attachment with a ole object.
+    attachments: '{{ item }}'
+    loop:
+      - ole/non_ole.docx
+      - ole/non_ole.xlsx
+      - ole/non_ole.pptx

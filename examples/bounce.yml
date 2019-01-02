@@ -1,0 +1,19 @@
+---
+defaults:
+  sender: sender@example.com
+  recipients: recipient@example.com
+
+mails:
+  - name: Bounce-like mail
+    description: Mail with empty envelope
+    sender: Mail Delivery Subsystem <mailer-daemon@example.com>
+    headers:
+      Return-Path: '<>'
+    subject: Mail Delivery System
+    text_body: |
+      This message was created automatically by mail delivery software.
+
+      A message that you sent could not be delivered to all of its recipients.
+      This is a permanent error. The following address(es) failed:
+
+      test@testinvalid

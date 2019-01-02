@@ -1,0 +1,19 @@
+---
+defaults:
+  sender: sender@example.com
+  recipients:  recipient@example.com
+
+vars:
+  known_bad_suffixes: [
+    'ade', 'adp', 'app', 'asp', 'bas', 'bat', 'bhx', 'cab', 'ceo', 'chm', 'cmd',
+    'com', 'cpl', 'crt', 'csr', 'der', 'exe', 'fxp', 'hlp', 'hta', 'inf', 'ins',
+    'isp', 'its', 'js', 'jse', 'lnk', 'mad', 'maf', 'mag', 'mam', 'mar', 'mas',
+    'mat', 'mde', 'mim', 'msc', 'msi', 'msp', 'mst', 'ole', 'pcd', 'pif', 'reg',
+    'scr', 'sct', 'shb', 'shs', 'vb', 'vbe', 'vbmacros', 'vbs', 'vsw', 'wmd',
+    'wmz', 'ws', 'wsc', 'wsf', 'wsh', 'xxe', 'docm', 'xlsm']
+
+mails:
+  - name: Bad File Types
+    description: Attachments with bad file types
+    subject: 'Known bad attachment type - {{ item }}'
+    text_body: 'Email with bad attachment: {{ item }}.'
