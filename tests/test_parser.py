@@ -1,6 +1,6 @@
 import pytest
-
-from hermodr.parser import Config, ConfigError, NoSenderError, NoRecipientsError
+from mailman.parser import (Config, ConfigError, NoRecipientsError,
+                            NoSenderError)
 
 
 def test_empty_config():

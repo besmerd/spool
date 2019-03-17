@@ -1,13 +1,15 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='hermodr',
+    name='mailman',
     author='Daniel Besmer',
     author_email='besmerd@gmail.com',
     packages=find_packages(),
     use_scm_version=True,
     install_requires=[
         'jinja2',
+        'pyyaml',
+        'six',
     ],
     setup_requires=[
         'setuptools_scm'
@@ -25,6 +27,6 @@ setup(
     python_requires=">=3.4",
     entry_points='''
         [console_scripts]
-        hermodr=hermodr.main:main
+        mailman=mailman.main:main
     ''',
 )

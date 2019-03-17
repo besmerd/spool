@@ -33,6 +33,7 @@ def parse_args(args):
     parser.add_argument(
         '-v', '--verbose',
         action='count',
+        default=0,
         help='increase verbosity of the output',
     )
 
@@ -40,7 +41,7 @@ def parse_args(args):
         'path',
         nargs='+',
         metavar='config',
-        help='path of hermodr config',
+        help='path of mailman config',
     )
 
     return parser.parse_args(args)

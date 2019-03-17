@@ -2,15 +2,14 @@ import logging
 import mimetypes
 import os
 import smtplib
-
 from email.header import Header
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr
-from six import text_type
 
-from M2Crypto import BIO, Rand, SMIME, X509
+from M2Crypto import BIO, SMIME, X509, Rand
+from six import text_type
 
 try:
     from email import encoders

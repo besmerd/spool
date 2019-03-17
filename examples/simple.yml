@@ -8,7 +8,7 @@ mails:
       - recipient@example.com
     subject: Test
     headers:
-      X-Mailer: hermodr
+      X-Mailer: mailman
     text_body: |
         Test Message
     attachments:

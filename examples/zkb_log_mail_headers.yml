@@ -1,0 +1,23 @@
+---
+defaults:
+  sender: log-mail-header@mxlab.ch
+  # recipients: Daniel Besmer <daniel.besmer@mail-st.zkb.ch>
+
+mails:
+  - name: Log Email Headers
+    description: bla
+    subject: 'Email Headers Logging Test'
+    cc: <cc@mail-st.zkb.ch>
+    bcc: <bcc@mail-st.zkb.ch>
+    headers:
+      In-Reply-To: <20190109105008.6A13E280DC5@mail.mxlab.ch>
+      Reply-To: <no-reply@mxlab.ch>
+      References: asdlkfjasdlkfj
+      Date: Thu, 1 Jan 1970 00:00:00 +0000 (UTC)
+      X-Priority: '1'
+      DKIM-Signature: >
+        v=1; a=rsa-sha256; d=example.net; s=brisbane; c=relaxed/simple;
+        q=dns/txt; t=1117574938; x=1118006938; h=from:to:subject:date:keywords:keywords;
+        bh=MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=;
+        b=dzdVyOfAKCdLXdJOc9G2q8LoXSlEniSbav+yuU4zGeeruD00lszZVoG4ZHRNiYzR
+    text_body: Message with for header check.

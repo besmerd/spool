@@ -1,4 +1,4 @@
-# $ hermodr_
+# $ mailman_
 
 Send mails with YAML.
 
@@ -14,7 +14,7 @@ pip install --editable .
 
 ## Usage
 ```sh
-hermodr --help
+mailman --help
 ```
 
 Example config file:
@@ -36,13 +36,13 @@ mails:
   - name: Test Mail
     description: Hello world test mail
     headers:
-      X-Mailer: Hermodr Mailer
+      X-Mailer: Mailman Mailer
     text_body: '{{ message }}'
 ```
 
 Generate mails:
 ```sh
-hermodr example/mails.yml
+mailman example/simple.yml
 ```
 
 Generate key/certificate for signing:
