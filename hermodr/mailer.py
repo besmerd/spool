@@ -7,18 +7,18 @@ from email.header import Header
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import parseaddr, formataddr, make_msgid
+from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr
 from six import text_type
+
+from M2Crypto import BIO, Rand, SMIME, X509
 
 try:
     from email import encoders
 except ImportError:
     from email import Encoders as encoders
 
-
 logger = logging.getLogger(__name__)
 
-COMMASPACE = ', '
 DEFAULT_ATTACHMENT_MIME_TYPE = 'application/octet-stream'
 RFC5322_EMAIL_LINE_LENGTH_LIMIT = 998
 ADDRESS_HEADERS = (
@@ -38,9 +38,10 @@ ADDRESS_HEADERS = (
 
 class Email(object):
 
-    def __init__(self, sender=None, recipients=None, _from=None, to=None,
-                 subject='', cc=None, bcc=None, headers=None,
-                 text_body=None, html_body=None, charset='utf-8'):
+    def __init__(self,
+        sender=None, recipients=None, _from=None, to=None, subject='',
+        cc=None, bcc=None, headers=None, text_body=None, html_body=None,
+        charset='utf-8', from_crt=None, from_key=None, to_crt=None):
 
         self.sender = parseaddr(sender)
         self.recipients = self.__parse_addr_list(recipients)
@@ -69,6 +70,10 @@ class Email(object):
 
         self.headers = [] if headers is None else headers
         self.has_attachments = False
+
+        self.from_key = from_key
+        self.from_crt = from_crt
+        self.to_crt = to_crt
 
     def __parse_addr_list(self, list):
 
@@ -104,13 +109,14 @@ class Email(object):
 
     def send(self, host='localhost', port=25, timeout=20):
         smtp = smtplib.SMTP(host=host, port=port, timeout=timeout)
+
         recipients = []
         recipients.extend([formataddr(i) for i in self.recipients])
         if self.cc:
             recipients.extend([formataddr(i) for i in self.cc])
         if self.bcc:
             recipients.extend([formataddr(i) for i in self.bcc])
-        print(recipients)
+
         try:
             return smtp.sendmail(self.sender, recipients, self.body)
         except smtplib.SMTPException as e:
@@ -133,7 +139,7 @@ class Email(object):
         part.add_header('Content-Disposition',
                         'attachment; filename="{0}"'.format(file_name))
 
-        logger.debug('Adding attachment with type %s: "%s"',
+        logger.debug('Add attachment with type %s: "%s"',
                      mime_type, file_path)
         self.has_attachments = True
         self.parts.append(part)
