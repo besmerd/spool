@@ -1,8 +1,7 @@
 import logging
-from inspect import getmembers, isfunction
 
+import jinja2
 import yaml
-from jinja2 import Environment
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +49,7 @@ class Config(object):
         if not isinstance(config, dict):
             logging.info('Parsing file: "%s"', config)
             with open(config, 'r') as fh:
-                config = yaml.load(fh)
+                config = yaml.safe_load(fh)
         return Config(config)
 
     def check_config(self):
@@ -98,7 +97,7 @@ class Config(object):
 
     def __init__(self, config):
 
-        env = Environment()
+        env = jinja2.Environment()
         env.globals = config.get('vars', None)
         # _filters = {name: function for name, function in getmembers(filters)
         #             if isfunction(function)}
@@ -115,7 +114,7 @@ class Config(object):
             if loop:
                 loop = self.__render(loop, env)
                 try:
-                    loop = yaml.load(loop)
+                    loop = yaml.safe_load(loop)
                 except Exception:
                     pass
                 for item in loop:
