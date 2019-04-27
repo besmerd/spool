@@ -2,7 +2,6 @@ SHELL := /bin/sh
 PYTHON_VERSION := python36
 
 PROJECT := mailman
-LOCALPATH := .
 VIRTUAL_ENV := venv
 PYTHON_BIN := $(VIRTUAL_ENV)/bin
 
@@ -11,12 +10,20 @@ PYTHON_BIN := $(VIRTUAL_ENV)/bin
 .PHONY: help
 help:
 	@echo "clean"
-	@echo "		remove all build, test, coverage and Python artifacts"
-	@echo "clean"
-	@echo "		remove all build, test, coverage and Python artifacts"
+	@echo "    remove all build, test, coverage and Python artifacts"
+	@echo "install"
+	@echo "    install package and dependencies to local virtual environment"
+	@echo "coverage"
+	@echo "    run code coverage"
+	@echo "test"
+	@echo "    run test suite"
+	@echo "isort"
+	@echo "    sort package imports"
+	@echo "server"
+	@echo "    start local mailserver (mailhog)"
 
 venv/bin/activate:
-	test -d venv || $(PYTHON_VERSION) -m venv venv
+	test -d venv || $(PYTHON_VERSION) -m venv $(VIRTUAL_ENV)
 	$(PYTHON_BIN)/python -m pip install --upgrade pip
 	touch venv/bin/activate
 
@@ -51,7 +58,11 @@ clean-test:
 
 .PHONY: test
 test:
-	-coverage run manage.py test -v 2
+	-tox
+
+.PHONY: lint
+lint:
+	-tox -e lint
 
 .PHONY: coverage
 coverage: test
