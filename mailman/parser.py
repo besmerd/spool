@@ -18,7 +18,8 @@ class NoRecipientsError(ConfigError):
     """Envelope recipient(s) or 'to' missing."""
 
 
-class Config(object):
+class Config:
+    """Represents a single mail instance config."""
 
     MAIL_FIELDS = [
         'name',
@@ -46,17 +47,18 @@ class Config(object):
 
     @staticmethod
     def load(config):
+        """Create a config object from a config file."""
         if not isinstance(config, dict):
             logging.info('Parsing file: "%s"', config)
             with open(config, 'r') as fh:
                 config = yaml.safe_load(fh)
         return Config(config)
 
-    def check_config(self):
+    def __check_config(self):
 
         for mail in self.mails:
 
-            if type(mail) is not dict:
+            if not isinstance(mail, dict):
                 raise ConfigError('Failed to read config for mail')
 
             if 'sender' not in mail and 'from' not in mail:
@@ -65,7 +67,7 @@ class Config(object):
             if 'recipients' not in mail and 'to' not in mail:
                 raise NoRecipientsError()
 
-            for field, value in mail.items():
+            for field, _ in mail.items():
                 if field not in self.MAIL_FIELDS:
                     raise ConfigError(
                         'Unknown field \'{0}\' for mail config'.format(field))
@@ -77,17 +79,17 @@ class Config(object):
 
     def __render(self, field, env, **kwargs):
 
-        if type(field) is str:
+        if isinstance(field, str):
             template = env.from_string(field)
             return template.render(**kwargs)
 
-        if type(field) is list:
+        if isinstance(field, list):
             copy = []
             for item in field:
                 copy.append(self.__render(item, env, **kwargs))
             return copy
 
-        if type(field) is dict:
+        if isinstance(field, dict):
             copy = {}
             for key, value in field.items():
                 copy[key] = self.__render(value, env, **kwargs)
@@ -115,8 +117,8 @@ class Config(object):
                 loop = self.__render(loop, env)
                 try:
                     loop = yaml.safe_load(loop)
-                except Exception:
-                    pass
+                except Exception as ex:
+                    logger.error(ex)
                 for item in loop:
                     copy = {}
                     for key, value in mail.items():
@@ -127,4 +129,4 @@ class Config(object):
                     mail[key] = self.__render(value, env)
                 self.mails.append(mail)
 
-        self.check_config()
+        self.__check_config()

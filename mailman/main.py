@@ -71,10 +71,10 @@ def main():
             attachments = mail.pop('attachments', [])
             email = Email(**mail)
             logging.info('Processing mail: %s', str(email))
-            if type(attachments) is str:
+            if isinstance(attachments, str):
                 attachments = [attachments]
-            for a in attachments:
-                email.add_attachment(os.path.join(config_dir, a))
+            for att in attachments:
+                email.add_attachment(os.path.join(config_dir, att))
 
             if not args.dry_run:
                 host, port = args.smtp_server.split(':', 1)

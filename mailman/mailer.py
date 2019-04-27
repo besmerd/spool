@@ -34,7 +34,7 @@ ADDRESS_HEADERS = (
 )
 
 
-class Email(object):
+class Email:
 
     def __init__(self,
         sender=None, recipients=None, _from=None, to=None, subject='',
@@ -73,15 +73,16 @@ class Email(object):
         self.from_crt = from_crt
         self.to_crt = to_crt
 
-    def __parse_addr_list(self, list):
+    @staticmethod
+    def __parse_addr_list(addr_list):
 
-        if not list:
+        if not addr_list:
             return []
 
-        if isinstance(list, text_type):
-            list = list.split(',')
+        if isinstance(addr_list, text_type):
+            addr_list = addr_list.split(',')
 
-        return [parseaddr(i) for i in list]
+        return [parseaddr(i) for i in addr_list]
 
     @property
     def body(self):
@@ -117,8 +118,8 @@ class Email(object):
 
         try:
             return smtp.sendmail(self.sender, recipients, self.body)
-        except smtplib.SMTPException as e:
-            logger.exception(e)
+        except smtplib.SMTPException as ex:
+            logger.exception(ex)
 
     def add_attachment(self, file_path, mime_type=None):
         if not mime_type:
