@@ -1,19 +1,24 @@
 ---
 defaults:
-  sender: sender@example.com
+  sender: Mail Delivery Subsystem <mailer-daemon@example.com>
   recipients: recipient@example.com
 
 mails:
-  - name: Bounce-like mail
-    description: Mail with empty envelope
-    sender: Mail Delivery Subsystem <mailer-daemon@example.com>
+  - name: dsn - permanent failure
     headers:
       Return-Path: '<>'
-    subject: Mail Delivery System
+    subject: Delivery Status Notification (Failure)
     text_body: |
-      This message was created automatically by mail delivery software.
+      Your message wasn't delivered to the following recipient(s):
 
-      A message that you sent could not be delivered to all of its recipients.
-      This is a permanent error. The following address(es) failed:
+      invalid@example.com
 
-      test@testinvalid
+  - name: dsn - temporary failure
+    headers:
+      Return-Path: '<>'
+    subject: Delivery Status Notification (Delay)
+    text_body: |
+      There was a temporary problem delivering your message to the following
+      recipient(s):
+
+      delayed@example.com

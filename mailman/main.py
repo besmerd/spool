@@ -3,11 +3,12 @@ import logging
 import os
 import sys
 
-from .mailer import Email
+from .mailer import Mailer, Message
 from .parser import Config
 
 logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
 
 MAIL_OUT_PREFIX = '---------- MESSAGE FOLLOWS ----------'
 MAIL_OUT_SUFFIX = '------------ END MESSAGE ------------'
@@ -20,6 +21,12 @@ def parse_args(args):
         '-d', '--dry-run',
         action='store_true',
         help='create, but do not send messages',
+    )
+
+    parser.add_argument(
+        '-D', '--debug',
+        action='store_true',
+        help='enable debugging on smtp conversation',
     )
 
     parser.add_argument(
@@ -46,43 +53,41 @@ def parse_args(args):
 
 
 def main():
+
     args = parse_args(sys.argv[1:])
-    if args.verbose > 0:
-        logger.setLevel(logging.DEBUG)
-    else:
-        logger.setLevel(logging.WARNING)
+
+    host, port = args.smtp_server.split(':', 1)
+    mailer = Mailer(host, int(port), debug=args.debug)
+
     for path in args.path:
+
+
         if not os.path.isfile(path):
             logging.warning('No such file "%s", skipping.', path)
             continue
-        config = Config.load(path)
-        for mail in config.mails:
 
+        config = Config.load(path)
+        config_dir = os.path.dirname(path)
+
+        for mail in config.mails:
             name = mail.pop('name', None)
             description = mail.pop('description', None)
-
-            config_dir = os.path.dirname(path)
-
-            for key in ('from_key', 'from_crt', 'to_crt', 'eml'):
-                if key not in mail:
-                    continue
-                mail[key] = os.path.join(config_dir, mail[key])
-
             attachments = mail.pop('attachments', [])
-            email = Email(**mail)
-            logging.info('Processing mail: %s', str(email))
+
+            msg = Message(**mail)
+
             if isinstance(attachments, str):
                 attachments = [attachments]
-            for att in attachments:
-                email.add_attachment(os.path.join(config_dir, att))
+
+            for a in attachments:
+                file_path = os.path.join(config_dir, a)
+                msg.attach(file_path)
 
             if not args.dry_run:
-                host, port = args.smtp_server.split(':', 1)
-                email.send(host=host, port=port)
-                logging.info('Mail sent: %s', str(email))
+                mailer.send(msg)
             else:
-                print(MAIL_OUT_PREFIX, email.body, MAIL_OUT_SUFFIX, sep='\n')
-
+                print(MAIL_OUT_PREFIX, msg.as_string(),
+                      MAIL_OUT_SUFFIX, sep='\n')
 
 if __name__ == '__main__':
     sys.exit(main())

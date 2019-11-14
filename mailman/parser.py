@@ -33,6 +33,7 @@ class Config:
         'eml',
         'text_body',
         'html_body',
+        'ical',
         'attachments',
         'loop',
         'from_crt',
@@ -42,6 +43,7 @@ class Config:
     MAIL_MUTUAL_EXCLUSION = [
         ('eml', 'text_body'),
         ('eml', 'text_html'),
+        ('eml', 'ical'),
         ('eml', 'attachment'),
     ]
 
