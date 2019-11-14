@@ -4,13 +4,8 @@ defaults:
   recipients: recipient@example.com
 
 mails:
-  - name: test
-    sender: John Doe <john.doe@example.com>
-    recipients:
-      - recipient@example.com
-    subject: Meeting Request
-    text_body: |
-      Test Message
+  - name: iCalendar
+    subject: Abraham Lincoln
     ical: |
       BEGIN:VCALENDAR
       VERSION:2.0
