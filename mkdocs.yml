@@ -1,0 +1,8 @@
+site_name: mailman
+theme:
+  name: 'material'
+  logo:
+    icon: 'mail'
+markdown_extensions:
+  - admonition
+  - codehilite

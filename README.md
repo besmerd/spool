@@ -44,8 +44,3 @@ Generate mails:
 ```sh
 mailman example/simple.yml
 ```
-
-Generate key/certificate for signing:
-```sh
-openssl req -newkey rsa:1024 -nodes -x509 -days 365 -out sign.pem
-```
