@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.3">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.5.0">
     
     
       
@@ -40,12 +40,12 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/application.30686662.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.1b62728e.css">
       
       
     
     
-      <script src="../assets/javascripts/modernizr.74668098.js"></script>
+      <script src="../assets/javascripts/modernizr.268332fc.js"></script>
     
     
       
@@ -209,6 +209,27 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#simple-mail-over-list" class="md-nav__link">
+    Simple Mail over list
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#smime-signed-message" class="md-nav__link">
+    S/MIME Signed Message
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#smime-encrypted-message" class="md-nav__link">
+    S/MIME Encrypted Message
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#calendar-invitation" class="md-nav__link">
     Calendar Invitation
   </a>
@@ -238,18 +259,6 @@
   </li>
 
     
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../quickstart/" title="Quickstart" class="md-nav__link">
-      Quickstart
-    </a>
-  </li>
-
-    
   </ul>
 </nav>
                   </div>
@@ -269,6 +278,27 @@
   
     <label class="md-nav__title" for="__toc">Table of contents</label>
     <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#simple-mail-over-list" class="md-nav__link">
+    Simple Mail over list
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#smime-signed-message" class="md-nav__link">
+    S/MIME Signed Message
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#smime-encrypted-message" class="md-nav__link">
+    S/MIME Encrypted Message
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#calendar-invitation" class="md-nav__link">
@@ -295,6 +325,45 @@
                 
                 
                 <h1 id="examples">Examples</h1>
+<h2 id="simple-mail-over-list">Simple Mail over list</h2>
+<div class="codehilite"><pre><span></span><span class="nn">---</span>
+<span class="nt">defaults</span><span class="p">:</span>
+  <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender@example.com</span>
+  <span class="nt">recipients</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">recipient@example.com</span>
+
+<span class="nt">mails</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Spoofed SPF-enabled domain</span>
+    <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Mails spoofed from domains with valid SPF configuration</span>
+    <span class="nt">sender</span><span class="p">:</span> <span class="s">&#39;spf-test@{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&#39;</span>
+    <span class="nt">subject</span><span class="p">:</span> <span class="s">&#39;SPF</span><span class="nv"> </span><span class="s">Check</span><span class="nv"> </span><span class="s">-</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&#39;</span>
+    <span class="nt">text_body</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">This is a SPF verification check.</span>
+    <span class="nt">loop</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">gmail.com</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">microsoft.com</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">facebook.com</span>
+</pre></div>
+
+
+<h2 id="smime-signed-message">S/MIME Signed Message</h2>
+<div class="codehilite"><pre><span></span><span class="nn">---</span>
+<span class="nt">mails</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">S/MIME Signed</span>
+    <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender@example.com</span>
+    <span class="nt">recipients</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">recipient@example.com</span>
+    <span class="nt">subject</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Signed Message</span>
+</pre></div>
+
+
+<h2 id="smime-encrypted-message">S/MIME Encrypted Message</h2>
+<div class="codehilite"><pre><span></span><span class="nn">---</span>
+<span class="nt">mails</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">S/MIME Encrypted</span>
+    <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender@example.com</span>
+    <span class="nt">recipients</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">recipient@example.com</span>
+    <span class="nt">subject</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Encrypted Message</span>
+</pre></div>
+
+
 <h2 id="calendar-invitation">Calendar Invitation</h2>
 <div class="codehilite"><pre><span></span><span class="nn">---</span>
 <span class="nt">mails</span><span class="p">:</span>
@@ -396,7 +465,7 @@
       
     </div>
     
-      <script src="../assets/javascripts/application.ac79c3b0.js"></script>
+      <script src="../assets/javascripts/application.a8b5e56f.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       
