@@ -1,8 +1,17 @@
-site_name: mailman
+site_name: Mailman
+site_description: Send mails with YAML.
+site_author: 'Daniel Besmer'
+site_url: 'https://besmerd.github.io/mailman'
+
+repo_name: 'besmerd/mailman'
+repo_url: 'https://github.com/besmerd/mailman'
+
 theme:
   name: 'material'
   logo:
     icon: 'mail'
+
 markdown_extensions:
   - admonition
   - codehilite
+  - markdown.extensions.def_list

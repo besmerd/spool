@@ -23,20 +23,15 @@ mails:
 ```yaml
 ---
 mails:
-  - name: S/MIME Signed
+  - name: S/MIME Signed Message
+    description: Creates a S/MIME Signed (detached) Message
     sender: sender@example.com
     recipients: recipient@example.com
-    subject: Signed Message
-```
-
-## S/MIME Encrypted Message
-```yaml
----
-mails:
-  - name: S/MIME Encrypted
-    sender: sender@example.com
-    recipients: recipient@example.com
-    subject: Encrypted Message
+    subject: S/MIME Signed Message
+    from_key: sender.key.pem
+    from_crt: sender.crt.pem
+    text_body: |
+        A sign of our times.
 ```
 
 ## Calendar Invitation
