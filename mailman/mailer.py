@@ -3,14 +3,34 @@ import mimetypes
 import os
 import smtplib
 import ssl
+from email import encoders, message_from_bytes
 from email.header import Header
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr
-from email import message_from_bytes
 
 from M2Crypto import BIO, SMIME
+
+LOG = logging.getLogger(__name__)
+
+
+DEFAULT_ATTACHMENT_MIME_TYPE = 'application/octet-stream'
+
+
+def parseaddrs(addrs):
+
+    if isinstance(addrs, str):
+        addrs = addrs.split(',')
+
+    if isinstance(addrs, list):
+        return [parseaddr(i) for i in addrs]
+
+    return [parseaddr(addrs)]
+
+
+class MailerError(Exception):
+    """Base class for all errors related to the mailer."""
 
 
 class Mailer:
@@ -20,18 +40,21 @@ class Mailer:
 
     def __init__(self, host='localhost', port=1025, timeout=5,
                  starttls=False, debug=False):
+
         self.host = host
         self.port = port
         self.timeout = timeout
         self.starttls = starttls
         self.debug = debug
 
-    def send(self, msg):
+    def send(self, messages):
         """
         Send one or a sequence of messages.
         """
-        if isinstance(msg, Message):
-            msg = [msg]
+        if isinstance(messages, Message):
+            messages = [messages]
+
+        server = None
 
         try:
             server = smtplib.SMTP(self.host, self.port, timeout=self.timeout)
@@ -43,11 +66,15 @@ class Mailer:
                 context = ssl.create_default_context()
                 server.starttls(context=context)
 
-            for m in msg:
-                self._send(server, m)
+            for msg in messages:
+                self._send(server, msg)
+
+        except smtplib.SMTPException as ex:
+            raise MailerError(ex)
 
         finally:
-            server.quit()
+            if server:
+                server.quit()
 
     @staticmethod
     def _send(server, msg):
@@ -58,42 +85,6 @@ class Mailer:
         recipients = [formataddr(r) for r in recipients]
 
         server.sendmail(sender, recipients, msg.as_string())
-
-
-
-try:
-    from email import encoders
-except ImportError:
-    from email import Encoders as encoders
-
-logger = logging.getLogger(__name__)
-
-DEFAULT_ATTACHMENT_MIME_TYPE = 'application/octet-stream'
-
-RFC5322_EMAIL_LINE_LENGTH_LIMIT = 998
-ADDRESS_HEADERS = (
-    'from',
-    'sender',
-    'reply-to',
-    'to',
-    'cc',
-    'bcc',
-    'resent-from',
-    'resent-sender',
-    'resent-to',
-    'resent-cc',
-    'resent-bcc',
-)
-
-def parseaddrs(addrs):
-
-    if isinstance(addrs, str):
-        addrs = addrs.split(',')
-
-    if isinstance(addrs, list):
-        return [parseaddr(i) for i in addrs]
-
-    return [parseaddr(addrs)]
 
 
 class Message:
@@ -147,6 +138,7 @@ class Message:
         self.attachments.append(file_path)
 
     def as_string(self):
+        """Return the entire message flattened as a string."""
 
         if self.attachments or self.ical:
             msg = self._multipart()
@@ -215,6 +207,9 @@ class Message:
 
     @staticmethod
     def _get_attachment_part(file_path):
+
+        if not os.path.isfile(file_path):
+            raise MailerError('File not found: %s' % file_path)
 
         mime_type, encoding = mimetypes.guess_type(file_path)
 
