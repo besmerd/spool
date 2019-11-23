@@ -2,17 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>https://besmerd.github.io/mailman/</loc>
-     <lastmod>2019-11-23</lastmod>
+     <lastmod>2019-11-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://besmerd.github.io/mailman/examples/</loc>
-     <lastmod>2019-11-23</lastmod>
+     <lastmod>2019-11-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>https://besmerd.github.io/mailman/installation/</loc>
-     <lastmod>2019-11-23</lastmod>
+     <lastmod>2019-11-24</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    <url>
+     <loc>https://besmerd.github.io/mailman/reference/</loc>
+     <lastmod>2019-11-24</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
