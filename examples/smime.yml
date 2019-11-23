@@ -5,7 +5,6 @@ defaults:
 
 mails:
   - name: S/MIME Signed Message
-    description: Mails spoofed from domains with valid SPF configuration
     subject: S/MIME Signed Message
     from_key: smime/sender.key.pem
     from_crt: smime/sender.crt.pem

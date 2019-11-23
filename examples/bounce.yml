@@ -4,7 +4,7 @@ defaults:
   recipients: recipient@example.com
 
 mails:
-  - name: dsn - permanent failure
+  - name: DSN - Permanent Failure
     headers:
       Return-Path: '<>'
     subject: Delivery Status Notification (Failure)
@@ -13,7 +13,7 @@ mails:
 
       invalid@example.com
 
-  - name: dsn - temporary failure
+  - name: DSN - Temporary Failure
     headers:
       Return-Path: '<>'
     subject: Delivery Status Notification (Delay)

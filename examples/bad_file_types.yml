@@ -13,7 +13,9 @@ vars:
     'wmz', 'ws', 'wsc', 'wsf', 'wsh', 'xxe', 'docm', 'xlsm']
 
 mails:
-  - name: Bad File Types
+  - name: 'Bad File Types - {{ item }}'
     description: Attachments with bad file types
     subject: 'Known bad attachment type - {{ item }}'
     text_body: 'Email with bad attachment: {{ item }}.'
+    attachments: 'bad_file_types/block_it.{{ item }}'
+    loop: '{{ known_bad_suffixes }}'

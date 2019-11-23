@@ -4,7 +4,7 @@ defaults:
   recipients: recipient@example.com
 
 mails:
-  - name: Spoofed SPF-enabled domain
+  - name: 'Spoofed SPF-enabled domain - {{ item }}'
     description: Mails spoofed from domains with valid SPF configuration
     sender: 'spf-test@{{ item }}'
     subject: 'SPF Check - {{ item }}'
