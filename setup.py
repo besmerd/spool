@@ -14,6 +14,9 @@ setup(
     setup_requires=[
         'setuptools_scm'
     ],
+    tests_require=[
+        'pytest',
+    ],
     include_package_data=True,
     zip_safe=False,
     license="MIT",
