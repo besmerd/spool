@@ -44,6 +44,25 @@ to
 loop:
 : List of parameters to loop over.
 
+## Vars
+The `vars` section holds variables which can be used in other sections
+like `mails` or `defaults`.
+
+```yaml
+---
+vars:
+  names:
+    - Alice
+    - Bob
+    - Rachel
+
+mails:
+  - sender: sender@example.com
+    recipients: recipient@example.com
+    subject: 'Hello {{ item }}'
+    text_body: This is a simple hello.
+    loop: '{{ names }}'
+```
 
 ## Defaults
 The `defaults` section can be used for properties that should apply for all
@@ -63,23 +82,4 @@ mails:
   - sender: other@example.com
     subject: Hello World
     text_body: This is a simple hello.
-```
-
-## Vars
-The `vars` section.
-
-```yaml
----
-vars:
-  names:
-    - Alice
-    - Bob
-    - Rachel
-
-mails:
-  - sender: sender@example.com
-    recipients: recipient@example.com
-    subject: 'Hello {{ item }}'
-    text_body: This is a simple hello.
-    loop: '{{ names }}'
 ```

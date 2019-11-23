@@ -1,6 +1,6 @@
 # Examples
 
-## Simple Mail over list
+## Loop
 ```yaml
 ---
 defaults:
@@ -19,7 +19,16 @@ mails:
       - facebook.com
 ```
 
-## S/MIME Signed Message
+## S/MIME
+
+### Generate a Test Key/Certificate
+```sh
+openssl req -newkey rsa:2048 -nodes -x509 -days 365 \
+            -subj "/CN=Sender\/emailAddress=sender@example.com" \
+            -out sender.crt.pem -keyout sender.key.pem
+```
+
+### Create a S/MIME Signed Message
 ```yaml
 ---
 mails:
@@ -34,7 +43,21 @@ mails:
         A sign of our times.
 ```
 
-## Calendar Invitation
+### Create a S/MIME Encrypted Message
+```yaml
+---
+mails:
+  - name: S/MIME Signed Message
+    description: Creates a S/MIME Encrypted Message
+    sender: sender@example.com
+    recipients: recipient@example.com
+    subject: S/MIME Encrypted Message
+    to_crts: recipient.crt.pem
+    text_body: |
+        A sign of our times.
+```
+
+## iCalendar
 ```yaml
 ---
 mails:
