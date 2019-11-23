@@ -22,3 +22,6 @@ venv/
 *.sql
 *.sqlite3
 *.log
+
+# Mkdocs
+site/

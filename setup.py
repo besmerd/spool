@@ -8,6 +8,7 @@ setup(
     use_scm_version=True,
     install_requires=[
         'jinja2',
+        'M2Crypto',
         'pyyaml',
     ],
     setup_requires=[

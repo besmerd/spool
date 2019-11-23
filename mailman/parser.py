@@ -53,7 +53,7 @@ class Config:
     def load(config):
         """Create a config object from a config file."""
         if not isinstance(config, dict):
-            LOG.info('Parsing file: "%s"', config)
+            LOG.info('Parsing file: %s', config)
             with open(config, 'r') as fh:
                 config = yaml.safe_load(fh)
         return Config(config)
