@@ -3,15 +3,15 @@ import logging
 import os
 import sys
 
-from .mailer import Mailer, MailerError, Message
+from .mailer import Mailer, MailerError
+from .message import Message, MessageError
 from .parser import Config, ConfigError
 
-logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M',
+                    level=logging.ERROR)
+
 LOG = logging.getLogger(__name__)
-
-
-MAIL_OUT_PREFIX = '---------- MESSAGE FOLLOWS ----------'
-MAIL_OUT_SUFFIX = '------------ END MESSAGE ------------'
 
 
 def parse_args(args):
@@ -38,6 +38,12 @@ def parse_args(args):
     )
 
     parser.add_argument(
+        '-r', '--reuse-connection',
+        action='store_true',
+        help='reuse smtp connection to server',
+    )
+
+    parser.add_argument(
         '-v', '--verbose',
         action='count',
         default=0,
@@ -51,6 +57,7 @@ def parse_args(args):
         help='path of mailman config',
     )
 
+
     return parser.parse_args(args)
 
 
@@ -60,7 +67,7 @@ def main():
     args = parse_args(sys.argv[1:])
 
     host, port = args.smtp_server.split(':', 1)
-    mailer = Mailer(host, int(port), debug=args.debug)
+    port = int(port)
 
     for path in args.path:
 
@@ -73,34 +80,38 @@ def main():
         except ConfigError as ex:
             LOG.error("Error while parsing config '%s': %s", path, ex)
             continue
+
         config_dir = os.path.dirname(path)
 
-        for mail in config.mails:
-            name = mail.pop('name', None)
-            attachments = mail.pop('attachments', [])
+        with Mailer(host, port, debug=args.debug,
+                    reuse_connection=args.reuse_connection) as mailer:
 
-            for prop in ('from_key', 'from_crt'):
-                if prop in mail:
-                    mail[prop] = os.path.join(config_dir, mail[prop])
+            for mail in config.mails:
+                name = mail.pop('name', None)
+                attachments = mail.pop('attachments', [])
 
-            msg = Message(**mail)
+                for prop in ('from_key', 'from_crt'):
+                    if prop in mail:
+                        mail[prop] = os.path.join(config_dir, mail[prop])
 
-            if isinstance(attachments, str):
-                attachments = [attachments]
+                msg = Message(**mail)
 
-            for a in attachments:
-                file_path = os.path.join(config_dir, a)
-                msg.attach(file_path)
+                if isinstance(attachments, str):
+                    attachments = [attachments]
 
-            if not args.dry_run:
+                for a in attachments:
+                    file_path = os.path.join(config_dir, a)
+                    msg.attach(file_path)
+
                 try:
-                    mailer.send(msg)
+                    mailer.send(msg, args.dry_run)
                     LOG.info("Message '%s' sent.", name)
+
+                except MessageError as ex:
+                    LOG.error("Failed to create message '%s': %s", name, ex)
+
                 except MailerError as ex:
                     LOG.error("Error while sending '%s': %s", name, ex)
-            else:
-                print(MAIL_OUT_PREFIX, msg.as_string(),
-                      MAIL_OUT_SUFFIX, sep='\n')
 
 
 if __name__ == '__main__':
