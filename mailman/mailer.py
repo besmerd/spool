@@ -8,6 +8,9 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr
+from email import message_from_bytes
+
+from M2Crypto import BIO, SMIME
 
 
 class Mailer:
@@ -98,7 +101,7 @@ class Message:
     def __init__(self, sender, recipients,
                  from_addr=None, to_addrs=None, subject=None, cc_addrs=None,
                  bcc_addrs=None, headers=None, text_body=None, html_body=None,
-                 ical=None, charset='utf-8'):
+                 ical=None, from_key=None, from_crt=None, charset='utf-8'):
 
         self.sender = parseaddr(sender)
 
@@ -131,6 +134,9 @@ class Message:
         self.text_body = text_body
         self.ical = ical
 
+        self.from_key = from_key
+        self.from_crt = from_crt
+
         self.attachments = []
 
         self.headers = []
@@ -152,11 +158,34 @@ class Message:
         for key in self.headers:
             msg[key] = self.headers[key]
 
+        if self.from_key and self.from_crt:
+            msg = self._sign(msg, self.from_key, self.from_crt)
+
         return msg.as_string()
 
-    def sign(self):
+    def _encrypt(self, msg):
         pass
 
+    @staticmethod
+    def _sign(msg, from_key, from_crt):
+        outer_headers = []
+        for header, value in msg.items():
+            if header == 'Content-Type':
+                continue
+            outer_headers.append((header, value))
+            del msg[header]
+        bio = BIO.MemoryBuffer(msg.as_bytes())
+        smime = SMIME.SMIME()
+        smime.load_key(from_key, from_crt)
+        cms = smime.sign(bio, flags=SMIME.PKCS7_DETACHED)
+        bio = BIO.MemoryBuffer(msg.as_bytes())
+        out = BIO.MemoryBuffer()
+        smime.write(out, cms, bio)
+        msg = message_from_bytes(out.read())
+        for header, value in outer_headers:
+            msg[header] = value
+
+        return msg
 
     def _set_rfc822_headers(self, msg):
 
@@ -194,8 +223,8 @@ class Message:
 
         part = MIMEBase(*mime_type.split('/'))
 
-        with open(file_path, 'rb') as fh:
-            part.set_payload(fh.read())
+        with open(file_path, 'rb') as attachment:
+            part.set_payload(attachment.read())
 
         encoders.encode_base64(part)
 
@@ -214,7 +243,6 @@ class Message:
             msg.attach(MIMEText(self.html_body, 'html', self.charset))
 
         return msg
-
 
     def __str__(self):
         recipients = COMMASPACE.join([a for n, a in self.recipients])

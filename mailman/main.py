@@ -74,6 +74,12 @@ def main():
             description = mail.pop('description', None)
             attachments = mail.pop('attachments', [])
 
+            if mail['from_key']:
+                mail['from_key'] = os.path.join(config_dir, mail['from_key'])
+
+            if mail['from_crt']:
+                mail['from_crt'] = os.path.join(config_dir, mail['from_crt'])
+
             msg = Message(**mail)
 
             if isinstance(attachments, str):

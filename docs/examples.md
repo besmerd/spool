@@ -1,5 +1,44 @@
 # Examples
 
+## Simple Mail over list
+```yaml
+---
+defaults:
+  sender: sender@example.com
+  recipients: recipient@example.com
+
+mails:
+  - name: Spoofed SPF-enabled domain
+    description: Mails spoofed from domains with valid SPF configuration
+    sender: 'spf-test@{{ item }}'
+    subject: 'SPF Check - {{ item }}'
+    text_body: This is a SPF verification check.
+    loop:
+      - gmail.com
+      - microsoft.com
+      - facebook.com
+```
+
+## S/MIME Signed Message
+```yaml
+---
+mails:
+  - name: S/MIME Signed
+    sender: sender@example.com
+    recipients: recipient@example.com
+    subject: Signed Message
+```
+
+## S/MIME Encrypted Message
+```yaml
+---
+mails:
+  - name: S/MIME Encrypted
+    sender: sender@example.com
+    recipients: recipient@example.com
+    subject: Encrypted Message
+```
+
 ## Calendar Invitation
 ```yaml
 ---

@@ -1,5 +1,5 @@
 SHELL := /bin/sh
-PYTHON_VERSION := python36
+PYTHON_VERSION := python3
 
 PROJECT := mailman
 VIRTUAL_ENV := venv
