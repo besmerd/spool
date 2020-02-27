@@ -1,15 +1,10 @@
 # $ mailman_
 
-Send mails with YAML.
+Send (test) mails with YAML.
 
 ## Installation
 ```sh
 pip install .
-```
-
-## Installation for Development
-```sh
-pip install --editable .
 ```
 
 ## Usage
@@ -17,7 +12,7 @@ pip install --editable .
 mailman --help
 ```
 
-Example config file:
+### Example configuration file:
 ```yaml
 ---
 # mails.yml
@@ -29,7 +24,13 @@ defaults:
 
 # Optional variables which can be used below.
 vars:
-  message: Hello world.
+  message: |
+    Hello world,
+
+    Foo bar baz ...
+
+    Kind regards,
+    Foo
 
 # Mails to send.
 mails:
@@ -40,7 +41,9 @@ mails:
     text_body: '{{ message }}'
 ```
 
-Generate mails:
+### Generate mail(s):
 ```sh
 mailman example/simple.yml
 ```
+
+For further examples visit the [documentation](https://besmerd.github.io/mailman).
