@@ -55,7 +55,7 @@ class Mailer:
         server = smtplib.SMTP(self.host, self.port, timeout=self.timeout)
 
         if self.debug:
-            server.set_debuglevel(1)
+            server.set_debuglevel(2)
 
         if self.starttls:
             context = ssl.create_default_context()
