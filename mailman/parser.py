@@ -9,6 +9,9 @@ LOG = logging.getLogger(__name__)
 class ConfigError(Exception):
     """Base class for all parsing errors."""
 
+    def __str__(self):
+        return self.__doc__
+
 
 class NoSenderError(ConfigError):
     """Envelope sender or 'from' missing."""
@@ -35,6 +38,7 @@ class Config:
         'eml',
         'text_body',
         'html_body',
+        'dkim',
         'ical',
         'attachments',
         'loop',

@@ -1,3 +1,4 @@
 jinja2
+dkimpy
 M2Crypto
 pyyaml

@@ -7,8 +7,9 @@ setup(
     packages=find_packages(),
     use_scm_version=True,
     install_requires=[
-        'jinja2',
         'M2Crypto',
+        'dkimpy',
+        'jinja2',
         'pyyaml',
     ],
     setup_requires=[

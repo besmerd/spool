@@ -1,3 +1,4 @@
+import logging
 import mimetypes
 import os
 
@@ -7,9 +8,12 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr
+from email.parser import BytesHeaderParser
 
 from M2Crypto import BIO, SMIME
+from dkim import dkim_sign
 
+LOG = logging.getLogger(__name__)
 
 DEFAULT_ATTACHMENT_MIME_TYPE = 'application/octet-stream'
 
@@ -34,7 +38,8 @@ class Message:
     def __init__(self, sender, recipients,
                  from_addr=None, to_addrs=None, subject=None, cc_addrs=None,
                  bcc_addrs=None, headers=None, text_body=None, html_body=None,
-                 ical=None, from_key=None, from_crt=None, charset='utf-8'):
+                 ical=None, dkim=None, from_key=None, from_crt=None,
+                 charset='utf-8'):
 
         self.sender = parseaddr(sender)
 
@@ -67,6 +72,8 @@ class Message:
         self.text_body = text_body
         self.ical = ical
 
+        self.dkim = dkim
+
         self.from_key = from_key
         self.from_crt = from_crt
 
@@ -95,7 +102,18 @@ class Message:
         if self.from_key and self.from_crt:
             msg = self._sign(msg, self.from_key, self.from_crt)
 
-        return msg.as_string()
+        if self.dkim:
+
+            for key, value in self.dkim.items():
+                self.dkim[key] = value.encode()
+
+            sig = dkim_sign(msg.as_bytes(), **self.dkim).decode()
+
+        else:
+
+            sig = ''
+
+        return sig + msg.as_string()
 
     def _encrypt(self, msg):
         pass
@@ -133,6 +151,7 @@ class Message:
         msg['Message-ID'] = make_msgid()
 
         return msg
+
 
     def _multipart(self):
         msg = MIMEMultipart('mixed')

@@ -82,6 +82,7 @@ def main():
         try:
             config = Config.load(path)
         except ConfigError as ex:
+            print(ex)
             LOG.error("Error while parsing config '%s': %s", path, ex)
             continue
 
