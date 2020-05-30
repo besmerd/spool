@@ -21,11 +21,12 @@ class Mailer:
     Represents an SMTP connection.
     """
 
-    def __init__(self, host='localhost', port=1025, timeout=5,
+    def __init__(self, host='localhost', port=1025, helo=None, timeout=5,
                  reuse_connection=False, starttls=False, debug=False):
 
         self.host = host
         self.port = port
+        self.helo = helo
         self.timeout = timeout
         self.starttls = starttls
         self.debug = debug
@@ -52,7 +53,8 @@ class Mailer:
 
     def _connect(self):
         LOG.debug('Connecting to server: %s:%s', self.host, self.port)
-        server = smtplib.SMTP(self.host, self.port, timeout=self.timeout)
+        server = smtplib.SMTP(self.host, self.port, local_hostname=self.helo,
+                              timeout=self.timeout)
 
         if self.debug:
             server.set_debuglevel(2)

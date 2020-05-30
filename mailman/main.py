@@ -44,6 +44,11 @@ def parse_args(args):
     )
 
     parser.add_argument(
+        '-H', '--helo',
+        help='helo name used when connecting to the smtp server',
+    )
+
+    parser.add_argument(
         '-v', '--verbose',
         action='count',
         default=0,
@@ -56,7 +61,6 @@ def parse_args(args):
         metavar='config',
         help='path of mailman config',
     )
-
 
     return parser.parse_args(args)
 
@@ -83,7 +87,7 @@ def main():
 
         config_dir = os.path.dirname(path)
 
-        with Mailer(host, port, debug=args.debug,
+        with Mailer(host, port, helo=args.helo, debug=args.debug,
                     reuse_connection=args.reuse_connection) as mailer:
 
             for mail in config.mails:
