@@ -1,4 +1,5 @@
-jinja2
-dkimpy
 M2Crypto
+dkimpy
+jinja2
 pyyaml
+tox
