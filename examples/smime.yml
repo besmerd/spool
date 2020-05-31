@@ -1,10 +1,11 @@
 ---
 defaults:
-  sender: sender@example.com
-  recipients: recipient@example.com
+  sender: sender@example.org
+  recipients: recipient@example.org
 
 mails:
-  - name: S/MIME Signed Message
+  - name: smime-signed
+    description: A S/MIME signed message (signature detached)
     subject: S/MIME Signed Message
     from_key: smime/sender.key.pem
     from_crt: smime/sender.crt.pem

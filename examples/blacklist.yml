@@ -1,11 +1,11 @@
 ---
 defaults:
-  sender: sender@example.com
-  recipients: recipient@example.com
+  sender: sender@example.org
+  recipients: recipient@example.org
 
 vars:
   blacklisted_senders:
-    - Blacklist Sender <blacklist@example.com>
+    - Blacklist Sender <blacklist@example.org>
 
 mails:
   - name: Blacklisted Senders

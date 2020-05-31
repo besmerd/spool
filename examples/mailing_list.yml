@@ -1,10 +1,10 @@
 ---
 defaults:
-  sender: sender@example.com
-  recipients: recipient@example.com
+  sender: sender@example.org
+  recipients: recipient@example.org
 
 mails:
-  - name: Mailing list headers
+  - name: mailing-list
     description: Mails that contain mailing list headers (List-*)
     subject: Mailing List
     text_body: Mailing list header test

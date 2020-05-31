@@ -1,7 +1,7 @@
 ---
 defaults:
-  sender: sender@example.com
-  recipients:  recipient@example.com
+  sender: sender@example.org
+  recipients:  recipient@example.org
 
 vars:
   known_bad_suffixes: [
@@ -13,8 +13,8 @@ vars:
     'wmz', 'ws', 'wsc', 'wsf', 'wsh', 'xxe', 'docm', 'xlsm']
 
 mails:
-  - name: 'Bad File Types - {{ item }}'
-    description: Attachments with bad file types
+  - name: 'bad-file-{{ item }}'
+    description: Attach files with known bad suffixes
     subject: 'Known bad attachment type - {{ item }}'
     text_body: 'Email with bad attachment: {{ item }}.'
     attachments: 'bad_file_types/block_it.{{ item }}'

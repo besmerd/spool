@@ -1,10 +1,10 @@
 ---
 defaults:
-  sender: sender@example.com
-  recipients: recipient@example.com
+  sender: sender@example.org
+  recipients: recipient@example.org
 
 mails:
-  - name: HTML with iFrames
+  - name: html-iframe
     description: HTML mails containing iFrames with different targets
     subject: 'Testmail with frame - {{ item.desc }}'
     html_body: |

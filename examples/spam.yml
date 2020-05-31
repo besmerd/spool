@@ -1,0 +1,13 @@
+---
+defaults:
+  sender: sender@example.org
+  recipients: recipient@example.org
+
+mails:
+  - name: spam-gtube
+    description: Generic Test for Unsolicited Bulk Email (GTUBE)
+    subject: Spam Mail (GTUBE)
+    text_body: |
+      Test your anti-spam system with the following test string.
+
+      XJS*C4JDBQADN1.NSBN3*2IDNEN*GTUBE-STANDARD-ANTI-UBE-TEST-EMAIL*C.34X

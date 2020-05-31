@@ -1,10 +1,10 @@
 ---
 defaults:
-  sender: sender@example.com
-  recipients: recipient@example.com
+  sender: sender@example.org
+  recipients: recipient@example.org
 
 mails:
-  - name: Bad Reply-To Addresses
+  - name: bad-reply-to
     description: Known bad reply to domains
     subject: 'Bad Reply-To - {{ item }}'
     headers:

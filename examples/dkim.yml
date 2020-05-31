@@ -1,14 +1,14 @@
 ---
 defaults:
-  sender: sender@example.com
-  recipients: recpient@example.com
+  sender: sender@example.org
+  recipients: recpient@example.org
 
 mails:
-  - name: DKIM example
-    description: DomainKeys Identified Mail example
+  - name: dkim-signed
+    description: DomainKeys Identified Mail (DKIM) signed mail
     subject: DKIM Test
     dkim:
-      domain: exapmle.com
+      domain: example.org
       selector: s2048
       privkey: |
         -----BEGIN RSA PRIVATE KEY-----

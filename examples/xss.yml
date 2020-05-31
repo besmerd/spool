@@ -1,10 +1,11 @@
 ---
 defaults:
-  sender: sender@example.com
-  recipients: recipient@example.com
+  sender: sender@example.org
+  recipients: recipient@example.org
 
 mails:
-  - name: XSS in mail subjects
+  - name: xxs-subject
     description: Attempting XSS in subjects for discovery of issues in web interfaces
     subject: 'Subject XSS Test: <img src="http://localhost/xss.png" onerror="alert(1)">'
-    text_body: This is a test mail with XSS payload in the subject.
+    text_body: |
+      This is a test mail with XSS payload in the subject.

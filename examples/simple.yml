@@ -1,16 +1,9 @@
 ---
 mails:
-  - name: test
-    description: Test
-    sender: John Doe <john.doe@example.com>
-    recipients:
-      - Jane Doe <jane.doe@example.com>
-      - recipient@example.com
-    subject: Test
-    headers:
-      X-Mailer: mailman
+  - name: simple
+    description: A simple test message
+    sender: sender@example.org
+    recipients: recipient@example.org
+    subject: Test Message
     text_body: |
-        Test Message
-    attachments:
-      - test.txt
-      - test.png
+        This is a test message.

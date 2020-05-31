@@ -1,9 +1,10 @@
 ---
 mails:
-  - name: Spoofed Sender
-    sender: spoofed@example.com
+  - name: spoofed-sender
+    description: Mail from a spoofed sender
+    sender: sender@example.org
     from: Steve Jobs <steve@apple.com>
-    recipients: recipient@example.com
+    recipients: recipient@example.org
     subject: Spoofed Sender
     text_body: |
         Mail with a spoofed sender.

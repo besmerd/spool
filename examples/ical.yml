@@ -1,10 +1,11 @@
 ---
 defaults:
-  sender: sender@example.com
-  recipients: recipient@example.com
+  sender: sender@example.org
+  recipients: recipient@example.org
 
 mails:
-  - name: iCalendar
+  - name: ical
+    description: Message with an iCalendar attachment
     subject: Abraham Lincoln
     ical: |
       BEGIN:VCALENDAR

@@ -1,19 +1,21 @@
 ---
 defaults:
-  sender: Mail Delivery Subsystem <mailer-daemon@example.com>
-  recipients: recipient@example.com
+  sender: Mail Delivery Subsystem <mailer-daemon@example.org>
+  recipients: recipient@example.org
 
 mails:
-  - name: DSN - Permanent Failure
+  - name: dsn-permanent
+    description: DSN - Permanent Failure
     headers:
       Return-Path: '<>'
     subject: Delivery Status Notification (Failure)
     text_body: |
       Your message wasn't delivered to the following recipient(s):
 
-      invalid@example.com
+      invalid@example.org
 
-  - name: DSN - Temporary Failure
+  - name: dsn-temporary
+    description: DSN - Temporary Failure
     headers:
       Return-Path: '<>'
     subject: Delivery Status Notification (Delay)
@@ -21,4 +23,4 @@ mails:
       There was a temporary problem delivering your message to the following
       recipient(s):
 
-      delayed@example.com
+      delayed@example.org
