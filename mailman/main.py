@@ -30,13 +30,12 @@ def parse_args(args):
     )
 
     parser.add_argument(
-        '-S', '--smtp-server',
-        default='localhost:1025',
-        help='smtp server, defauls to: localhost:1025',
+        '-r', '--relay', default='localhost:1025',
+        help='smtp relay server, format "<hostname>:<port>"',
     )
 
     parser.add_argument(
-        '-r', '--reuse-connection',
+        '-R', '--reuse-connection',
         action='store_true',
         help='reuse smtp connection to server',
     )
@@ -66,7 +65,16 @@ def parse_args(args):
         help='quiet output (show errors only)',
     )
 
-    return parser.parse_args(args)
+    args = parser.parse_args(args)
+
+    args.host, port = args.relay.split(':', 1)
+
+    try:
+        args.port = int(port)
+    except ValueError:
+        parser.error('argument -r/--relay: port is not a number')
+
+    return args
 
 
 def config_logger(verbosity):
@@ -82,9 +90,6 @@ def run():
     args = parse_args(sys.argv[1:])
     config_logger(args.verbosity)
 
-    host, port = args.smtp_server.split(':', 1)
-    port = int(port)
-
     for path in args.path:
 
         if not os.path.isfile(path):
@@ -99,7 +104,7 @@ def run():
 
         config_dir = os.path.dirname(path)
 
-        with Mailer(host, port, helo=args.helo, debug=args.debug,
+        with Mailer(host=args.host, port=args.port, helo=args.helo, debug=args.debug,
                     reuse_connection=args.reuse_connection) as mailer:
 
             for mail in config.mails:
@@ -137,7 +142,7 @@ def run():
 
 
 def cli():
-    """Command line interface entry point."""
+    """Main cli entry point."""
     try:
         run()
     except Exception as ex:
