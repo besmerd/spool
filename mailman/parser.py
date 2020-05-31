@@ -3,6 +3,7 @@ import logging
 import jinja2
 import yaml
 
+
 LOG = logging.getLogger(__name__)
 
 
@@ -57,7 +58,7 @@ class Config:
     def load(config):
         """Create a config object from a config file."""
         if not isinstance(config, dict):
-            LOG.info('Parsing file: %s', config)
+            LOG.info('Parsing config file. [path=%s]', config)
             with open(config, 'r') as fh:
                 config = yaml.safe_load(fh)
         return Config(config)

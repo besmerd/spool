@@ -29,6 +29,6 @@ setup(
     python_requires=">=3.6",
     entry_points='''
         [console_scripts]
-        mailman=mailman.main:main
+        mailman=mailman.main:cli
     ''',
 )

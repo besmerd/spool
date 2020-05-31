@@ -38,7 +38,7 @@ class Mailer:
             self._server = self._connect()
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback):
         if self._server:
             self._server.quit()
 
@@ -52,7 +52,8 @@ class Mailer:
             self._send(msg)
 
     def _connect(self):
-        LOG.debug('Connecting to server: %s:%s', self.host, self.port)
+        LOG.debug('Connecting to server. [host=%s, port=%s, helo=%s]',
+                  self.host, self.port, self.helo)
         server = smtplib.SMTP(self.host, self.port, local_hostname=self.helo,
                               timeout=self.timeout)
 
@@ -77,7 +78,6 @@ class Mailer:
             server = self._server
 
         try:
-            LOG.debug('Sending message %s', msg)
             sender = formataddr(msg.sender)
 
             recipients = msg.recipients + msg.cc_addrs + msg.bcc_addrs

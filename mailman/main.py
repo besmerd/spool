@@ -7,11 +7,9 @@ from .mailer import Mailer, MailerError
 from .message import Message, MessageError
 from .parser import Config, ConfigError
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M',
-                    level=logging.ERROR)
 
 LOG = logging.getLogger(__name__)
+LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
 
 
 def parse_args(args):
@@ -32,7 +30,7 @@ def parse_args(args):
     )
 
     parser.add_argument(
-        '-s', '--smtp-server',
+        '-S', '--smtp-server',
         default='localhost:1025',
         help='smtp server, defauls to: localhost:1025',
     )
@@ -49,26 +47,40 @@ def parse_args(args):
     )
 
     parser.add_argument(
-        '-v', '--verbose',
-        action='count',
-        default=0,
-        help='increase verbosity of the output',
+        'path',
+        nargs='+', metavar='config', #type=argparse.FileType('r'),
+        help='path of mailman config',
     )
 
-    parser.add_argument(
-        'path',
-        nargs='+',
-        metavar='config',
-        help='path of mailman config',
+    output_group = parser.add_mutually_exclusive_group()
+
+    output_group.add_argument(
+        '-v', '--verbose',
+        action='count', default=0, dest='verbosity',
+        help='verbose output (repeat for increased verbosity)',
+    )
+
+    output_group.add_argument(
+        '-s', '--silent',
+        action='store_const', const=-1, default=0, dest='verbosity',
+        help='quiet output (show errors only)',
     )
 
     return parser.parse_args(args)
 
 
-def main():
+def config_logger(verbosity):
+    verbosity = min(verbosity, 2)
+    log_level = logging.WARNING - verbosity * 10
+
+    logging.basicConfig(level=log_level, format=LOG_FORMAT)
+
+
+def run():
     """Main method."""
 
     args = parse_args(sys.argv[1:])
+    config_logger(args.verbosity)
 
     host, port = args.smtp_server.split(':', 1)
     port = int(port)
@@ -82,7 +94,6 @@ def main():
         try:
             config = Config.load(path)
         except ConfigError as ex:
-            print(ex)
             LOG.error("Error while parsing config '%s': %s", path, ex)
             continue
 
@@ -110,14 +121,30 @@ def main():
 
                 try:
                     mailer.send(msg, args.dry_run)
-                    LOG.info("Message '%s' sent.", name)
+                    LOG.info('Message sent. [name=%s, path=%s]', name, path)
 
                 except MessageError as ex:
-                    LOG.error("Failed to create message '%s': %s", name, ex)
+                    LOG.error(
+                        'Failed to create message: %s. [name=%s, path=%s]',
+                        ex, name, path
+                    )
 
                 except MailerError as ex:
-                    LOG.error("Error while sending '%s': %s", name, ex)
+                    LOG.error(
+                        'Error while sending message: %s. [name=%s, path=%s]',
+                        ex, name, path
+                    )
+
+
+def cli():
+    """Command line interface entry point."""
+    try:
+        run()
+    except Exception as ex:
+        logging.debug(ex, exc_info=True)
+        logging.critical(ex)
+        sys.exit(1)
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    cli()

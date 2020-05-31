@@ -8,13 +8,12 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr
-from email.parser import BytesHeaderParser
 
 from M2Crypto import BIO, SMIME
 from dkim import dkim_sign
 
-LOG = logging.getLogger(__name__)
 
+LOG = logging.getLogger(__name__)
 DEFAULT_ATTACHMENT_MIME_TYPE = 'application/octet-stream'
 
 
@@ -202,5 +201,5 @@ class Message:
 
     def __str__(self):
         recipients = COMMASPACE.join([a for n, a in self.recipients])
-        return '<Email sender="{0}" recipients="{1}" subject="{2}">'.format(
+        return '[sender={0}, recipients={1}, subject={2}]'.format(
             self.sender[1], recipients, self.subject)
