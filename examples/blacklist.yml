@@ -8,7 +8,7 @@ vars:
     - Blacklist Sender <blacklist@example.org>
 
 mails:
-  - name: Blacklisted Senders
+  - name: blacklist-senders
     description: Send mails with addresses from blacklist
     sender: '{{ item }}'
     subject: Blacklisted Sender

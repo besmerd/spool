@@ -1,0 +1,33 @@
+---
+defaults:
+  sender: sender@example.org
+  recipients: recipient@example.org
+
+mails:
+  - name: javascript-alert
+    description: This message contains a javascript code
+    subject: JavaScript Alert
+    html_body: |
+      <html>
+        <body>
+          <h3>JavaScript</h3>
+          <p>This mail contains java script code.</p>
+          <script>alert("Hello world!")</script>
+        </body>
+      </html>
+
+  - name: tracking-pixel
+    description: This message contains a javascript code
+    subject: E-Mail Tracking Pixel
+    html_body: |
+      <html>
+        <body>
+          <h3>Tracking Pixel</h3>
+          <p>This mail contains a tracking pixel.</p>
+          <img src="https://www.example.org/email/tracking.png" style="width:1px;height:1px;">
+          <table>
+            <td background="https://www.example.org/email/tracking.png"
+            width=1 height=1></td>
+          </table>
+        </body>
+      </html>
