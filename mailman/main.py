@@ -1,8 +1,9 @@
 import argparse
 import logging
-import os
 import sys
 import time
+
+from pathlib import Path
 
 from .mailer import Mailer, MailerError
 from .message import Message, MessageError
@@ -54,7 +55,7 @@ def parse_args(args):
 
     parser.add_argument(
         'path',
-        nargs='+', metavar='config',
+        nargs='+', metavar='config', type=Path,
         help='path of mailman config',
     )
 
@@ -101,7 +102,7 @@ def run():
 
     for path in args.path:
 
-        if not os.path.isfile(path):
+        if not path.is_file():
             LOG.warning("No such file, skipping. [path=%s]", path)
             continue
 
@@ -110,8 +111,6 @@ def run():
         except ConfigError as ex:
             LOG.error("Error while parsing config: %s [path=%s]", ex, path)
             continue
-
-        config_dir = os.path.dirname(path)
 
         with Mailer(host=args.host, port=args.port,
                     helo=args.helo, debug=args.debug,
@@ -132,7 +131,7 @@ def run():
 
                 for prop in ('from_key', 'from_crt'):
                     if prop in mail:
-                        mail[prop] = os.path.join(config_dir, mail[prop])
+                        mail[prop] = path.parent / mail[prop]
 
                 msg = Message(**mail)
 
@@ -140,7 +139,7 @@ def run():
                     attachments = [attachments]
 
                 for a in attachments:
-                    file_path = os.path.join(config_dir, a)
+                    file_path = path.parent / a
                     msg.attach(file_path)
 
                 try:

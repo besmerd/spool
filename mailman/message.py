@@ -1,6 +1,5 @@
 import logging
 import mimetypes
-import os
 
 from email import encoders, message_from_bytes
 from email.header import Header
@@ -8,6 +7,7 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr
+from pathlib import Path
 
 from M2Crypto import BIO, SMIME
 from dkim import dkim_sign
@@ -167,7 +167,8 @@ class Message:
     @staticmethod
     def _get_attachment_part(file_path):
 
-        if not os.path.isfile(file_path):
+        path = Path(file_path)
+        if not path.is_file():
             raise MessageError('File not found: %s' % file_path)
 
         mime_type, encoding = mimetypes.guess_type(file_path)
@@ -182,9 +183,8 @@ class Message:
 
         encoders.encode_base64(part)
 
-        file_name = os.path.basename(file_path)
         part.add_header('Content-Disposition',
-                        'attachment; filename="{0}"'.format(file_name))
+                        'attachment; filename="{0}"'.format(path.name))
         return part
 
     def _plaintext(self):
