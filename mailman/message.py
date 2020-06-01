@@ -151,7 +151,6 @@ class Message:
 
         return msg
 
-
     def _multipart(self):
         msg = MIMEMultipart('mixed')
         msg.attach(self._plaintext())

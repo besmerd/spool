@@ -54,7 +54,7 @@ def parse_args(args):
 
     parser.add_argument(
         'path',
-        nargs='+', metavar='config', #type=argparse.FileType('r'),
+        nargs='+', metavar='config',
         help='path of mailman config',
     )
 
@@ -113,7 +113,8 @@ def run():
 
         config_dir = os.path.dirname(path)
 
-        with Mailer(host=args.host, port=args.port, helo=args.helo, debug=args.debug,
+        with Mailer(host=args.host, port=args.port,
+                    helo=args.helo, debug=args.debug,
                     reuse_connection=args.reuse_connection) as mailer:
 
             for mail in config.mails:
