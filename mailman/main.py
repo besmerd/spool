@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 import sys
+import time
 
 from .mailer import Mailer, MailerError
 from .message import Message, MessageError
@@ -18,9 +19,15 @@ def parse_args(args):
     parser = argparse.ArgumentParser(description='Send mails with YAML.')
 
     parser.add_argument(
-        '-d', '--dry-run',
+        '-p', '--print-only',
         action='store_true',
-        help='create, but do not send messages',
+        help='print, but do not send messages',
+    )
+
+    parser.add_argument(
+        '-d', '--delay',
+        type=float,
+        help='delay delivery by a given number of seconds after each mail'
     )
 
     parser.add_argument(
@@ -90,6 +97,8 @@ def run():
     args = parse_args(sys.argv[1:])
     config_logger(args.verbosity)
 
+    first = True
+
     for path in args.path:
 
         if not os.path.isfile(path):
@@ -108,6 +117,14 @@ def run():
                     reuse_connection=args.reuse_connection) as mailer:
 
             for mail in config.mails:
+
+                if not first and args.delay:
+                    LOG.debug('Delay sending of next message by %.2f seconds',
+                              args.delay)
+                    time.sleep(args.delay)
+                else:
+                    first = False
+
                 name = mail.pop('name', None)
                 attachments = mail.pop('attachments', [])
 
@@ -125,7 +142,7 @@ def run():
                     msg.attach(file_path)
 
                 try:
-                    mailer.send(msg, args.dry_run)
+                    mailer.send(msg, args.print_only)
                     LOG.info('Message sent. [name=%s, path=%s]', name, path)
 
                 except MessageError as ex:

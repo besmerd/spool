@@ -42,11 +42,11 @@ class Mailer:
         if self._server:
             self._server.quit()
 
-    def send(self, msg, dry_run=True):
+    def send(self, msg, print_only=True):
         """
         Send a message.
         """
-        if dry_run:
+        if print_only:
             self._print(msg)
         else:
             self._send(msg)
