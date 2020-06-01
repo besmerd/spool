@@ -102,13 +102,13 @@ def run():
     for path in args.path:
 
         if not os.path.isfile(path):
-            LOG.warning("No such file '%s' skipping.", path)
+            LOG.warning("No such file, skipping. [path=%s]", path)
             continue
 
         try:
             config = Config.load(path)
         except ConfigError as ex:
-            LOG.error("Error while parsing config '%s': %s", path, ex)
+            LOG.error("Error while parsing config: %s [path=%s]", ex, path)
             continue
 
         config_dir = os.path.dirname(path)
@@ -120,7 +120,7 @@ def run():
             for mail in config.mails:
 
                 if not first and args.delay:
-                    LOG.debug('Delay sending of next message by %.2f seconds',
+                    LOG.debug('Delay sending of next message by %.2f seconds.',
                               args.delay)
                     time.sleep(args.delay)
                 else:
