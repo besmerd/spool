@@ -140,7 +140,7 @@ class Config:
                     mail[key] = self._render(value, env)
                 self.mails.append(mail)
 
-        #FIXME
+        # FIXME
         self.config = config
         self.config['mails'] = self.mails
         self._check_config()

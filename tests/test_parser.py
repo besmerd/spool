@@ -1,6 +1,5 @@
 import pytest
-from mailman.parser import (Config, ConfigError, NoRecipientsError,
-                            NoSenderError)
+from mailman.parser import Config, ConfigError
 
 
 def test_empty_config():
@@ -29,7 +28,7 @@ def test_minimal_config():
 
 
 def test_fail_missing_senders_or_to():
-    with pytest.raises(NoSenderError):
+    with pytest.raises(ConfigError):
         Config.load({
             'mails': [{
                 'recipients': '<recipient@texample.com>',
@@ -40,7 +39,7 @@ def test_fail_missing_senders_or_to():
 
 
 def test_fail_missing_recipients_or_to():
-    with pytest.raises(NoRecipientsError):
+    with pytest.raises(ConfigError):
         Config.load({
             'mails': [{
                 'sender': '<sender@test.com>',
