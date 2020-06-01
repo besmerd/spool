@@ -3,8 +3,60 @@ import logging
 import jinja2
 import yaml
 
+from cerberus import Validator
+
 
 LOG = logging.getLogger(__name__)
+
+CONFIG_SCHEMA = {
+    'defaults': {'type': 'dict', 'allow_unknown': True},
+    'vars': {'type': 'dict', 'allow_unknown': True},
+    'mails': {
+        'type': 'list',
+        'schema': {
+            'type': 'dict',
+            'schema': {
+                'name': {'type': 'string'},
+                'description': {'type': 'string'},
+                'sender': {'type': 'string', 'required': True},
+                'recipients': {'type': ['string', 'list'], 'required': True},
+                'subject': {'type': 'string'},
+                'headers': {'type': 'dict'},
+                'from': {'type': 'string', 'rename': 'from_addr'},
+                'to': {'type': ['string', 'list'], 'rename': 'to_addrs'},
+                'cc': {'type': ['string', 'list'], 'rename': 'cc_addrs'},
+                'bcc': {'type': ['string', 'list'], 'rename': 'bcc_addrs'},
+                'eml': {
+                    'type': 'string',
+                    'excludes': [
+                        'text_body',
+                        'html_body',
+                        'attachments',
+                        'ical',
+                    ],
+                },
+                'text_body': {'type': 'string', 'excludes': ['eml']},
+                'html_body': {'type': 'string', 'excludes': ['eml']},
+                'dkim': {
+                    'type': 'dict',
+                    'schema': {
+                        'privkey': {'type': 'string'},
+                        'selector': {'type': 'string'},
+                        'domain': {'type': 'string'},
+                    },
+                },
+                'ical': {'type': 'string', 'excludes': ['eml']},
+                'attachments': {
+                    'type': ['string', 'list'],
+                    'excludes': ['eml'],
+                },
+                'loop': {'type': 'list'},
+                'from_crt': {'type': 'string'},
+                'from_key': {'type': 'string'},
+            },
+        },
+    },
+}
 
 
 class ConfigError(Exception):
@@ -14,45 +66,12 @@ class ConfigError(Exception):
         return self.__doc__
 
 
-class NoSenderError(ConfigError):
-    """Envelope sender or 'from' missing."""
-
-
-class NoRecipientsError(ConfigError):
-    """Envelope recipient(s) or 'to' missing."""
+class ValidationError(ConfigError):
+    """Validation Error."""
 
 
 class Config:
     """Represents a single mail instance config."""
-
-    MAIL_FIELDS = [
-        'name',
-        'description',
-        'recipients',
-        'subject',
-        'headers',
-        'sender',
-        'from',
-        'to',
-        'cc',
-        'bcc',
-        'eml',
-        'text_body',
-        'html_body',
-        'dkim',
-        'ical',
-        'attachments',
-        'loop',
-        'from_crt',
-        'from_key',
-    ]
-
-    MAIL_MUTUAL_EXCLUSION = [
-        ('eml', 'text_body'),
-        ('eml', 'text_html'),
-        ('eml', 'ical'),
-        ('eml', 'attachment'),
-    ]
 
     @staticmethod
     def load(config):
@@ -65,29 +84,9 @@ class Config:
 
     def _check_config(self):
 
-        for mail in self.mails:
-
-            if not isinstance(mail, dict):
-                raise ConfigError('Failed to read config for mail')
-
-            # discard description
-            mail.pop('description', '')
-
-            if 'sender' not in mail and 'from' not in mail:
-                raise NoSenderError()
-
-            if 'recipients' not in mail and 'to' not in mail:
-                raise NoRecipientsError()
-
-            for field, _ in mail.items():
-                if field not in self.MAIL_FIELDS:
-                    raise ConfigError(
-                        'Unknown field \'{0}\' for mail config'.format(field))
-
-            for excl in self.MAIL_MUTUAL_EXCLUSION:
-                if all(i in mail.keys() for i in excl):
-                    raise ConfigError(
-                        'Fields are mutually exclusive: {0}'.format(excl))
+        v = Validator()
+        if not v.validate(self.config, CONFIG_SCHEMA):
+            raise ValidationError()
 
     def _render(self, field, env, **kwargs):
 
@@ -141,10 +140,7 @@ class Config:
                     mail[key] = self._render(value, env)
                 self.mails.append(mail)
 
+        #FIXME
+        self.config = config
+        self.config['mails'] = self.mails
         self._check_config()
-
-        for mail in self.mails:
-            mail['from_addr'] = mail.pop('from', None)
-            mail['to_addrs'] = mail.pop('to', None)
-            mail['cc_addrs'] = mail.pop('cc', None)
-            mail['bcc_addrs'] = mail.pop('bcc', None)

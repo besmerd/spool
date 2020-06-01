@@ -7,6 +7,7 @@ setup(
     packages=find_packages(),
     use_scm_version=True,
     install_requires=[
+        'cerberus',
         'M2Crypto',
         'dkimpy',
         'jinja2',

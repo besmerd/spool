@@ -1,4 +1,5 @@
 M2Crypto
+cerberus
 dkimpy
 jinja2
 pytest

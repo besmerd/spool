@@ -127,6 +127,7 @@ def run():
                     first = False
 
                 name = mail.pop('name', None)
+                _ = mail.pop('description', None)
                 attachments = mail.pop('attachments', [])
 
                 for prop in ('from_key', 'from_crt'):
