@@ -1,0 +1,21 @@
+Proofpoint and F-Secure
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:5.11.87,1.0.14,0.0.0000 definitions=2013-12-12_01:2013-12-11,2013-12-12,1970-01-01, signatures=0
+
+Proofpoint and McAfee
+X-Proofpoint-Virus-Version: vendor=nai engine=5400 definitions=5800 signatures=585085
+
+Cisco IronPort and Sophos
+X-IronPort-AV: E=Sophos;i="4.27,718,1204520400"; v="EICAR-AV-Test'3'rd"; d="txt'?com'?scan'208";a="929062"
+
+Cisco IronPort and McAfee
+X-IronPort-AV: E=McAfee;i="5400,1158,7286"; a="160098426"
+
+Trend Micro
+X-TM-AS-Product-Ver: CSC-0-5.5.1026-15998
+X-TM-AS-Result: No-10.22-4.50-31-1
+
+McAfee The WebShield(R) e500 Appliance discovered a virus in this file.
+The file was not cleaned and has been removed.
+
+Barracuda Networks
+X-Barracuda-Virus-Scanned: by Barracuda Spam & Virus Firewall at example.org
