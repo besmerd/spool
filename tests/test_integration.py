@@ -1,6 +1,4 @@
-import email
 import pytest
-import smtpd
 
 from unittest import mock
 
@@ -57,26 +55,8 @@ mails:
 '''
 
 
-class MailSink(smtpd.SMTPServer):
-
-    def __init__(self, host='localhost', port=1025):
-
-        super(MailSink, self).__init__((host, port), None)
-        self.mailbox = []
-
-    def process_message(self, peer, mailfrom, rcpttos, data, **kwargs):
-
-        message = email.message_from_bytes(data)
-        self.outbox.append(message)
-
-
-@pytest.fixture
-def smtpd():
-    return MailSink()
-
-
 @mock.patch('sys.argv', ['mailman', '--help'])
-def test_help_flag(smtpd):
+def test_help_flag():
     with pytest.raises(SystemExit) as error:
         main.cli()
 
@@ -85,7 +65,7 @@ def test_help_flag(smtpd):
 
 
 @mock.patch('sys.argv', ['mailman', ])
-def test_fail_with_no_config(smtpd):
+def test_fail_with_no_config():
     with pytest.raises(SystemExit) as error:
         main.cli()
 
@@ -101,8 +81,11 @@ def test_success_with_simple_config(smtpd, tmp_path):
     config_2 = tmp_path / 'with_vars.yml'
     config_2.write_text(WITH_VARS)
 
-    with mock.patch('sys.argv', ['mailman', str(config_1), str(config_2)]):
+    with mock.patch('sys.argv', ['mailman', '--relay',
+                    f'{smtpd.host}:{smtpd.port}', str(config_1), str(config_2)]):
         main.cli()
+
+    assert len(smtpd.messages) == 2
 
 
 def test_success_with_loop(smtpd, tmp_path):
@@ -110,5 +93,8 @@ def test_success_with_loop(smtpd, tmp_path):
     config = tmp_path / 'with_vars.yml'
     config.write_text(WITH_LOOP)
 
-    with mock.patch('sys.argv', ['mailman', str(config)]):
+    with mock.patch('sys.argv', ['mailman', '--relay',
+                    f'{smtpd.host}:{smtpd.port}', str(config)]):
         main.cli()
+
+    assert len(smtpd.messages) == 3
