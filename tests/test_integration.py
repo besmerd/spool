@@ -59,7 +59,7 @@ mails:
 
 class MailSink(smtpd.SMTPServer):
 
-    def __init__(self, host='localhost', port=0):
+    def __init__(self, host='localhost', port=1025):
 
         super(MailSink, self).__init__((host, port), None)
         self.mailbox = []
