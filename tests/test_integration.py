@@ -21,7 +21,7 @@ mails:
 
 WITH_VARS = '''\
 ---
-default:
+defaults:
   sender: sender@example.org
   recipients: recipient@example.org
 
@@ -29,11 +29,31 @@ vars:
   subject: Simple Text Message
 
 mails:
-  - name: simple
-    recipients: recipient@example.org
-    subject: '{{ subject }}'
+  - name: with-vars
+    subject: '{{ subject|upper }}'
     text_body: |
         Just a simple text message.
+'''
+
+WITH_LOOP = '''\
+---
+defaults:
+  sender: sender@example.org
+
+vars:
+  friends:
+    - Ben
+    - Karol
+    - Steve
+
+mails:
+  - name: with-loop
+    subject: Simple Text Message
+    recipients: '{{ item }}'
+    text_body: |
+        Just a simple text message.
+
+    loop: '{{ friends }}'
 '''
 
 
@@ -82,4 +102,13 @@ def test_success_with_simple_config(smtpd, tmp_path):
     config_2.write_text(WITH_VARS)
 
     with mock.patch('sys.argv', ['mailman', str(config_1), str(config_2)]):
+        main.cli()
+
+
+def test_success_with_loop(smtpd, tmp_path):
+
+    config = tmp_path / 'with_vars.yml'
+    config.write_text(WITH_LOOP)
+
+    with mock.patch('sys.argv', ['mailman', str(config)]):
         main.cli()
