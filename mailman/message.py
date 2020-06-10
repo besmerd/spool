@@ -12,6 +12,8 @@ from pathlib import Path
 from M2Crypto import BIO, SMIME
 from dkim import dkim_sign
 
+from .exceptions import MailmanError
+
 
 LOG = logging.getLogger(__name__)
 DEFAULT_ATTACHMENT_MIME_TYPE = 'application/octet-stream'
@@ -28,7 +30,7 @@ def parseaddrs(addrs):
     return [parseaddr(addrs)]
 
 
-class MessageError(Exception):
+class MessageError(MailmanError):
     """Base class for essage errors."""
 
 

@@ -8,6 +8,7 @@ from pathlib import Path
 from .mailer import Mailer, MailerError
 from .message import Message, MessageError
 from .parser import Config, ConfigError
+from .exceptions import MailmanError
 
 
 LOG = logging.getLogger(__name__)
@@ -51,6 +52,12 @@ def parse_args(args):
     parser.add_argument(
         '-H', '--helo',
         help='helo name used when connecting to the smtp server',
+    )
+
+    parser.add_argument(
+        '-c', '--check',
+        action='store_true',
+        help='check config files and quit',
     )
 
     parser.add_argument(
@@ -103,13 +110,17 @@ def run():
     for path in args.path:
 
         if not path.is_file():
-            LOG.warning("No such file, skipping. [path=%s]", path)
+            LOG.warning('No such file, skipping. [path=%s]', path)
             continue
 
         try:
             config = Config.load(path)
+
+            if args.check:
+                continue
+
         except ConfigError as ex:
-            LOG.error("Error while parsing config: %s [path=%s]", ex, path)
+            LOG.error('Error while parsing config: %s [path=%s]', ex, path)
             continue
 
         with Mailer(host=args.host, port=args.port,
@@ -163,9 +174,13 @@ def cli():
     """Main cli entry point."""
     try:
         run()
-    except Exception as ex:
-        logging.debug(ex, exc_info=True)
+
+    except MailmanError as ex:
         logging.critical(ex)
+        sys.exit(1)
+
+    except Exception:
+        logging.critical('Unexpected error occured.', exc_info=True)
         sys.exit(1)
 
 

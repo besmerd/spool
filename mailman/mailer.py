@@ -4,6 +4,8 @@ import ssl
 
 from email.utils import formataddr
 
+from .exceptions import MailmanError
+
 
 LOG = logging.getLogger(__name__)
 
@@ -12,7 +14,7 @@ MAIL_OUT_PREFIX = '---------- MESSAGE FOLLOWS ----------'
 MAIL_OUT_SUFFIX = '------------ END MESSAGE ------------'
 
 
-class MailerError(Exception):
+class MailerError(MailmanError):
     """Base class for all errors related to the mailer."""
 
 
@@ -86,4 +88,4 @@ class Mailer:
             server.sendmail(sender, recipients, msg.as_string())
 
         except smtplib.SMTPException as ex:
-            raise MailerError(ex)
+            raise MailerError(ex) from ex
