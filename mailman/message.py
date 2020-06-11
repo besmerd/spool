@@ -173,7 +173,7 @@ class Message:
         if not path.is_file():
             raise MessageError('File not found: %s' % file_path)
 
-        mime_type, encoding = mimetypes.guess_type(file_path)
+        mime_type, encoding = mimetypes.guess_type(str(file_path))
 
         if mime_type is None or encoding is not None:
             mime_type = DEFAULT_ATTACHMENT_MIME_TYPE
