@@ -1,15 +1,21 @@
 site_name: Spool
 site_description: Send mails with YAML.
-site_author: 'Daniel Besmer'
-site_url: 'https://besmerd.github.io/spool'
+site_author: Daniel Besmer
+site_url: https://besmerd.github.io/spool
 
-repo_name: 'besmerd/spool'
-repo_url: 'https://github.com/besmerd/spool'
+repo_name: besmerd/spool
+repo_url: https://github.com/besmerd/spool
+
+nav:
+  - index.md
+  - installation.md
+  - examples.md
+  - reference.md
 
 theme:
-  name: 'material'
-  logo:
-    icon: 'mail'
+  name: material
+  icon:
+    logo: material/mailbox
 
 markdown_extensions:
   - admonition

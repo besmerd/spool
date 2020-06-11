@@ -1,4 +1,4 @@
-# Configuration
+# Reference
 
 ## Mails
 The `mails` section defines the messages which should be generated. The
