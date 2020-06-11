@@ -10,6 +10,8 @@ from .exceptions import SpoolError
 
 LOG = logging.getLogger(__name__)
 
+
+
 CONFIG_SCHEMA = {
     'defaults': {'type': 'dict', 'allow_unknown': True},
     'vars': {'type': 'dict', 'allow_unknown': True},
@@ -21,7 +23,10 @@ CONFIG_SCHEMA = {
                 'name': {'type': 'string'},
                 'description': {'type': 'string'},
                 'sender': {'type': 'string', 'required': True},
-                'recipients': {'type': ['string', 'list'], 'required': True},
+                'recipients': {
+                    'type': ['string', 'list'],
+                    'required': True,
+                },
                 'subject': {'type': 'string'},
                 'headers': {'type': 'dict'},
                 'from': {'type': 'string', 'rename': 'from_addr'},

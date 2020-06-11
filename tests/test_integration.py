@@ -21,7 +21,7 @@ WITH_VARS = '''\
 ---
 defaults:
   sender: sender@example.org
-  recipients: recipient@example.org
+  recipients: recipient@example.org, other@example.com
 
 vars:
   subject: Simple Text Message

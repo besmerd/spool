@@ -19,7 +19,7 @@ LOG = logging.getLogger(__name__)
 DEFAULT_ATTACHMENT_MIME_TYPE = 'application/octet-stream'
 
 
-def parseaddrs(addrs):
+def parse_addrs(addrs):
 
     if isinstance(addrs, str):
         addrs = addrs.split(',')
@@ -49,20 +49,20 @@ class Message:
         else:
             self.from_addr = self.sender
 
-        self.recipients = parseaddrs(recipients)
+        self.recipients = parse_addrs(recipients)
 
         if to_addrs:
-            self.to_addrs = parseaddrs(to_addrs)
+            self.to_addrs = parse_addrs(to_addrs)
         else:
             self.to_addrs = self.recipients
 
         if cc_addrs:
-            self.cc_addrs = parseaddrs(cc_addrs)
+            self.cc_addrs = parse_addrs(cc_addrs)
         else:
             self.cc_addrs = []
 
         if bcc_addrs:
-            self.bcc_addrs = parseaddrs(bcc_addrs)
+            self.bcc_addrs = parse_addrs(bcc_addrs)
         else:
             self.bcc_addrs = []
 
