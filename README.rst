@@ -1,7 +1,7 @@
 $ spool\_
 =========
 
-Send (test) mails with YAML.
+Spool allows you to generate test mails specified in YAML.
 
 Installation
 ------------

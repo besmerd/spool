@@ -15,7 +15,7 @@ mails:
 ```
 
 name
-: An optional reference for the message
+: An optional reference name for the message
 
 description
 : An optional description for the message
@@ -30,10 +30,10 @@ subject
 : Subject of the message
 
 text_body
-: A `text/plain` part
+: A MIME part of type `text/plain`
 
 text_html
-: 
+: A MIME part of type `text/html`
 
 from
 : Message from, defaults to `sender`
@@ -66,9 +66,11 @@ mails:
 
 ## Defaults
 The `defaults` section can be used for properties that should apply for all
-messages. Properties defined in the `mail` section have a higher precedence and
-therefore overwrite the default values.
+messages in a given configuration file. Properties defined in the `mails`
+section have a higher precedence and therefore overwrite the default values.
 
+The following configuration would result in a message from *sender@example.com*
+to *recipient@example.net*
 ```yaml
 ---
 defaults:
