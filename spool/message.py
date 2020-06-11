@@ -12,7 +12,7 @@ from pathlib import Path
 from M2Crypto import BIO, SMIME
 from dkim import dkim_sign
 
-from .exceptions import MailmanError
+from .exceptions import SpoolError
 
 
 LOG = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ def parseaddrs(addrs):
     return [parseaddr(addrs)]
 
 
-class MessageError(MailmanError):
+class MessageError(SpoolError):
     """Base class for essage errors."""
 
 

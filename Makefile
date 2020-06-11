@@ -1,7 +1,7 @@
 .PHONY: install clean clean-build clean-pyc clean-test test lint isort coverage help
 .DEFAULT_GOAL := help
 
-PROJECT := mailman
+PROJECT := spool
 VIRTUAL_ENV := venv
 
 PYTHON_VERSION := python3
@@ -49,6 +49,9 @@ coverage: test ## run code coverage
 
 isort: ## sort package imports with isort
 	isort --verbose --recursive .
+
+build:
+	$(PYTHON_BIN)/python setup.py sdist bdist_wheel
 
 server: ## start local mail server (mailhog)
 	docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog

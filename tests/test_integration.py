@@ -2,7 +2,7 @@ import pytest
 
 from unittest import mock
 
-from mailman import main
+from spool import main
 
 
 SIMPLE = '''\
@@ -55,7 +55,7 @@ mails:
 '''
 
 
-@mock.patch('sys.argv', ['mailman', '--help'])
+@mock.patch('sys.argv', ['spool', '--help'])
 def test_help_flag():
     with pytest.raises(SystemExit) as error:
         main.cli()
@@ -64,7 +64,7 @@ def test_help_flag():
     assert error.value.code == 0
 
 
-@mock.patch('sys.argv', ['mailman', ])
+@mock.patch('sys.argv', ['spool', ])
 def test_fail_with_no_config():
     with pytest.raises(SystemExit) as error:
         main.cli()
@@ -81,7 +81,7 @@ def test_success_with_simple_config(smtpd, tmp_path):
     config_2 = tmp_path / 'with_vars.yml'
     config_2.write_text(WITH_VARS)
 
-    with mock.patch('sys.argv', ['mailman', '--relay',
+    with mock.patch('sys.argv', ['spool', '--relay',
                     f'{smtpd.host}:{smtpd.port}', str(config_1), str(config_2)]):
         main.cli()
 
@@ -93,7 +93,7 @@ def test_success_with_loop(smtpd, tmp_path):
     config = tmp_path / 'with_vars.yml'
     config.write_text(WITH_LOOP)
 
-    with mock.patch('sys.argv', ['mailman', '--relay',
+    with mock.patch('sys.argv', ['spool', '--relay',
                     f'{smtpd.host}:{smtpd.port}', str(config)]):
         main.cli()
 

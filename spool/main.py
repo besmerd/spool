@@ -8,7 +8,7 @@ from pathlib import Path
 from .mailer import Mailer, MailerError
 from .message import Message, MessageError
 from .parser import Config, ConfigError
-from .exceptions import MailmanError
+from .exceptions import SpoolError
 
 
 LOG = logging.getLogger(__name__)
@@ -63,7 +63,7 @@ def parse_args(args):
     parser.add_argument(
         'path',
         nargs='+', metavar='config', type=Path,
-        help='path of mailman config',
+        help='path of spool config',
     )
 
     output_group = parser.add_mutually_exclusive_group()
@@ -175,7 +175,7 @@ def cli():
     try:
         run()
 
-    except MailmanError as ex:
+    except SpoolError as ex:
         logging.critical(ex)
         sys.exit(1)
 

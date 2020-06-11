@@ -5,4 +5,4 @@ We recommend using the latest version of Python 3.
 
 ## Dependencies
 
-## Install Mailman
+## Install Spool

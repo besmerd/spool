@@ -1,3 +1,3 @@
-# Mailman
+# Spool
 
-`$mailman_` - Send mails with YAML.
+`$ spool_` - Send mails with YAML.

@@ -1,7 +1,7 @@
 import pytest
 
 from email.parser import HeaderParser
-from mailman.message import Message
+from spool.message import Message
 
 combinations = [
     (

@@ -1,5 +1,5 @@
 import pytest
-from mailman.parser import Config, ConfigError
+from spool.parser import Config, ConfigError
 
 
 def test_empty_config():

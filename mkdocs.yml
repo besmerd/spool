@@ -1,10 +1,10 @@
-site_name: Mailman
+site_name: Spool
 site_description: Send mails with YAML.
 site_author: 'Daniel Besmer'
-site_url: 'https://besmerd.github.io/mailman'
+site_url: 'https://besmerd.github.io/spool'
 
-repo_name: 'besmerd/mailman'
-repo_url: 'https://github.com/besmerd/mailman'
+repo_name: 'besmerd/spool'
+repo_url: 'https://github.com/besmerd/spool'
 
 theme:
   name: 'material'

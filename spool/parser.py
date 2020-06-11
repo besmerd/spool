@@ -5,7 +5,7 @@ import yaml
 
 from cerberus import Validator
 
-from .exceptions import MailmanError
+from .exceptions import SpoolError
 
 
 LOG = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ CONFIG_SCHEMA = {
 }
 
 
-class ConfigError(MailmanError):
+class ConfigError(SpoolError):
     """Base class for all parsing errors."""
 
     def __str__(self):
