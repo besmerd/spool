@@ -26,7 +26,7 @@ clean-build: ## remove build artifacts
 	rm -rf *.egg-info
 	find . -name '*.egg' -delete
 
-clean-pyc: ## remove Python artifacts
+clean-pyc: ## remove python artifacts
 	find . -name '*.py[co]' -delete
 	find . -name '*~'  -delete
 	find . -name '__pycache__' -delete
@@ -50,8 +50,11 @@ coverage: test ## run code coverage
 isort: ## sort package imports with isort
 	isort --verbose --recursive .
 
-build:
+build: ## bulid packages
 	$(PYTHON_BIN)/python setup.py sdist bdist_wheel
+
+deploy: clean build ## build and deploy to pypi.org
+	$(PYTHON_BIN)/python -m twine upload dist/*
 
 server: ## start local mail server (mailhog)
 	docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
