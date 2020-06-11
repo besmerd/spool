@@ -1,6 +1,10 @@
 # Examples
 
-## Loop
+## Using Loops
+
+Loops allow you to cycle through the same message multiple times with a list of
+arguments.
+
 ```yaml
 ---
 defaults:
@@ -19,9 +23,15 @@ mails:
       - facebook.com
 ```
 
-## S/MIME
+## S/MIME Signing and Encryption
+
+Use an existing S/MIME certificate to sign your test mails or generate a self
+signed one with [openssl][1].
+
+[1]: https://www.openssl.org/docs/manmaster/man1/openssl-x509.html
 
 ### Generate a Test Key/Certificate
+
 ```sh
 openssl req -newkey rsa:2048 -nodes -x509 -days 365 \
             -subj "/CN=Sender\/emailAddress=sender@example.com" \
@@ -29,6 +39,7 @@ openssl req -newkey rsa:2048 -nodes -x509 -days 365 \
 ```
 
 ### Create a S/MIME Signed Message
+
 ```yaml
 ---
 mails:
@@ -44,6 +55,7 @@ mails:
 ```
 
 ### Create a S/MIME Encrypted Message
+
 ```yaml
 ---
 mails:
@@ -58,6 +70,9 @@ mails:
 ```
 
 ## iCalendar
+
+Send a calendar invitation.
+
 ```yaml
 ---
 mails:

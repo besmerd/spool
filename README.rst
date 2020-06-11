@@ -10,6 +10,11 @@ Installation
 
    pip install .
 
+*Note*: The module M2Crypto, which handles S/MIME signing and encryption
+requires the installation of `swig`. Use your favourite package manager to
+install (e.g. `sudo yum install swig`).
+
+
 Usage
 -----
 
@@ -53,7 +58,7 @@ Generate mail(s):
 
 .. code:: sh
 
-   spool example/simple.yml
+   spool --verbose --relay localhost:2525 example/simple.yml
 
 For further examples visit the
 `documentation <https://besmerd.github.io/spool>`__.
