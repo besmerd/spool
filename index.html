@@ -183,22 +183,70 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Spool
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
     <a href="." title="Spool" class="md-nav__link md-nav__link--active">
       Spool
     </a>
     
-  </li>
-
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
     
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
       
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
       
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-configuration-file" class="md-nav__link">
+    Example configuration file:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-mails" class="md-nav__link">
+    Generate mail(s):
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
-
-
-  <li class="md-nav__item">
-    <a href="examples/" title="Examples" class="md-nav__link">
-      Examples
-    </a>
+    </ul>
+  
+</nav>
+    
   </li>
 
     
@@ -220,8 +268,20 @@
 
 
   <li class="md-nav__item">
-    <a href="reference/" title="Configuration" class="md-nav__link">
-      Configuration
+    <a href="examples/" title="Examples" class="md-nav__link">
+      Examples
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="reference/" title="Reference" class="md-nav__link">
+      Reference
     </a>
   </li>
 
@@ -243,6 +303,50 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-configuration-file" class="md-nav__link">
+    Example configuration file:
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-mails" class="md-nav__link">
+    Generate mail(s):
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -262,7 +366,53 @@
                 
                 
                 <h1 id="spool">Spool</h1>
-<p><code>$ spool_</code> - Send mails with YAML.</p>
+<p>Send mails with YAML.</p>
+<h2 id="installation">Installation</h2>
+<div class="codehilite"><pre><span></span><code>pip install spool
+</code></pre></div>
+
+
+<p>See <a href="installation/">installation</a> for further instructions.</p>
+<h2 id="usage">Usage</h2>
+<div class="codehilite"><pre><span></span><code><span class="err">spool --help</span>
+</code></pre></div>
+
+
+<h3 id="example-configuration-file">Example configuration file:</h3>
+<div class="codehilite"><pre><span></span><code><span class="nn">---</span>
+<span class="c1"># mails.yml</span>
+
+<span class="c1"># Optional defaults for keys mails.</span>
+<span class="nt">defaults</span><span class="p">:</span>
+ <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foo@example.com</span>
+ <span class="nt">recipents</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Bar &lt;bar@example.com&gt;, baz@example.com</span>
+
+<span class="c1"># Optional variables which can be used below.</span>
+<span class="nt">vars</span><span class="p">:</span>
+ <span class="nt">message</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+   <span class="no">Hello world,</span>
+
+   <span class="no">Foo bar baz ...</span>
+
+   <span class="no">Kind regards,</span>
+   <span class="no">Foo</span>
+
+<span class="c1"># Mails to send.</span>
+<span class="nt">mails</span><span class="p">:</span>
+ <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Test Mail</span>
+   <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Hello world test mail</span>
+   <span class="nt">headers</span><span class="p">:</span>
+     <span class="nt">X-Mailer</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Spool Mailer</span>
+   <span class="nt">text_body</span><span class="p">:</span> <span class="s">&#39;{{</span><span class="nv"> </span><span class="s">message</span><span class="nv"> </span><span class="s">}}&#39;</span>
+</code></pre></div>
+
+
+<h3 id="generate-mails">Generate mail(s):</h3>
+<div class="codehilite"><pre><span></span><code>spool example/simple.yml
+</code></pre></div>
+
+
+<p>Have a look at the <a href="reference/">reference</a> section or take a peek at the <a href="examples/">examples</a>.</p>
                 
               
               
@@ -282,13 +432,13 @@
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
         
-          <a href="examples/" title="Examples" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="installation/" title="Installation" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Examples
+                Installation
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">
