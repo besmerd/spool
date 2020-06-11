@@ -2,6 +2,16 @@ M2Crypto
 cerberus
 dkimpy
 jinja2
-pytest
 pyyaml
+
+# Testing
+pytest
 tox
+
+# Documentation
+mkdocs
+mkdocs-material
+
+# Distribution
+twine
+wheel
