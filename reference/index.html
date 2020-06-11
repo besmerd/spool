@@ -362,7 +362,7 @@ following configuration would create a message from 'sender@example.com' to
 
 <dl>
 <dt>name</dt>
-<dd>An optional reference for the message</dd>
+<dd>An optional reference name for the message</dd>
 <dt>description</dt>
 <dd>An optional description for the message</dd>
 <dt>sender</dt>
@@ -372,9 +372,9 @@ following configuration would create a message from 'sender@example.com' to
 <dt>subject</dt>
 <dd>Subject of the message</dd>
 <dt>text_body</dt>
-<dd>A <code>text/plain</code> part</dd>
+<dd>A MIME part of type <code>text/plain</code></dd>
 <dt>text_html</dt>
-<dd></dd>
+<dd>A MIME part of type <code>text/html</code></dd>
 <dt>from</dt>
 <dd>Message from, defaults to <code>sender</code></dd>
 <dt>to</dt>
@@ -403,8 +403,10 @@ like <code>mails</code> or <code>defaults</code>.</p>
 
 <h2 id="defaults">Defaults</h2>
 <p>The <code>defaults</code> section can be used for properties that should apply for all
-messages. Properties defined in the <code>mail</code> section have a higher precedence and
-therefore overwrite the default values.</p>
+messages in a given configuration file. Properties defined in the <code>mails</code>
+section have a higher precedence and therefore overwrite the default values.</p>
+<p>The following configuration would result in a message from <em>sender@example.com</em>
+to <em>recipient@example.net</em></p>
 <div class="codehilite"><pre><span></span><code><span class="nn">---</span>
 <span class="nt">defaults</span><span class="p">:</span>
   <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender@example.com</span>
