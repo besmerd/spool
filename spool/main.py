@@ -61,6 +61,12 @@ def parse_args(args):
     )
 
     parser.add_argument(
+        '--starttls',
+        action='store_true',
+        help=''
+    )
+
+    parser.add_argument(
         'path',
         nargs='+', metavar='config', type=Path,
         help='path of spool config',
@@ -123,8 +129,8 @@ def run():
             LOG.error('Error while parsing config: %s [path=%s]', ex, path)
             continue
 
-        with Mailer(host=args.host, port=args.port,
-                    helo=args.helo, debug=args.debug,
+        with Mailer(host=args.host, port=args.port, helo=args.helo,
+                    debug=args.debug, starttls=args.starttls,
                     reuse_connection=args.reuse_connection) as mailer:
 
             for mail in config.mails:

@@ -54,17 +54,23 @@ class Mailer:
             self._send(msg)
 
     def _connect(self):
-        LOG.debug('Connecting to server. [host=%s, port=%s, helo=%s]',
-                  self.host, self.port, self.helo)
-        server = smtplib.SMTP(self.host, self.port, local_hostname=self.helo,
-                              timeout=self.timeout)
+
+        server = smtplib.SMTP(self.host, self.port, timeout=self.timeout,
+                              local_hostname=self.helo)
+
+        LOG.debug('Connected to server. [host=%s, port=%s, helo=%s]',
+                  self.host, self.port, server.local_hostname)
 
         if self.debug:
             server.set_debuglevel(2)
 
         if self.starttls:
             context = ssl.create_default_context()
-            server.starttls(context=context)
+            try:
+                server.starttls(context=context)
+            except smtplib.SMTPNotSupportedError:
+                LOG.warning(('No support for STARTTLS by remote server. '
+                            '[host=%s, port=%s]'), self.host, self.port)
 
         return server
 
