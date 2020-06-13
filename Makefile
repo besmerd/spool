@@ -57,7 +57,11 @@ deploy: clean build ## build and deploy to pypi.org
 	$(PYTHON_BIN)/python -m twine upload dist/*
 
 server: ## start local mail server (mailhog)
-	docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
+ifeq (, $(shell which podman))
+	docker run -d -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
+else
+	podman run -d -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
+endif
 
 help: ## show usage and exit
 	@echo "Usage:"
