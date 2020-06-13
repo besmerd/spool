@@ -49,7 +49,7 @@ mails:
 ### Generate mail(s):
 
 ```sh
-spool example/simple.yml
+spool --verbose --relay localhost:2525 example/simple.yml
 ```
 
 Have a look at the [reference](reference.md) section or take a peek at the [examples](examples.md).

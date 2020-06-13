@@ -10,9 +10,9 @@ Installation
 
    pip install .
 
-*Note*: The module M2Crypto, which handles S/MIME signing and encryption
+**Note**: The module M2Crypto, which handles S/MIME signing and encryption,
 requires the installation of `swig`. Use your favourite package manager to
-install (e.g. `sudo yum install swig`).
+install it (e.g. `sudo yum install swig` or `sudo apt install swig`).
 
 
 Usage
