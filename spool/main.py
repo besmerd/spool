@@ -21,10 +21,16 @@ def parse_args(args):
     parser = argparse.ArgumentParser(description='Send mails with YAML.')
 
     parser.add_argument(
-        '-p', '--print-only',
-        action='store_true',
-        help='print, but do not send messages',
+        '-r', '--relay',
+        help='smtp relay smtp server',
     )
+
+    parser.add_argument(
+        '-p', '--port',
+        type=int, default=25,
+        help='port on remote server, default: 25',
+    )
+
 
     parser.add_argument(
         '-d', '--delay',
@@ -39,14 +45,9 @@ def parse_args(args):
     )
 
     parser.add_argument(
-        '-r', '--relay', default='localhost:1025',
-        help='smtp relay server, format "<hostname>:<port>"',
-    )
-
-    parser.add_argument(
-        '-R', '--reuse-connection',
+        '-P', '--print-only',
         action='store_true',
-        help='reuse smtp connection to server',
+        help='print, but do not send messages',
     )
 
     parser.add_argument(
@@ -86,16 +87,7 @@ def parse_args(args):
         help='quiet output (show errors only)',
     )
 
-    args = parser.parse_args(args)
-
-    args.host, port = args.relay.split(':', 1)
-
-    try:
-        args.port = int(port)
-    except ValueError:
-        parser.error('argument -r/--relay: port is not a number')
-
-    return args
+    return parser.parse_args(args)
 
 
 def config_logger(verbosity):
@@ -129,9 +121,8 @@ def run():
             LOG.error('Error while parsing config: %s [path=%s]', ex, path)
             continue
 
-        with Mailer(host=args.host, port=args.port, helo=args.helo,
-                    debug=args.debug, starttls=args.starttls,
-                    reuse_connection=args.reuse_connection) as mailer:
+        with Mailer(relay=args.relay, port=args.port, helo=args.helo,
+                    debug=args.debug, starttls=args.starttls) as mailer:
 
             for mail in config.mails:
 
@@ -142,8 +133,7 @@ def run():
                 else:
                     first = False
 
-                name = mail.pop('name', None)
-                _ = mail.pop('description', None)
+                mail.pop('description', None)
                 attachments = mail.pop('attachments', [])
 
                 for prop in ('from_key', 'from_crt'):
@@ -161,18 +151,11 @@ def run():
 
                 try:
                     mailer.send(msg, args.print_only)
-                    LOG.info('Message sent. [name=%s, path=%s]', name, path)
 
                 except MessageError as ex:
                     LOG.error(
                         'Failed to create message: %s. [name=%s, path=%s]',
-                        ex, name, path
-                    )
-
-                except MailerError as ex:
-                    LOG.error(
-                        'Error while sending message: %s. [name=%s, path=%s]',
-                        ex, name, path
+                        ex, mail.name, path
                     )
 
 

@@ -1,8 +1,13 @@
+import itertools
 import logging
+import re
 import smtplib
+import socket
 import ssl
 
 from email.utils import formataddr
+
+from dns.resolver import Resolver, NXDOMAIN
 
 from .exceptions import SpoolError
 
@@ -18,48 +23,120 @@ class MailerError(SpoolError):
     """Base class for all errors related to the mailer."""
 
 
+class RemoteNotFoundError(MailerError):
+    """Remote server could not be evaluated."""
+
+
 class Mailer:
     """
     Represents an SMTP connection.
     """
 
-    def __init__(self, host='localhost', port=1025, helo=None, timeout=5,
-                 reuse_connection=False, starttls=False, debug=False):
+    DOMAIN_LITERAL = re.compile(r'\[(?P<ip_address>(\d{1,3}\.){3}\d{1,3})\]')
 
-        self.host = host
+    def __init__(self, relay=None, port=25, helo=None, timeout=5,
+                 starttls=False, debug=False):
+
         self.port = port
-        self.helo = helo
+        self.relay = relay
+
+        if helo is None:
+            self.helo = self.get_helo_name()
+        else:
+            self.helo = helo
+
         self.timeout = timeout
         self.starttls = starttls
         self.debug = debug
-        self.reuse_connection = reuse_connection
-        self._server = None
+
+        # TODO: Add option to parser
+        self.reorder_recipients = True
 
     def __enter__(self):
-        if self.reuse_connection:
-            self._server = self._connect()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if self._server:
-            self._server.quit()
+        pass
 
     def send(self, msg, print_only=True):
-        """
-        Send a message.
-        """
+        """Send a message"""
+
         if print_only:
-            self._print(msg)
+            return self._print(msg)
+
+        sender = formataddr(msg.sender)
+
+        recipients = msg.recipients + msg.cc_addrs + msg.bcc_addrs
+        recipients = [formataddr(r) for r in recipients]
+
+        if self.relay:
+            self._send_message(self.relay, sender, recipients, msg)
+
         else:
-            self._send(msg)
+            def domain(address):
+                return address.split('@', 1)[-1]
 
-    def _connect(self):
+            if self.reorder_recipients:
+                recipients = sorted(recipients, key=domain)
 
-        server = smtplib.SMTP(self.host, self.port, timeout=self.timeout,
+            for domain, recipients in itertools.groupby(recipients, domain):
+
+                try:
+                    host = self._get_remote(domain)
+
+                except RemoteNotFoundError as err:
+                    LOG.error('Failed to send message: %s [name=%s]',
+                              err, msg.name)
+                    continue
+
+                self._send_message(host, sender, list(recipients), msg)
+
+    @staticmethod
+    def get_helo_name():
+        """Retrive the helo/ehlo name based on the hostname"""
+
+        fqdn = socket.getfqdn()
+        if '.' in fqdn:
+            return fqdn
+
+        # Use a domain literal for the EHLO/HELO verb, as specified in RFC 2821
+        address = '127.0.0.1'
+        try:
+            address = socket.gethostbyname(socket.gethostname())
+        except socket.gaierror:
+            pass
+
+        return f'[{address}]'
+
+    def _get_remote(self, domain, nameservers=None):
+
+        match = self.DOMAIN_LITERAL.fullmatch(domain)
+        if match:
+            return match.group('ip_address')
+
+        if nameservers:
+            resolver = Resolver(configure=False)
+            resolver.nameservers = nameservers
+
+        else:
+            resolver = Resolver()
+
+        try:
+            answers = resolver.query(domain, 'MX')
+            mx = min(answers, key=lambda rdata: rdata.preference).exchange
+            return mx.to_text().rstrip('.')
+
+        except NXDOMAIN:
+            raise RemoteNotFoundError(
+                    f'No MX record found for domain: {domain}')
+
+    def _connect(self, host, port):
+
+        LOG.info('Connecting to remote server. [host=%s, port=%s, helo=%s]',
+                 host, port, self.helo)
+
+        server = smtplib.SMTP(host, port, timeout=self.timeout,
                               local_hostname=self.helo)
-
-        LOG.debug('Connected to server. [host=%s, port=%s, helo=%s]',
-                  self.host, self.port, server.local_hostname)
 
         if self.debug:
             server.set_debuglevel(2)
@@ -69,29 +146,37 @@ class Mailer:
             try:
                 server.starttls(context=context)
             except smtplib.SMTPNotSupportedError:
-                LOG.warning(('No support for STARTTLS by remote server. '
-                            '[host=%s, port=%s]'), self.host, self.port)
+                LOG.warning(
+                    ('No support for STARTTLS command by remote server. '
+                     '[host=%s, port=%s]'), host, port
+                )
 
         return server
+
+    def _send_message(self, host, sender, recipients, msg):
+        """Send a message to a single remote mail server"""
+
+        try:
+            connection = self._connect(host, self.port)
+            refused = connection.sendmail(sender, recipients, msg.as_string())
+
+        except smtplib.SMTPResponseException as err:
+            LOG.error(('Error while sending message: %s - %s '
+                       '[name=%s, host=%s, port=%s]'), err.smtp_code,
+                      err.smtp_error.decode(), msg.name, host, self.port)
+
+        except smtplib.SMTPException as err:
+            LOG.error('Failed to send message: %s [name=%s, host=%s, port=%s]',
+                      err, msg.name, host, self.port)
+
+        else:
+            for rcpt, (code, resp) in refused.items():
+                LOG.warning('Remote refused recipient: %s [host=%s, port=%s]',
+                            rcpt, host, self.port)
+
+            LOG.info('Message sent. [name=%s, host=%s, port=%s]',
+                     msg.name, host, self.port)
 
     @staticmethod
     def _print(msg):
         print(MAIL_OUT_PREFIX, msg.as_string(), MAIL_OUT_SUFFIX, sep='\n')
-
-    def _send(self, msg):
-
-        if not self._server:
-            server = self._connect()
-        else:
-            server = self._server
-
-        try:
-            sender = formataddr(msg.sender)
-
-            recipients = msg.recipients + msg.cc_addrs + msg.bcc_addrs
-            recipients = [formataddr(r) for r in recipients]
-
-            server.sendmail(sender, recipients, msg.as_string())
-
-        except smtplib.SMTPException as ex:
-            raise MailerError(ex) from ex

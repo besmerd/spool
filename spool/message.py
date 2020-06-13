@@ -36,11 +36,13 @@ class MessageError(SpoolError):
 
 class Message:
 
-    def __init__(self, sender, recipients,
+    def __init__(self, name, sender, recipients,
                  from_addr=None, to_addrs=None, subject=None, cc_addrs=None,
                  bcc_addrs=None, headers=None, text_body=None, html_body=None,
                  ical=None, dkim=None, from_key=None, from_crt=None,
                  charset='utf-8'):
+
+        self.name = name
 
         self.sender = parseaddr(sender)
 

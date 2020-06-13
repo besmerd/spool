@@ -1,6 +1,7 @@
 M2Crypto
 cerberus
 dkimpy
+dnspython
 jinja2
 pyyaml
 
