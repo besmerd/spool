@@ -58,7 +58,14 @@ Generate mail(s):
 
 .. code:: sh
 
+   # Send mails to/trought a relay smtp server
    spool --verbose --relay localhost:2525 example/simple.yml
+
+   # Send mails directly to remote smtp server
+   spool --verbose example/simple.yml
+
+   # Use Google's dns servers for MX rr lookup
+   spool --verbose --nameserver 8.8.8.8 example/simple.yml
 
 For further examples visit the
 `documentation <https://besmerd.github.io/spool>`__.

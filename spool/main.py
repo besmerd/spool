@@ -31,6 +31,10 @@ def parse_args(args):
         help='port on remote server, default: 25',
     )
 
+    parser.add_argument(
+        '-n', '--nameservers',
+        help='nameservers for lookup of MX records'
+    )
 
     parser.add_argument(
         '-d', '--delay',
@@ -122,7 +126,8 @@ def run():
             continue
 
         with Mailer(relay=args.relay, port=args.port, helo=args.helo,
-                    debug=args.debug, starttls=args.starttls) as mailer:
+                    debug=args.debug, nameservers=args.nameservers,
+                    starttls=args.starttls) as mailer:
 
             for mail in config.mails:
 

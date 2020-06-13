@@ -18,6 +18,8 @@ LOG = logging.getLogger(__name__)
 MAIL_OUT_PREFIX = '---------- MESSAGE FOLLOWS ----------'
 MAIL_OUT_SUFFIX = '------------ END MESSAGE ------------'
 
+DOMAIN_LITERAL = re.compile(r'\[(?P<ip_address>(\d{1,3}\.){3}\d{1,3})\]')
+
 
 class MailerError(SpoolError):
     """Base class for all errors related to the mailer."""
@@ -32,10 +34,9 @@ class Mailer:
     Represents an SMTP connection.
     """
 
-    DOMAIN_LITERAL = re.compile(r'\[(?P<ip_address>(\d{1,3}\.){3}\d{1,3})\]')
 
     def __init__(self, relay=None, port=25, helo=None, timeout=5,
-                 starttls=False, debug=False):
+                 starttls=False, nameservers=None, debug=False):
 
         self.port = port
         self.relay = relay
@@ -47,6 +48,7 @@ class Mailer:
 
         self.timeout = timeout
         self.starttls = starttls
+        self.nameservers = nameservers
         self.debug = debug
 
         # TODO: Add option to parser
@@ -82,11 +84,11 @@ class Mailer:
             for domain, recipients in itertools.groupby(recipients, domain):
 
                 try:
-                    host = self._get_remote(domain)
+                    host = self._get_remote(domain, self.nameservers)
 
                 except RemoteNotFoundError as err:
-                    LOG.error('Failed to send message: %s [name=%s]',
-                              err, msg.name)
+                    LOG.error(
+                        'Failed to send message: %s [name=%s]', err, msg.name)
                     continue
 
                 self._send_message(host, sender, list(recipients), msg)
@@ -108,15 +110,16 @@ class Mailer:
 
         return f'[{address}]'
 
-    def _get_remote(self, domain, nameservers=None):
+    @staticmethod
+    def _get_remote(domain, nameservers=None):
 
-        match = self.DOMAIN_LITERAL.fullmatch(domain)
+        match = DOMAIN_LITERAL.fullmatch(domain)
         if match:
             return match.group('ip_address')
 
         if nameservers:
             resolver = Resolver(configure=False)
-            resolver.nameservers = nameservers
+            resolver.nameservers = [n.strip() for n in nameservers.split(',')]
 
         else:
             resolver = Resolver()
@@ -128,7 +131,7 @@ class Mailer:
 
         except NXDOMAIN:
             raise RemoteNotFoundError(
-                    f'No MX record found for domain: {domain}')
+                    f'No mx record found for domain: {domain}')
 
     def _connect(self, host, port):
 
