@@ -37,6 +37,9 @@ clean-test: ## remove test and coverage artifacts
 	rm -rf htmlcov/
 
 test: ## run test suite
+	-pytest tests
+
+test-all: ## run test suite
 	-tox
 
 lint: ## check style with linter
@@ -50,7 +53,7 @@ coverage: test ## run code coverage
 isort: ## sort package imports with isort
 	isort --verbose --recursive .
 
-build: ## bulid packages
+build: test-all ## bulid packages
 	$(PYTHON_BIN)/python setup.py sdist bdist_wheel
 
 deploy: clean build ## build and deploy to pypi.org
