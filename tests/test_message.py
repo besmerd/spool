@@ -6,6 +6,7 @@ from spool.message import Message, parse_addrs
 combinations = [
     (
         {
+            'name': 'test',
             'sender': 'sender@example.org',
             'recipients': 'recipient@example.org'
         },
@@ -14,6 +15,7 @@ combinations = [
     ),
     (
         {
+            'name': 'test',
             'sender': 'sender@example.com',
             'from_addr': 'sender@example.org',
             'recipients': 'recipient@example.org',
@@ -23,6 +25,7 @@ combinations = [
     ),
     (
         {
+            'name': 'test',
             'sender': 'sender@example.org',
             'to_addrs': 'recipient@example.org',
             'recipients': 'recpient@example.com',
@@ -32,6 +35,7 @@ combinations = [
     ),
     (
         {
+            'name': 'test',
             'sender': 'sender@example.com',
             'from_addr': 'sender@example.org',
             'recipients': 'recipient@example.com',
