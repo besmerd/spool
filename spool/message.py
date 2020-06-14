@@ -9,7 +9,7 @@ from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr
 from pathlib import Path
 
-from M2Crypto import BIO, SMIME
+from M2Crypto import BIO, SMIME, EVP, X509
 from dkim import dkim_sign
 
 from .exceptions import SpoolError
@@ -39,8 +39,7 @@ class Message:
     def __init__(self, name, sender, recipients,
                  from_addr=None, to_addrs=None, subject=None, cc_addrs=None,
                  bcc_addrs=None, headers=None, text_body=None, html_body=None,
-                 ical=None, dkim=None, from_key=None, from_crt=None,
-                 charset='utf-8'):
+                 ical=None, dkim=None, smime=None, charset='utf-8'):
 
         self.name = name
 
@@ -76,9 +75,7 @@ class Message:
         self.ical = ical
 
         self.dkim = dkim
-
-        self.from_key = from_key
-        self.from_crt = from_crt
+        self.smime = smime
 
         self.attachments = []
 
@@ -102,8 +99,10 @@ class Message:
         for key in self.headers:
             msg[key] = self.headers[key]
 
-        if self.from_key and self.from_crt:
-            msg = self._sign(msg, self.from_key, self.from_crt)
+        if (self.smime
+            and ('from_key' in self.smime or 'from_key_path' in self.smime)
+            and ('from_crt' in self.smime or 'from_crt_path' in self.smime)):
+            msg = self._sign(msg)
 
         if self.dkim:
 
@@ -121,22 +120,39 @@ class Message:
     def _encrypt(self, msg):
         pass
 
-    def _sign(self, msg, from_key, from_crt):
+    def _sign(self, msg):
 
         outer_headers = []
         for header, value in msg.items():
-            if header == 'Content-Type':
+
+            if header.lower().startswith('content-'):
                 continue
+
             outer_headers.append((header, value))
             del msg[header]
+
         bio = BIO.MemoryBuffer(msg.as_bytes())
         smime = SMIME.SMIME()
-        smime.load_key(from_key, from_crt)
-        cms = smime.sign(bio, flags=SMIME.PKCS7_DETACHED)
+
+        if 'from_key' in self.smime:
+            smime.pkey = EVP.load_key_string(self.smime['from_key'].encode())
+        else:
+            smime.pkey = EVP.load_key(self.smime['from_key_path'])
+
+        if 'from_crt' in self.smime:
+            smime.x509 = X509.load_cert_string(self.smime['from_crt'].encode())
+        else:
+            smime.x509 = X509.load_cert_string(self.smime['from_crt_path'])
+
+        cms = smime.sign(bio, flags=SMIME.PKCS7_DETACHED, algo='sha256')
+
         bio = BIO.MemoryBuffer(msg.as_bytes())
         out = BIO.MemoryBuffer()
+
         smime.write(out, cms, bio)
         msg = message_from_bytes(out.read())
+
+        del msg['MIME-Version']
         for header, value in outer_headers:
             msg[header] = value
 
@@ -163,8 +179,8 @@ class Message:
             part = MIMEText(self.ical, 'calendar;method=REQUEST', self.charset)
             msg.attach(part)
 
-        for a in self.attachments:
-            msg.attach(self._get_attachment_part(a))
+        for att in self.attachments:
+            msg.attach(self._get_attachment_part(att))
 
         return msg
 

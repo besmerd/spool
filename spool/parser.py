@@ -58,8 +58,27 @@ CONFIG_SCHEMA = {
                     'excludes': ['eml'],
                 },
                 'loop': {'type': 'list'},
-                'from_crt': {'type': 'string'},
-                'from_key': {'type': 'string'},
+                'smime': {
+                    'type': 'dict',
+                    'schema': {
+                        'from_crt': {
+                            'type': 'string',
+                            'excludes': ['from_crt_path'],
+                        },
+                        'from_crt_path': {
+                            'type': 'string',
+                            'excludes': ['from_crt'],
+                        },
+                        'from_key': {
+                            'type': 'string',
+                            'excludes': ['from_key_path'],
+                        },
+                        'from_key_path': {
+                            'type': 'string',
+                            'excludes': ['from_key'],
+                        },
+                    },
+                },
             },
         },
     },

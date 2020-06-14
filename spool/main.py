@@ -141,17 +141,17 @@ def run():
                 mail.pop('description', None)
                 attachments = mail.pop('attachments', [])
 
-                for prop in ('from_key', 'from_crt'):
-                    if prop in mail:
-                        mail[prop] = path.parent / mail[prop]
+                for prop in ('from_key_path', 'from_crt_path'):
+                    if prop in mail['smime']:
+                        mail['smime'][prop] = path.parent / mail['smime'][prop]
 
                 msg = Message(**mail)
 
                 if isinstance(attachments, str):
                     attachments = [attachments]
 
-                for a in attachments:
-                    file_path = path.parent / a
+                for att in attachments:
+                    file_path = path.parent / att
                     msg.attach(file_path)
 
                 try:
