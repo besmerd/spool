@@ -1,0 +1,200 @@
+---
+- usecase: text-plain
+  config:
+    name: text-plain
+    sender: sender@example.org
+    recipients: recipient@example.org
+    subject: Test Message
+    text_body: |
+      This is a test message.
+  expected: |
+    Content-Type: text/plain; charset="utf-8"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: base64
+    From: sender@example.org
+    To: recipient@example.org
+    Subject: =?utf-8?q?Test_Message?=
+    Message-ID: <1.41421356237@example.org>
+
+    VGhpcyBpcyBhIHRlc3QgbWVzc2FnZS4K
+
+- usecase: text-html
+  config:
+    name: text-html
+    sender: sender@example.org
+    recipients: recipient@example.org
+    subject: Test Message
+    html_body: |
+      <html>
+        <body>
+          <p>This is a test message.</p>
+        </body>
+      </html>
+  expected: |
+    Content-Type: text/html; charset="utf-8"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: base64
+    From: sender@example.org
+    To: recipient@example.org
+    Subject: =?utf-8?q?Test_Message?=
+    Message-ID: <1.41421356237@example.org>
+
+    PGh0bWw+CiAgPGJvZHk+CiAgICA8cD5UaGlzIGlzIGEgdGVzdCBtZXNzYWdlLjwvcD4KICA8L2Jv
+    ZHk+CjwvaHRtbD4K
+
+- usecase: multipart-alternative
+  config:
+    name: multipart-alternative
+    sender: sender@example.org
+    recipients: recipient@example.org
+    subject: Test Message
+    text_body: |
+      This is a test message.
+    html_body: |
+      <html>
+        <body>
+          <p>This is a test message.</p>
+        </body>
+      </html>
+  expected: |
+    Content-Type: multipart/alternative; boundary="===============0000000000000000001=="
+    MIME-Version: 1.0
+    From: sender@example.org
+    To: recipient@example.org
+    Subject: =?utf-8?q?Test_Message?=
+    Message-ID: <1.41421356237@example.org>
+
+    --===============0000000000000000001==
+    Content-Type: text/plain; charset="utf-8"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: base64
+
+    VGhpcyBpcyBhIHRlc3QgbWVzc2FnZS4K
+
+    --===============0000000000000000001==
+    Content-Type: text/html; charset="utf-8"
+    MIME-Version: 1.0
+    Content-Transfer-Encoding: base64
+
+    PGh0bWw+CiAgPGJvZHk+CiAgICA8cD5UaGlzIGlzIGEgdGVzdCBtZXNzYWdlLjwvcD4KICA8L2Jv
+    ZHk+CjwvaHRtbD4K
+
+    --===============0000000000000000001==--
+
+
+#- usecase: smime-signed
+#  config:
+#    name: smime-signed
+#    sender: sender@example.org
+#    recipients: recipient@example.org
+#    subject: Test Message
+#    smime:
+#      from_key: |
+#        -----BEGIN PRIVATE KEY-----
+#        MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDcu8XbxwvnQqKG
+#        SMRbh+HVn32OuROzpdb7cpeM+6p61wrhog3BHJSWQXOlzxVxP2LqonLn6joUI+zf
+#        x8XsHRW5PO7+T0BQLBR1Z53RQk9MtEfmk2VDwYmkprOi/Ew+CVGVfV0zcNv9IsUl
+#        a5kKske2Udzp+pa6bMIFuX2tTSXcy2d5nUcOZLR3dudwP29vUw+OujrMzhK9oPMO
+#        XTxUBeb7hvbN9ecsOxiTSecA3uOUPBxeXtEkIjSe0vxkS9MUalW1ZzprtodCGt07
+#        5j43drKO7hGSgc/pVPcLOHQm9NqEr6Swe07CNVPcsVNl61fQdkL2Eka9tgRDq+Xh
+#        uGcuVzd7AgMBAAECggEAX1EGY51UWoy/udT6VbwbnS+9/D+XbmASsYoOP2b9ewYZ
+#        QM3Furoov6mL0vHVhI2mnUOA8vyGD+RjiU6u/QKiOtdBLLf0QaqHOxt/XrmPnMPM
+#        uJi1hcixM1R5BcyE79T+UdtMv8XgeTLmhv4rnB7YMLaw+qinJeGI9wfeaVODIhA2
+#        TQQL+OWVErKKTkNXbAYIGy4AxTOYiar8/6r95aZBTUrGgNTthXbjy0iokYZmxoPs
+#        nongCbQQBETrUGgf/SEMDjIk+AsWJnJd05K/qwrvjEsGhS/mC8re1Io9HO+vGTkl
+#        CSX9GGIE/aZrIjRJLgvV7SeGrhXuP+UnPYnw3P+loQKBgQDyDq6Y53R8/BLuHVnl
+#        dWc3qTClTiohRPzPwoQk6H8FhIX3mXfgebcqciUK9x05nPokasVI6TEN5fl22Wjh
+#        LmlxH5U2e7f4sC6DRxpTkesgnRau1h2pvnTAKqbGwwnD+JAVy4SvzVqe8aSQPjZ7
+#        tkw2pSKPBfmCjQU4TS3QngTJPwKBgQDpcqeIusVkvs3pLbiVYT+3Uf9KRp/pPwE2
+#        64bnb0CfEmBOhfu1C49REoWLOFWUkq27SQsNrgFh1+MKr8yLKVUCaFFH+rRJvBKY
+#        WwvuuB69/L7dJMJqKNdcn0iuA0ztuVCH0VxQKboOedYU43gc4t3F5MUhgSEqthPa
+#        K6JNjfcmxQKBgAE2IZmSTvrxKAcZDoIffEzDBANPyNYxyjIf/xlQMJKOfz0l/3uY
+#        IFqOB7FuWy8WogncnvAmeqBfLkhx/hxiZxSx28VSCTGtcA4oJPGWIV8gaiSl3bAj
+#        y+HKVNtZzoq0i8QQKLHYjUOOYgx2wz8LQoZjfTDKDt2gZw5JFJmesNdxAoGBAJaU
+#        Zy5R0vuN+8HZxQNN7ExyLqqZbZKFGmJzf9wOre8takOcNuTr5PDVcqB/oOwpxLhW
+#        gDO9tpSHLaL6DIUDDxtzcGJuexZIovH1YHgF+YZw3ihFCsZxO6E5+SaNaHS6oRBK
+#        YjIvCB1IR2fH5fUz/Psl+mYHJf6n3ZxPouxFk1NFAoGBAK1IgZx0R78OOKUDw8SR
+#        JWxhUy9WffKXh4KQ6AlGathwIH9QINPA64VD6eWI+qkw9EuE30t7xUl7+3muJevL
+#        JM4cIg6yUd24Ex3VL/LTLUE/48PlqhXQwbGmGroGgYGQLBxAv1TRe89C3AHs3o5a
+#        iCDhnUueB4tn8xnxbo/8sKKS
+#        -----END PRIVATE KEY-----
+#      from_crt: |
+#        -----BEGIN CERTIFICATE-----
+#        MIIDQzCCAiugAwIBAgIUbxLEA2xWg6nXMNDu/JJNf4waCbkwDQYJKoZIhvcNAQEL
+#        BQAwMTEvMC0GA1UEAwwmU2VuZGVyL2VtYWlsQWRkcmVzcz1zZW5kZXJAZXhhbXBs
+#        ZS5vcmcwHhcNMjAwNjE0MTgzNDE3WhcNMjEwNjE0MTgzNDE3WjAxMS8wLQYDVQQD
+#        DCZTZW5kZXIvZW1haWxBZGRyZXNzPXNlbmRlckBleGFtcGxlLm9yZzCCASIwDQYJ
+#        KoZIhvcNAQEBBQADggEPADCCAQoCggEBANy7xdvHC+dCooZIxFuH4dWffY65E7Ol
+#        1vtyl4z7qnrXCuGiDcEclJZBc6XPFXE/YuqicufqOhQj7N/HxewdFbk87v5PQFAs
+#        FHVnndFCT0y0R+aTZUPBiaSms6L8TD4JUZV9XTNw2/0ixSVrmQqyR7ZR3On6lrps
+#        wgW5fa1NJdzLZ3mdRw5ktHd253A/b29TD466OszOEr2g8w5dPFQF5vuG9s315yw7
+#        GJNJ5wDe45Q8HF5e0SQiNJ7S/GRL0xRqVbVnOmu2h0Ia3TvmPjd2so7uEZKBz+lU
+#        9ws4dCb02oSvpLB7TsI1U9yxU2XrV9B2QvYSRr22BEOr5eG4Zy5XN3sCAwEAAaNT
+#        MFEwHQYDVR0OBBYEFK7RcQdZUvW65ElwK3dOK7hdJU69MB8GA1UdIwQYMBaAFK7R
+#        cQdZUvW65ElwK3dOK7hdJU69MA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL
+#        BQADggEBAILoPLg3ru5nCooAPf8iUewmNgFftXAkrIszId7gdgvsAr4HsAmz8nvg
+#        FMS/udGh1t055UYbparAROvtJBxHS3F20afG/9xvlslKV425CVdJNbaGuk1anK4b
+#        4GJrn/IIMOm7VclVACE7r4+t4Hxno8+qCz2DlCrj6iPblrXbSBkCS2NXHJ2U0ijv
+#        z2v/7GRazY3hHY6YfuQ7yvkBcveJ7xJj5365M7S6YiN2laRO/i0wiC9oN/cSFXsk
+#        R9ChbMr2zXJlJg/EkcFKswq2W2qNOhhM/o07Rf9qXZY/hC46X4MSLEJF+DXMfXxZ
+#        5WXv6N8vwuYI8fRI0hiHjeciLk/nruk=
+#        -----END CERTIFICATE-----
+#    text_body: |-
+#      This is a test message.
+#
+#  expected: |+
+#    Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha-256"; boundary="----5235E8105FBA8833E063BD85FAB06F05"
+#    MIME-Version: 1.0
+#    From: sender@example.org
+#    To: recipient@example.org
+#    Subject: =?utf-8?q?Test_Message?=
+#    Message-ID: <1.41421356237@example.org>
+#
+#    This is an S/MIME signed message
+#
+#    ------5235E8105FBA8833E063BD85FAB06F05
+#    Content-Type: text/plain; charset="utf-8"
+#    Content-Transfer-Encoding: base64
+#
+#    VGhpcyBpcyBhIHRlc3QgbWVzc2FnZS4=
+#
+#    ------5235E8105FBA8833E063BD85FAB06F05
+#    Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+#    Content-Transfer-Encoding: base64
+#    Content-Disposition: attachment; filename="smime.p7s"
+#
+#    MIIF3gYJKoZIhvcNAQcCoIIFzzCCBcsCAQExDzANBglghkgBZQMEAgEFADALBgkq
+#    hkiG9w0BBwGgggNHMIIDQzCCAiugAwIBAgIUbxLEA2xWg6nXMNDu/JJNf4waCbkw
+#    DQYJKoZIhvcNAQELBQAwMTEvMC0GA1UEAwwmU2VuZGVyL2VtYWlsQWRkcmVzcz1z
+#    ZW5kZXJAZXhhbXBsZS5vcmcwHhcNMjAwNjE0MTgzNDE3WhcNMjEwNjE0MTgzNDE3
+#    WjAxMS8wLQYDVQQDDCZTZW5kZXIvZW1haWxBZGRyZXNzPXNlbmRlckBleGFtcGxl
+#    Lm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANy7xdvHC+dCooZI
+#    xFuH4dWffY65E7Ol1vtyl4z7qnrXCuGiDcEclJZBc6XPFXE/YuqicufqOhQj7N/H
+#    xewdFbk87v5PQFAsFHVnndFCT0y0R+aTZUPBiaSms6L8TD4JUZV9XTNw2/0ixSVr
+#    mQqyR7ZR3On6lrpswgW5fa1NJdzLZ3mdRw5ktHd253A/b29TD466OszOEr2g8w5d
+#    PFQF5vuG9s315yw7GJNJ5wDe45Q8HF5e0SQiNJ7S/GRL0xRqVbVnOmu2h0Ia3Tvm
+#    Pjd2so7uEZKBz+lU9ws4dCb02oSvpLB7TsI1U9yxU2XrV9B2QvYSRr22BEOr5eG4
+#    Zy5XN3sCAwEAAaNTMFEwHQYDVR0OBBYEFK7RcQdZUvW65ElwK3dOK7hdJU69MB8G
+#    A1UdIwQYMBaAFK7RcQdZUvW65ElwK3dOK7hdJU69MA8GA1UdEwEB/wQFMAMBAf8w
+#    DQYJKoZIhvcNAQELBQADggEBAILoPLg3ru5nCooAPf8iUewmNgFftXAkrIszId7g
+#    dgvsAr4HsAmz8nvgFMS/udGh1t055UYbparAROvtJBxHS3F20afG/9xvlslKV425
+#    CVdJNbaGuk1anK4b4GJrn/IIMOm7VclVACE7r4+t4Hxno8+qCz2DlCrj6iPblrXb
+#    SBkCS2NXHJ2U0ijvz2v/7GRazY3hHY6YfuQ7yvkBcveJ7xJj5365M7S6YiN2laRO
+#    /i0wiC9oN/cSFXskR9ChbMr2zXJlJg/EkcFKswq2W2qNOhhM/o07Rf9qXZY/hC46
+#    X4MSLEJF+DXMfXxZ5WXv6N8vwuYI8fRI0hiHjeciLk/nrukxggJbMIICVwIBATBJ
+#    MDExLzAtBgNVBAMMJlNlbmRlci9lbWFpbEFkZHJlc3M9c2VuZGVyQGV4YW1wbGUu
+#    b3JnAhRvEsQDbFaDqdcw0O78kk1/jBoJuTANBglghkgBZQMEAgEFAKCB5DAYBgkq
+#    hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMDA2MTQxODUw
+#    MjNaMC8GCSqGSIb3DQEJBDEiBCC7fngvtJrxod/iY1ppp8tj6/ojKmFrKjKKTYt2
+#    0/kjijB5BgkqhkiG9w0BCQ8xbDBqMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYw
+#    CwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG
+#    9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDANBgkqhkiG9w0BAQEFAASC
+#    AQBp7hpztrbhpuPV6A+YXjE7HRJZAhmjBsE5286e2WLs+/4BpXIDY18ifzvkCWFN
+#    lYJUrkzU/IDYrfrP7PG6HIkyhddREU/XhYIbT4H8Tu6N3phkPUVZ/T9+1sqUiMAQ
+#    7eUPMqigpba4qeubIJHNUF8onyMYaICJghHjDbNSlKymZYpDDBbeZfSPyZ4tg1s9
+#    Gyr8G91MVKTfT8qM5iEzW7iqDO4t6OXwEVF4JivY3hwrLt8cQKWMjRquX71uJRy5
+#    TXBSwTmgt4x6w2ZqgFuaLF9Gj0sUVFOzoXHMOE1dCBAvDV8Xir6wIP9wawn/HhXC
+#    sKvQkPlJadnp4Dg/eTmcy6AC
+#
+#    ------5235E8105FBA8833E063BD85FAB06F05--
+#
