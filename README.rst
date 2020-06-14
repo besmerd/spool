@@ -65,7 +65,7 @@ Generate mail(s):
    spool --verbose example/simple.yml
 
    # Use Google's dns servers for MX rr lookup
-   spool --verbose --nameserver 8.8.8.8 example/simple.yml
+   spool --verbose --nameservers 8.8.8.8 example/simple.yml
 
 For further examples visit the
 `documentation <https://besmerd.github.io/spool>`__.
