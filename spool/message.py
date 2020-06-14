@@ -211,6 +211,8 @@ class Message:
 
         if not self.html_body:
             msg = MIMEText(self.text_body, 'plain', self.charset)
+        elif not self.text_body:
+            msg = MIMEText(self.html_body, 'html', self.charset)
         else:
             msg = MIMEMultipart('alternative')
             msg.attach(MIMEText(self.text_body, 'plain', self.charset))
