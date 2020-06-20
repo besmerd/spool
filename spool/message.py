@@ -85,6 +85,8 @@ class Message:
             self.headers = headers
 
     def attach(self, file_path):
+        """Add file to message attachments."""
+
         self.attachments.append(file_path)
 
     def as_string(self):
@@ -100,11 +102,12 @@ class Message:
         for key in self.headers:
             msg[key] = self.headers[key]
 
-        if 'from_key' in self.smime and 'from_crt' in self.smime:
-            msg = sign(msg, self.smime['from_key'], self.smime['from_crt'])
+        if self.smime:
+            if 'from_key' in self.smime and 'from_crt' in self.smime:
+                msg = sign(msg, self.smime['from_key'], self.smime['from_crt'])
 
-        if 'to_crts' in self.smime:
-            msg = encrypt(msg, self.smime['to_crts'])
+            if 'to_crts' in self.smime:
+                msg = encrypt(msg, self.smime['to_crts'])
 
         if self.dkim:
 
