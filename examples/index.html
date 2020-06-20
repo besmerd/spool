@@ -17,7 +17,7 @@
         <meta name="author" content="Daniel Besmer">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.2.3">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.3.1">
     
     
       
@@ -25,7 +25,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.6e35a1a6.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.fe0cca5b.min.css">
       
       
     
@@ -48,6 +48,7 @@
   
     <body dir="ltr">
   
+    
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
@@ -435,13 +436,62 @@ signed one with <a href="https://www.openssl.org/docs/manmaster/man1/openssl-x50
 <h3 id="create-a-smime-signed-message">Create a S/MIME Signed Message</h3>
 <div class="codehilite"><pre><span></span><code><span class="nn">---</span>
 <span class="nt">mails</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">S/MIME Signed Message</span>
-    <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Creates a S/MIME Signed (detached) Message</span>
-    <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender@example.com</span>
-    <span class="nt">recipients</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">recipient@example.com</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">smime-signed</span>
+    <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">A S/MIME signed message</span>
+    <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender@example.org</span>
+    <span class="nt">recipients</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">recipient@example.org</span>
     <span class="nt">subject</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">S/MIME Signed Message</span>
-    <span class="nt">from_key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender.key.pem</span>
-    <span class="nt">from_crt</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender.crt.pem</span>
+    <span class="nt">smime</span><span class="p">:</span>
+      <span class="nt">from_key</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+        <span class="no">-----BEGIN PRIVATE KEY-----</span>
+        <span class="no">MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDYZtV1JkTgaLNL</span>
+        <span class="no">g6256bR+c4z6lSnVc+HKLxJH8ds9oblYjh751/F0dgzFuwkFuLzTYeM8k/ErIfO0</span>
+        <span class="no">y48cFz3M2j2xEiEY7CSqSgCeXvF4Ps/fn44bDO5k5mK3j7NWmPXtf42PCC5f+BA0</span>
+        <span class="no">u49knm3VC2GvbwWJ4Y0e+8aVBOvKpwC+TjCXnWHgenURyZ3/CiKsK69cmZ6OE8E1</span>
+        <span class="no">eFjS7LG938ql+ixyFFxwsWgTwUEVN3fSzTzKcnBtUAi6GbKvw5hkIXAVOr6zu0dw</span>
+        <span class="no">exMiFZ5LKn1ZPjEyKyXj9t3EhQndn/AUO1xOpriJRO1XSTFa7mqXkNpQrLYXe77V</span>
+        <span class="no">gaQAawhHAgMBAAECggEAYwhsl3gz/R7tLpnMX1B8sYHf+q1Yv76Qjh6MlzAvzTy9</span>
+        <span class="no">vbEMq/oPHeUIY1T9BAlPIM2jWI27yKl5BjxB+fEI7z7RDL/nNaib/vJu5gs9JnJY</span>
+        <span class="no">X1Z9ihOY5cQpWSgCQpcttMqy1cpArtqvT/Kl5L48NUtIISkFt9vo4U0HzBq8bbi4</span>
+        <span class="no">Lup4FNN0oAnOsY6xJ6ObmPQb8Tzcdcix1WYYWoye1X6WQnwfW1C/nm/OmZpNWwux</span>
+        <span class="no">Z67j2MSZqbv9PDLYF1Oi1fsiQWPL1EpaUHSFv3m5x8OF1iXLI6SLTDiXXIsDKpVs</span>
+        <span class="no">IxoK2XM8g0GFE4DvcV6CpIPz2RRe5SDmMmDXrFX4gQKBgQDyoDNHzO2aJ2cO2Xfv</span>
+        <span class="no">PEfJv05zYNYUsI75oAw09AVqMKG1mpAlzq8d8knBumYReglGi7K8GA3A3vX5CuVL</span>
+        <span class="no">Yjkod6gGp05HVHS9BDwGWYNtqNtRvFbNTkxGc3yH7cLt3UbAngwHM9KnF0u6m3UQ</span>
+        <span class="no">abyCVkomAHdaEtB8o8HjtpSnmQKBgQDkVJLk+UuGjKK9dZfJv19f/OnkvO9UK7qo</span>
+        <span class="no">3yuyyRP+iYJESd/eskfbSGV9bzMck8v1+kfQUecoTEWnI35ASy/w9+Up0Ut5a4OZ</span>
+        <span class="no">a+ov6oNch0qdomdp0ZKtCeF7sXRV2/KQa/Ur1LdWbQFjuCiA7lguShjQVd/MeHtc</span>
+        <span class="no">zCY6rdOa3wKBgCA3QVfhUBNN9BM2sQQlHusc6c/MJeDtaK6gn75QQH/PIUm50jYS</span>
+        <span class="no">8ZGqYDzHAVKEv8KMPhlXoEvhzwtYdQXDbw9+g+MOSAiUoEOQ0l+NdzQSXbzGo0fz</span>
+        <span class="no">g5E/OGPcICvxW7mrwrEaInhpUXbfuXWKdKthxcqx+ScOpHxISjBwR+DRAoGAIRn1</span>
+        <span class="no">tcZCYb4vtaG/oJri28qRqfyOAbjZNbQs5J1sDaGnxfijwOg9rJehRv8A/OqcTgu7</span>
+        <span class="no">r4LALUJpcqKdofqEd72odliGRZMFoA9aAxpPcvGWKqYpsdiVGArvqnv+bpgVYUSV</span>
+        <span class="no">ZYZQEfJ5mhhPnulu1T8eu81HRaBN2hUqkaUzoScCgYEAgy2R7yT8oRFi8use52K9</span>
+        <span class="no">qZZym+XVVp3cRjy+4m3b6NrmOS3VHkx+KFWCEjvdluLMZMBXiu2ejpUzBW9OX0mI</span>
+        <span class="no">UdQSJ2MMux1zEILLClaRux6USuJmK7v7qccSWlnzLaI2KAuHAK72rI1SmSQSBCyg</span>
+        <span class="no">fxn9Sa5UDZ9PL2IcwWJ1I60=</span>
+        <span class="no">-----END PRIVATE KEY-----</span>
+      <span class="nt">from_crt</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+        <span class="no">-----BEGIN CERTIFICATE-----</span>
+        <span class="no">MIIDQzCCAiugAwIBAgIUCdN5Mv7hWC06H3M2qdF9D/o4R7MwDQYJKoZIhvcNAQEL</span>
+        <span class="no">BQAwMTEvMC0GA1UEAwwmU2VuZGVyL2VtYWlsQWRkcmVzcz1zZW5kZXJAZXhhbXBs</span>
+        <span class="no">ZS5vcmcwHhcNMjAwNjIwMjEwMDU2WhcNMjEwNjIwMjEwMDU2WjAxMS8wLQYDVQQD</span>
+        <span class="no">DCZTZW5kZXIvZW1haWxBZGRyZXNzPXNlbmRlckBleGFtcGxlLm9yZzCCASIwDQYJ</span>
+        <span class="no">KoZIhvcNAQEBBQADggEPADCCAQoCggEBANhm1XUmROBos0uDrbnptH5zjPqVKdVz</span>
+        <span class="no">4covEkfx2z2huViOHvnX8XR2DMW7CQW4vNNh4zyT8Ssh87TLjxwXPczaPbESIRjs</span>
+        <span class="no">JKpKAJ5e8Xg+z9+fjhsM7mTmYrePs1aY9e1/jY8ILl/4EDS7j2SebdULYa9vBYnh</span>
+        <span class="no">jR77xpUE68qnAL5OMJedYeB6dRHJnf8KIqwrr1yZno4TwTV4WNLssb3fyqX6LHIU</span>
+        <span class="no">XHCxaBPBQRU3d9LNPMpycG1QCLoZsq/DmGQhcBU6vrO7R3B7EyIVnksqfVk+MTIr</span>
+        <span class="no">JeP23cSFCd2f8BQ7XE6muIlE7VdJMVruapeQ2lCsthd7vtWBpABrCEcCAwEAAaNT</span>
+        <span class="no">MFEwHQYDVR0OBBYEFAE4N6hUuN4S1Hb6AvzNXop1f/IwMB8GA1UdIwQYMBaAFAE4</span>
+        <span class="no">N6hUuN4S1Hb6AvzNXop1f/IwMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEL</span>
+        <span class="no">BQADggEBADmGLnqLP9leIXn19CAINTg5+np/roa1UWCD5T/5ldTH9GRBEsarunLk</span>
+        <span class="no">3way8ph8LveEVT2MaTQsWLXNeb/WYgFvxgi/SfnpxtBf4+8NcxuggUPZ/GzGSM8N</span>
+        <span class="no">Re2MnrDJhE4slhll+dp9ERO2Ur9TwP+VghwPKMMQZgTOPSrgfvo+iJrByFZ5cXJ/</span>
+        <span class="no">I45LGO+aEqbypwqT98Y00kuUlm0JZo2OVvFazAVDlfBnDSTJtFoy6wOSZG92FWiL</span>
+        <span class="no">EGjnEl57ENN/7AB5RsFV6wlRGIw+ozrZCGNMhsh+KCFJkGkKkVv5ci4JZCofLYZr</span>
+        <span class="no">sM8ensrJ6/h0cL56uMbXWTsm/EeuqX0=</span>
+        <span class="no">-----END CERTIFICATE-----</span>
     <span class="nt">text_body</span><span class="p">:</span> <span class="p p-Indicator">|</span>
         <span class="no">A sign of our times.</span>
 </code></pre></div>
@@ -450,12 +500,33 @@ signed one with <a href="https://www.openssl.org/docs/manmaster/man1/openssl-x50
 <h3 id="create-a-smime-encrypted-message">Create a S/MIME Encrypted Message</h3>
 <div class="codehilite"><pre><span></span><code><span class="nn">---</span>
 <span class="nt">mails</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">S/MIME Signed Message</span>
-    <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Creates a S/MIME Encrypted Message</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">smime-encrypted</span>
+    <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">A S/MIME encrypted message</span>
     <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender@example.com</span>
     <span class="nt">recipients</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">recipient@example.com</span>
     <span class="nt">subject</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">S/MIME Encrypted Message</span>
-    <span class="nt">to_crts</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">recipient.crt.pem</span>
+    <span class="nt">smime</span><span class="p">:</span>
+      <span class="nt">to_crts</span><span class="p">:</span> <span class="p p-Indicator">|</span>
+        <span class="no">-----BEGIN CERTIFICATE-----</span>
+        <span class="no">MIIDSTCCAjGgAwIBAgIUUKvn0vesiWozUxzGfQswUBa3ylUwDQYJKoZIhvcNAQEL</span>
+        <span class="no">BQAwNDEyMDAGA1UEAwwpU2VuZGVyL2VtYWlsQWRkcmVzcz1yZWNpcGllbnRAZXhh</span>
+        <span class="no">bXBsZS5vcmcwHhcNMjAwNjIwMjEwMTE2WhcNMjEwNjIwMjEwMTE2WjA0MTIwMAYD</span>
+        <span class="no">VQQDDClTZW5kZXIvZW1haWxBZGRyZXNzPXJlY2lwaWVudEBleGFtcGxlLm9yZzCC</span>
+        <span class="no">ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMk8szhuzcT+3qSi5ubh9CF9</span>
+        <span class="no">ZlMV2a7vgRN2Z+rEtH91SpYM4dyjtgFpz7pvnt+HyNiNngpZYBMURDYKuwoG5KHJ</span>
+        <span class="no">IAi7CeFQKxduYU/mok+/arCQAtcCppIVL+UQp+ITGCIHggHDBpgXBWrK2lB5KF51</span>
+        <span class="no">MkWfzO23bv3xMfe9/MKVVvWLUR4UWev3HghhoDluMkUHMaSM8Xc/Y8zbnWjQ2SRG</span>
+        <span class="no">ogdmJytfXBS3nxhVHELqdKi8kJ4L8K+Gn/KoDqN34iNcOnFywFby4uLRsKPyYw3W</span>
+        <span class="no">y8QbNLbmY4yMpwIIlE9rVkL1PbEpzUCwBNoWAlUFl6pskqLWu4H5fnY7akWUE/MC</span>
+        <span class="no">AwEAAaNTMFEwHQYDVR0OBBYEFP0D1Z9SJXn7yIntZyYCnJmeThl8MB8GA1UdIwQY</span>
+        <span class="no">MBaAFP0D1Z9SJXn7yIntZyYCnJmeThl8MA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZI</span>
+        <span class="no">hvcNAQELBQADggEBAKidIUibUKaaV76C+dLMAzoUBhbE3CYjNLy0OLylFBCIaF45</span>
+        <span class="no">MXnk+mLxTEdgTvbK5VJ0XKG2ERMUTOLM6EfF7ck5S5xd95Z7v5JIs/+/N0gWAeB9</span>
+        <span class="no">bUHXeKafOpjXLlN1njEb3IwtatQuRbKf4xuto5fBA6hAUZmuo8CuxOddCaEmy87I</span>
+        <span class="no">A9Rs9Pb+S+VhMvfqBVmat0o5lqMO3LNfsJOrWgv4PkETA662dsxdj4fv/KvwGd9b</span>
+        <span class="no">eeyUHAriWakZNlCZ4+MEwy3uJd1Sc+96FIU4XuhXcQaJqvcjUwsDquyIEum0rznn</span>
+        <span class="no">OmJkSdlGc0fr9iNNvDiVMHH/sz4WfidJTLxHmoI=</span>
+        <span class="no">-----END CERTIFICATE-----</span>
     <span class="nt">text_body</span><span class="p">:</span> <span class="p p-Indicator">|</span>
         <span class="no">A sign of our times.</span>
 </code></pre></div>
@@ -561,14 +632,14 @@ signed one with <a href="https://www.openssl.org/docs/manmaster/man1/openssl-x50
     </div>
     
       <script src="../assets/javascripts/vendor.d710d30a.min.js"></script>
-      <script src="../assets/javascripts/bundle.a45f732b.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../assets/javascripts/bundle.5532dfb7.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
       
       <script>
         app = initialize({
           base: "..",
           features: [],
           search: Object.assign({
-            worker: "../assets/javascripts/worker/search.c03f0417.min.js"
+            worker: "../assets/javascripts/worker/search.7a2ea5ba.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
