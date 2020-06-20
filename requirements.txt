@@ -1,5 +1,6 @@
-M2Crypto
 cerberus
+git+git://github.com/vbwagner/ctypescrypto@90b32fda368a119c1a1e44b8c501653beaa2ca97
+ctypescrypto
 dkimpy
 dnspython
 jinja2

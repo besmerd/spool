@@ -1,7 +1,6 @@
 import logging
 import mimetypes
-
-from email import encoders, message_from_bytes
+from email import encoders
 from email.header import Header
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
@@ -9,11 +8,10 @@ from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr
 from pathlib import Path
 
-from M2Crypto import BIO, SMIME
 from dkim import dkim_sign
 
 from .exceptions import SpoolError
-
+from .smime import encrypt, sign
 
 LOG = logging.getLogger(__name__)
 DEFAULT_ATTACHMENT_MIME_TYPE = 'application/octet-stream'
@@ -39,8 +37,10 @@ class Message:
     def __init__(self, name, sender, recipients,
                  from_addr=None, to_addrs=None, subject=None, cc_addrs=None,
                  bcc_addrs=None, headers=None, text_body=None, html_body=None,
-                 ical=None, dkim=None, from_key=None, from_crt=None,
-                 charset='utf-8'):
+                 ical=None, dkim=None, smime=None, charset='utf-8'):
+
+        # FIXME
+        self.make_msgid = True
 
         self.name = name
 
@@ -76,9 +76,7 @@ class Message:
         self.ical = ical
 
         self.dkim = dkim
-
-        self.from_key = from_key
-        self.from_crt = from_crt
+        self.smime = smime
 
         self.attachments = []
 
@@ -102,8 +100,11 @@ class Message:
         for key in self.headers:
             msg[key] = self.headers[key]
 
-        if self.from_key and self.from_crt:
-            msg = self._sign(msg, self.from_key, self.from_crt)
+        if 'from_key' in self.smime and 'from_crt' in self.smime:
+            msg = sign(msg, self.smime['from_key'], self.smime['from_crt'])
+
+        if 'to_crts' in self.smime:
+            msg = encrypt(msg, self.smime['to_crts'])
 
         if self.dkim:
 
@@ -117,30 +118,6 @@ class Message:
             sig = ''
 
         return sig + msg.as_string()
-
-    def _encrypt(self, msg):
-        pass
-
-    def _sign(self, msg, from_key, from_crt):
-
-        outer_headers = []
-        for header, value in msg.items():
-            if header == 'Content-Type':
-                continue
-            outer_headers.append((header, value))
-            del msg[header]
-        bio = BIO.MemoryBuffer(msg.as_bytes())
-        smime = SMIME.SMIME()
-        smime.load_key(from_key, from_crt)
-        cms = smime.sign(bio, flags=SMIME.PKCS7_DETACHED)
-        bio = BIO.MemoryBuffer(msg.as_bytes())
-        out = BIO.MemoryBuffer()
-        smime.write(out, cms, bio)
-        msg = message_from_bytes(out.read())
-        for header, value in outer_headers:
-            msg[header] = value
-
-        return msg
 
     def _set_rfc822_headers(self, msg):
 
@@ -188,7 +165,8 @@ class Message:
         encoders.encode_base64(part)
 
         part.add_header('Content-Disposition',
-                        'attachment; filename="{0}"'.format(path.name))
+                        'attachment', filename=path.name)
+
         return part
 
     def _plaintext(self):

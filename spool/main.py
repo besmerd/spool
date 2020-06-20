@@ -2,14 +2,12 @@ import argparse
 import logging
 import sys
 import time
-
 from pathlib import Path
 
+from .exceptions import SpoolError
 from .mailer import Mailer, MailerError
 from .message import Message, MessageError
 from .parser import Config, ConfigError
-from .exceptions import SpoolError
-
 
 LOG = logging.getLogger(__name__)
 LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
@@ -140,10 +138,6 @@ def run():
 
                 mail.pop('description', None)
                 attachments = mail.pop('attachments', [])
-
-                for prop in ('from_key', 'from_crt'):
-                    if prop in mail:
-                        mail[prop] = path.parent / mail[prop]
 
                 msg = Message(**mail)
 

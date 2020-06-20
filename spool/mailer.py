@@ -4,13 +4,11 @@ import re
 import smtplib
 import socket
 import ssl
-
 from email.utils import formataddr
 
-from dns.resolver import Resolver, NXDOMAIN
+from dns.resolver import NXDOMAIN, Resolver
 
 from .exceptions import SpoolError
-
 
 LOG = logging.getLogger(__name__)
 

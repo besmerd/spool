@@ -14,9 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install swig
-      run: sudo apt-get install swig
-
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:

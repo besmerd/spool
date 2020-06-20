@@ -2,15 +2,11 @@ import logging
 
 import jinja2
 import yaml
-
 from cerberus import Validator
 
 from .exceptions import SpoolError
 
-
 LOG = logging.getLogger(__name__)
-
-
 
 CONFIG_SCHEMA = {
     'defaults': {'type': 'dict', 'allow_unknown': True},
@@ -52,14 +48,20 @@ CONFIG_SCHEMA = {
                         'domain': {'type': 'string'},
                     },
                 },
+                'smime': {
+                    'type': 'dict',
+                    'schema': {
+                        'from_crt': {'type': 'string'},
+                        'from_key': {'type': 'string'},
+                        'to_crts': {'type': 'string'},
+                    },
+                },
                 'ical': {'type': 'string', 'excludes': ['eml']},
                 'attachments': {
                     'type': ['string', 'list'],
                     'excludes': ['eml'],
                 },
                 'loop': {'type': 'list'},
-                'from_crt': {'type': 'string'},
-                'from_key': {'type': 'string'},
             },
         },
     },
@@ -89,10 +91,11 @@ class Config:
                 config = yaml.safe_load(fh)
         return Config(config)
 
-    def _check_config(self):
+    @staticmethod
+    def _check_config(config):
 
         v = Validator()
-        if not v.validate(self.config, CONFIG_SCHEMA):
+        if not v.validate(config, CONFIG_SCHEMA):
             raise ValidationError()
 
     def _render(self, field, env, **kwargs):
@@ -150,4 +153,4 @@ class Config:
         # FIXME
         self.config = config
         self.config['mails'] = self.mails
-        self._check_config()
+        self._check_config(config)
