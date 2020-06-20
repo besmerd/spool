@@ -154,7 +154,7 @@ def run():
                 except MessageError as ex:
                     LOG.error(
                         'Failed to create message: %s. [name=%s, path=%s]',
-                        ex, mail.name, path
+                        ex, mail['name'], path
                     )
 
 

@@ -1,78 +1,61 @@
 import asyncore
-import time
+import email
+import smtpd
+import threading
 
-from smtpd import SMTPServer
 from collections import namedtuple
-from threading import Thread
 
 import pytest
 
 
 RecordedMessage = namedtuple(
     'RecordedMessage',
-    'peer envelope_from envelope_recipients data',
+    'peer mailfrom rcpttos data',
 )
 
 
-class SMTPServerThread(Thread):
-    def __init__(self, messages):
-        super().__init__()
-        self.messages = messages
-        self.host_port = None
+class Server(smtpd.SMTPServer, threading.Thread):
+
+    def __init__(self, host='localhost', port=0):
+
+        smtpd.SMTPServer.__init__(self, (host, port), None, decode_data=True)
+
+        self.host, self.port = self.socket.getsockname()[0:2]
+
+        self.messages = []
+
+        # initialise thread
+        self._stopevent = threading.Event()
+        self.threadName = self.__class__.__name__
+        threading.Thread.__init__(self, name=self.threadName)
+
+    def process_message(self, peer, mailfrom, rcpttos, data, **kwargs):
+
+        recorded = RecordedMessage(
+            peer=peer, mailfrom=mailfrom, rcpttos=rcpttos, data=data
+        )
+
+        self.messages.append(recorded)
 
     def run(self):
-        _messages = self.messages
+        while not self._stopevent.is_set():
+            asyncore.loop(timeout=0.001, count=1)
 
-        class _SMTPServer(SMTPServer):
+    def stop(self, timeout=None):
+        self._stopevent.set()
+        threading.Thread.join(self, timeout)
+        self.close()
 
-            def process_message(self, peer, mailfrom, rcpttos, data, **kwargs):
-                msg = RecordedMessage(peer, mailfrom, rcpttos, data)
-                _messages.append(msg)
+    def __del__(self):
+        self.stop()
 
-        self.smtp = _SMTPServer(('127.0.0.1', 0), None)
-        self.host_port = self.smtp.socket.getsockname()
-        asyncore.loop(timeout=0.1)
-
-    def close(self):
-        self.smtp.close()
-
-
-class SMTPServerFixture:
-
-    def __init__(self):
-        self._messages = []
-        self._thread = SMTPServerThread(self._messages)
-        self._thread.start()
-
-    @property
-    def host_port(self):
-        '''SMTP server's listening address as a (host, port) tuple'''
-        while self._thread.host_port is None:
-            time.sleep(0.1)
-        return self._thread.host_port
-
-    @property
-    def host(self):
-        return self.host_port[0]
-
-    @property
-    def port(self):
-        return self.host_port[1]
-
-    @property
-    def messages(self):
-        '''A list of RecordedMessage objects'''
-        return self._messages.copy()
-
-    def close(self):
-        self._thread.close()
-        self._thread.join(10)
-        if self._thread.is_alive():
-            raise RuntimeError('smtp server thread did not stop in 10 sec')
+    def __repr__(self):
+        return '<smtp.Server %s:%s>' % self.addr
 
 
 @pytest.fixture
-def smtpd(request):
-    fixture = SMTPServerFixture()
-    request.addfinalizer(fixture.close)
-    return fixture
+def smtp_server():
+    server = Server()
+    server.start()
+    yield server
+    server.stop()

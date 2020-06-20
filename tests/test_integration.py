@@ -1,5 +1,6 @@
 import pytest
 
+from pathlib import Path
 from unittest import mock
 
 from spool import main
@@ -54,6 +55,8 @@ mails:
     loop: '{{ friends }}'
 '''
 
+EXAMPLE_DIR = Path(__file__).parent / '../examples'
+
 
 @mock.patch('sys.argv', ['spool', '--help'])
 def test_help_flag():
@@ -73,7 +76,7 @@ def test_fail_with_no_config():
     assert error.value.code == 2
 
 
-def test_success_with_simple_config(smtpd, tmp_path):
+def test_success_with_simple_config(smtp_server, tmp_path):
 
     config_1 = tmp_path / 'simple.yml'
     config_1.write_text(SIMPLE)
@@ -82,23 +85,33 @@ def test_success_with_simple_config(smtpd, tmp_path):
     config_2.write_text(WITH_VARS)
 
     with mock.patch('sys.argv', [
-        'spool', '--relay', f'{smtpd.host}', '--port', f'{smtpd.port}',
+        'spool', '--relay', smtp_server.host, '--port', str(smtp_server.port),
         str(config_1), str(config_2)
     ]):
         main.cli()
 
-    assert len(smtpd.messages) == 2
+    assert len(smtp_server.messages) == 2
 
 
-def test_success_with_loop(smtpd, tmp_path):
+def test_success_with_loop(smtp_server, tmp_path):
 
     config = tmp_path / 'with_vars.yml'
     config.write_text(WITH_LOOP)
 
     with mock.patch('sys.argv', [
-        'spool', '--relay', f'{smtpd.host}', '--port', f'{smtpd.port}',
+        'spool', '--relay', smtp_server.host, '--port', str(smtp_server.port),
         str(config)
     ]):
         main.cli()
 
-    assert len(smtpd.messages) == 3
+    assert len(smtp_server.messages) == 3
+
+
+@pytest.mark.parametrize('config', EXAMPLE_DIR.glob('*.yml'))
+def test_examples(smtp_server, tmp_path, config):
+
+    with mock.patch('sys.argv', [
+        'spool', '--relay', smtp_server.host, '--port', str(smtp_server.port),
+        f'{config}'
+    ]):
+        main.cli()
