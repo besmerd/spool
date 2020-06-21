@@ -1,11 +1,14 @@
 import logging
 import mimetypes
+
+from collections import OrderedDict, MutableMapping
+
 from email import encoders
 from email.header import Header
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr
+from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr, formatdate
 from pathlib import Path
 
 from dkim import dkim_sign
@@ -30,6 +33,35 @@ def parse_addrs(addrs):
 
 class MessageError(SpoolError):
     """Base class for essage errors."""
+
+
+class EmailHeaders(MutableMapping):
+    """Copied from requests CaseInsensitiveDict"""
+
+    def __init__(self, data=None, **kwargs):
+        self._store = OrderedDict()
+        if data is None:
+            data = {}
+
+        self.update(data, **kwargs)
+
+    def __setitem__(self, key, value):
+        self._store[key.lower()] = (key, value)
+
+    def __getitem__(self, key):
+        return self._store[key.lower()][1]
+
+    def __delitem__(self, key):
+        del self._store[key.lower()]
+
+    def __iter__(self):
+        return (key for key, value in self._store.values())
+
+    def __len__(self):
+        return len(self._store)
+
+    def __repr__(self):
+        return str(dict(self.items()))
 
 
 class Message:
@@ -80,9 +112,31 @@ class Message:
 
         self.attachments = []
 
-        self.headers = []
-        if headers:
-            self.headers = headers
+        self._headers = EmailHeaders(headers)
+
+    @property
+    def headers(self):
+
+        headers = EmailHeaders(**self._headers)
+
+        default_headers = {
+            'From': formataddr(self.from_addr),
+            'To': COMMASPACE.join([formataddr(r) for r in self.to_addrs]),
+            'Subject': Header(self.subject, self.charset),
+            'Date': formatdate(localtime=True),
+            'Message-ID': make_msgid(),
+        }
+
+        for name, value in default_headers.items():
+            if name not in headers:
+                headers[name] = value
+
+        if self.cc_addrs and 'cc' not in headers:
+            headers['Cc'] = COMMASPACE.join(
+                [formataddr(r) for r in self.cc_addrs])
+
+        return {name: value for name, value in headers.items()
+                if value is not None}
 
     def attach(self, file_path):
         """Add file to message attachments."""
@@ -97,11 +151,6 @@ class Message:
         else:
             msg = self._plaintext()
 
-        msg = self._set_rfc822_headers(msg)
-
-        for key in self.headers:
-            msg[key] = self.headers[key]
-
         if self.smime:
             if 'from_key' in self.smime and 'from_crt' in self.smime:
                 msg = sign(msg, self.smime['from_key'], self.smime['from_crt'])
@@ -114,27 +163,14 @@ class Message:
             for key, value in self.dkim.items():
                 self.dkim[key] = value.encode()
 
-            sig = dkim_sign(msg.as_bytes(), **self.dkim).decode()
-            print(sig)
+            dkim_header = dkim_sign(msg.as_bytes(), **self.dkim).decode()
+            header, value = dkim_header.lsplit(':', 1)
+            self._headers[header] = value
 
-        else:
+        for key, value in self.headers.items():
+            msg[key] = value
 
-            sig = ''
-
-        return sig + msg.as_string()
-
-    def _set_rfc822_headers(self, msg):
-
-        msg['From'] = formataddr(self.from_addr)
-        msg['To'] = COMMASPACE.join([formataddr(r) for r in self.to_addrs])
-        msg['Subject'] = Header(self.subject, self.charset)
-
-        if self.cc_addrs:
-            msg['Cc'] = COMMASPACE.join([formataddr(r) for r in self.cc_addrs])
-
-        msg['Message-ID'] = make_msgid()
-
-        return msg
+        return msg.as_string()
 
     def _multipart(self):
         msg = MIMEMultipart('mixed')
@@ -177,6 +213,10 @@ class Message:
 
         if not self.html_body:
             msg = MIMEText(self.text_body, 'plain', self.charset)
+
+        elif not self.text_body:
+            msg = MIMEText(self.html_body, 'html', self.charset)
+
         else:
             msg = MIMEMultipart('alternative')
             msg.attach(MIMEText(self.text_body, 'plain', self.charset))

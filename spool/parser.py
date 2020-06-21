@@ -24,7 +24,13 @@ CONFIG_SCHEMA = {
                     'required': True,
                 },
                 'subject': {'type': 'string'},
-                'headers': {'type': 'dict'},
+                'headers': {
+                    'type': 'dict',
+                    'valueschema': {
+                        'type': ['string', 'number'],
+                        'nullable': True,
+                    },
+                },
                 'from': {'type': 'string', 'rename': 'from_addr'},
                 'to': {'type': ['string', 'list'], 'rename': 'to_addrs'},
                 'cc': {'type': ['string', 'list'], 'rename': 'cc_addrs'},

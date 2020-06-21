@@ -19,14 +19,9 @@ PEM_RE = re.compile(
 
 SIGNED_PREAMBLE = 'This is an S/MIME signed message\n'
 
-SKIPPED_HEADERS = [
-    'Content-Type',
-    'Content-Transfer-Encoding',
-    'MIME-Version',
-]
-
 
 def parse_pem(certstack):
+    """Extract PEM strings from *certstack*."""
 
     certs = [
         X509(match.group(0)) for match
@@ -66,14 +61,6 @@ def sign(message, key, cert, detached=True):
         'signed', micalg='sha-256', protocol='application/pkcs7-signature')
     signed.preamble = SIGNED_PREAMBLE
 
-    for header, value in message.items():
-        if header in SKIPPED_HEADERS:
-            LOG.debug('Skipping header: %s', header)
-            continue
-
-        del message[header]
-        signed[header] = value
-
     signed.attach(message)
 
     cann = message.as_bytes().replace(b'\n', b'\r\n')
@@ -100,22 +87,9 @@ def encrypt(message, certs, algorithm='des3'):
 
     certs, cipher = parse_pem(certs), CipherType(algorithm)
 
-    headers = []
-
-    for header, value in message.items():
-        if header in SKIPPED_HEADERS:
-            LOG.debug('Skipping header: %s', header)
-            continue
-
-        del message[header]
-        headers.append((header, value))
-
     cms = EnvelopedData.create(certs, message.as_bytes(), cipher, flags=0)
 
     encrypted = MIMEApplication(cms, 'pkcs7-mime', encode_cms,
                                 smime_type='enveloped-data', name='smime.p7m')
-
-    for header, value in headers:
-        encrypted[header] = value
 
     return encrypted
