@@ -4,6 +4,7 @@ mails:
     description: Mail from a spoofed sender
     sender: sender@example.org
     from: Steve Jobs <steve@apple.com>
+    to: best@me.com
     recipients: recipient@example.org
     subject: Spoofed Sender
     text_body: |

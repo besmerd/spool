@@ -77,9 +77,6 @@ CONFIG_SCHEMA = {
 class ConfigError(SpoolError):
     """Base class for all parsing errors."""
 
-    def __str__(self):
-        return self.__doc__
-
 
 class ValidationError(ConfigError):
     """Validation Error."""
@@ -88,48 +85,12 @@ class ValidationError(ConfigError):
 class Config:
     """Represents a single mail instance config."""
 
-    @staticmethod
-    def load(config):
-        """Create a config object from a config file."""
-        if not isinstance(config, dict):
-            LOG.info('Parsing config file. [path=%s]', config)
-            with open(config, 'r') as fh:
-                config = yaml.safe_load(fh)
-        return Config(config)
-
-    @staticmethod
-    def _check_config(config):
-
-        v = Validator()
-        if not v.validate(config, CONFIG_SCHEMA):
-            raise ValidationError()
-
-    def _render(self, field, env, **kwargs):
-
-        if isinstance(field, str):
-            template = env.from_string(field)
-            return template.render(**kwargs)
-
-        if isinstance(field, list):
-            copy = []
-            for item in field:
-                copy.append(self._render(item, env, **kwargs))
-            return copy
-
-        if isinstance(field, dict):
-            copy = {}
-            for key, value in field.items():
-                copy[key] = self._render(value, env, **kwargs)
-            return copy
-
-        return field
-
     def __init__(self, config):
 
         env = jinja2.Environment()
         env.globals = config.get('vars', None)
 
-        self.mails = []
+        mails = []
         for mail in config.get('mails', []):
 
             for key, value in config.get('defaults', {}).items():
@@ -150,13 +111,55 @@ class Config:
                     copy = {}
                     for key, value in mail.items():
                         copy[key] = self._render(value, env, item=item)
-                    self.mails.append(copy)
+                    mails.append(copy)
             else:
                 for key, value in mail.items():
                     mail[key] = self._render(value, env)
-                self.mails.append(mail)
+                mails.append(mail)
 
         # FIXME
-        self.config = config
-        self.config['mails'] = self.mails
-        self._check_config(config)
+        config['mails'] = mails
+        self._config = self.check_config(config)
+
+    @property
+    def mails(self):
+        return self._config['mails']
+
+    @staticmethod
+    def load(config):
+        """Create a config object from a config file."""
+
+        if not isinstance(config, dict):
+            LOG.info('Parsing config file. [path=%s]', config)
+            with open(config, 'r') as fh:
+                config = yaml.safe_load(fh)
+        return Config(config)
+
+    @staticmethod
+    def check_config(config):
+
+        v = Validator()
+        if not v.validate(config, CONFIG_SCHEMA, normalize=False):
+            raise ValidationError(v.errors)
+
+        return v.normalized(config)
+
+    def _render(self, field, env, **kwargs):
+
+        if isinstance(field, str):
+            template = env.from_string(field)
+            return template.render(**kwargs)
+
+        if isinstance(field, list):
+            copy = []
+            for item in field:
+                copy.append(self._render(item, env, **kwargs))
+            return copy
+
+        if isinstance(field, dict):
+            copy = {}
+            for key, value in field.items():
+                copy[key] = self._render(value, env, **kwargs)
+            return copy
+
+        return field

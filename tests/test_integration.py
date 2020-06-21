@@ -108,10 +108,12 @@ def test_success_with_loop(smtp_server, tmp_path):
 
 
 @pytest.mark.parametrize('config', EXAMPLE_DIR.glob('*.yml'))
-def test_examples(smtp_server, tmp_path, config):
+def test_examples(smtp_server, tmp_path, caplog, config):
 
-    with mock.patch('sys.argv', [
-        'spool', '--relay', smtp_server.host, '--port', str(smtp_server.port),
-        f'{config}'
-    ]):
+    args = ['spool', '--relay', smtp_server.host,
+            '--port', str(smtp_server.port), f'{config}']
+
+    with mock.patch('sys.argv', args):
         main.cli()
+        for record in caplog.records:
+            assert record.levelname not in ['ERROR', 'CRITICAL']
