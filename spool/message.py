@@ -117,26 +117,27 @@ class Message:
     @property
     def headers(self):
 
-        headers = EmailHeaders(**self._headers)
-
-        default_headers = {
+        headers = EmailHeaders({
             'From': formataddr(self.from_addr),
             'To': COMMASPACE.join([formataddr(r) for r in self.to_addrs]),
             'Subject': Header(self.subject, self.charset),
             'Date': formatdate(localtime=True),
             'Message-ID': make_msgid(),
-        }
+        })
 
-        for name, value in default_headers.items():
-            if name not in headers:
-                headers[name] = value
-
-        if self.cc_addrs and 'cc' not in headers:
+        if self.cc_addrs:
             headers['Cc'] = COMMASPACE.join(
                 [formataddr(r) for r in self.cc_addrs])
 
-        return {name: value for name, value in headers.items()
-                if value is not None}
+        for name, value in self._headers.items():
+
+            if name in headers and value is None:
+                del headers[name]
+
+            else:
+                headers[name] = value
+
+        return headers
 
     def attach(self, file_path):
         """Add file to message attachments."""
