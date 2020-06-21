@@ -115,6 +115,7 @@ class Message:
                 self.dkim[key] = value.encode()
 
             sig = dkim_sign(msg.as_bytes(), **self.dkim).decode()
+            print(sig)
 
         else:
 

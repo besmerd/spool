@@ -37,6 +37,7 @@ def parse_pem(certstack):
 
 
 def encode_cms(mime_part):
+    """Encodes a cms structure"""
 
     mime_part['Content-Transfer-Encoding'] = 'base64'
 
@@ -55,6 +56,7 @@ def encode_cms(mime_part):
 
 
 def sign(message, key, cert, detached=True):
+    """Sign a a given message."""
 
     # FIXME
     if not detached:
@@ -76,12 +78,12 @@ def sign(message, key, cert, detached=True):
 
     cann = message.as_bytes().replace(b'\n', b'\r\n')
 
-    key = PKey(privkey=key.encode())
-    certstack = parse_pem(cert)
+    key, certstack = PKey(privkey=key.encode()), parse_pem(cert)
 
-    cms = SignedData.create(
-            cann, certstack[-1], key, flags=Flags.DETACHED+Flags.BINARY,
-            certs=certstack[0:-1])
+    flags = Flags.DETACHED+Flags.BINARY
+
+    cms = SignedData.create(cann, certstack[-1], key, flags=flags,
+                            certs=certstack[0:-1])
 
     signature = MIMEApplication(
         cms, 'pkcs7-signature', encode_cms, name='smime.p7s')
@@ -94,6 +96,7 @@ def sign(message, key, cert, detached=True):
 
 
 def encrypt(message, certs, algorithm='des3'):
+    """Encrypt a given message."""
 
     certs, cipher = parse_pem(certs), CipherType(algorithm)
 

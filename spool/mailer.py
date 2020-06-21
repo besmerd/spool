@@ -28,10 +28,7 @@ class RemoteNotFoundError(MailerError):
 
 
 class Mailer:
-    """
-    Represents an SMTP connection.
-    """
-
+    """Represents an SMTP connection"""
 
     def __init__(self, relay=None, port=25, helo=None, timeout=5,
                  starttls=False, nameservers=None, debug=False):
@@ -62,7 +59,7 @@ class Mailer:
         """Send a message"""
 
         if print_only:
-            return self._print(msg)
+            return self.dump(msg)
 
         sender = formataddr(msg.sender)
 
@@ -124,12 +121,12 @@ class Mailer:
 
         try:
             answers = resolver.query(domain, 'MX')
-            mx = min(answers, key=lambda rdata: rdata.preference).exchange
-            return mx.to_text().rstrip('.')
+            peer = min(answers, key=lambda rdata: rdata.preference).exchange
+            return peer.to_text().rstrip('.')
 
         except NXDOMAIN:
             raise RemoteNotFoundError(
-                    f'No mx record found for domain: {domain}')
+                f'No mx record found for domain: {domain}')
 
     def _connect(self, host, port):
 
@@ -179,5 +176,7 @@ class Mailer:
                      msg.name, host, self.port)
 
     @staticmethod
-    def _print(msg):
+    def dump(msg):
+        """Print a message to console"""
+
         print(MAIL_OUT_PREFIX, msg.as_string(), MAIL_OUT_SUFFIX, sep='\n')
