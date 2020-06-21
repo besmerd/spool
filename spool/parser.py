@@ -26,7 +26,7 @@ CONFIG_SCHEMA = {
                 'subject': {'type': 'string'},
                 'headers': {
                     'type': 'dict',
-                    'valueschema': {
+                    'valuesrules': {
                         'type': ['string', 'number'],
                         'nullable': True,
                     },

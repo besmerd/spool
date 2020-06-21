@@ -1,14 +1,14 @@
 import logging
 import mimetypes
-
-from collections import OrderedDict, MutableMapping
-
+from collections import OrderedDict
+from collections.abc import MutableMapping
 from email import encoders
 from email.header import Header
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import COMMASPACE, formataddr, make_msgid, parseaddr, formatdate
+from email.utils import (COMMASPACE, formataddr, formatdate, make_msgid,
+                         parseaddr)
 from pathlib import Path
 
 from dkim import dkim_sign
@@ -158,17 +158,17 @@ class Message:
             if 'to_crts' in self.smime:
                 msg = encrypt(msg, self.smime['to_crts'])
 
+        for name, value in self.headers.items():
+            msg[name] = value
+
         if self.dkim:
 
             for key, value in self.dkim.items():
                 self.dkim[key] = value.encode()
 
             dkim_header = dkim_sign(msg.as_bytes(), **self.dkim).decode()
-            header, value = dkim_header.lsplit(':', 1)
-            self._headers[header] = value
-
-        for key, value in self.headers.items():
-            msg[key] = value
+            name, value = dkim_header.split(':', 1)
+            msg[name] = value
 
         return msg.as_string()
 
