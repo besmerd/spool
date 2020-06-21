@@ -14,6 +14,7 @@ tox
 # Documentation
 mkdocs
 mkdocs-material
+mkdocstrings
 
 # Distribution
 twine

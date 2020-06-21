@@ -30,12 +30,12 @@ Example configuration file:
    ---
    # mails.yml
 
-   # Optional defaults for keys mails.
+   # Optional defaults for keys mails
    defaults:
      sender: foo@example.com
      recipents: Bar <bar@example.com>, baz@example.com
 
-   # Optional variables which can be used below.
+   # Optional variables which can be used below
    vars:
      message: |
        Hello world,
@@ -45,7 +45,7 @@ Example configuration file:
        Kind regards,
        Foo
 
-   # Mails to send.
+   # Mails to generate/send
    mails:
      - name: Test Mail
        description: Hello world test mail
@@ -53,8 +53,8 @@ Example configuration file:
          X-Mailer: Spool Mailer
        text_body: '{{ message }}'
 
-Generate mail(s):
-~~~~~~~~~~~~~~~~~
+Send/generate mail(s):
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: sh
 

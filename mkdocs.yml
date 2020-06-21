@@ -11,11 +11,16 @@ nav:
   - installation.md
   - examples.md
   - reference.md
+  - api.md
 
 theme:
   name: material
   icon:
     logo: material/mailbox
+
+plugins:
+  - search
+  - mkdocstrings
 
 markdown_extensions:
   - admonition
