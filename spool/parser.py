@@ -57,9 +57,30 @@ CONFIG_SCHEMA = {
                 'smime': {
                     'type': 'dict',
                     'schema': {
-                        'from_crt': {'type': 'string'},
-                        'from_key': {'type': 'string'},
-                        'to_crts': {'type': 'string'},
+                        'from_crt': {
+                            'type': 'string',
+                            'excludes': ['from_crt_file'],
+                        },
+                        'from_crt_file': {
+                            'type': 'string',
+                            'excludes': ['from_crt'],
+                        },
+                        'from_key': {
+                            'type': 'string',
+                            'excludes': ['from_key_file'],
+                        },
+                        'from_key_file': {
+                            'type': 'string',
+                            'excludes': ['from_key'],
+                        },
+                        'to_crts': {
+                            'type': 'string',
+                            'excludes': ['to_crts_file'],
+                        },
+                        'to_crts_file': {
+                            'type': 'string',
+                            'excludes': ['to_crts'],
+                        }
                     },
                 },
                 'ical': {'type': 'string', 'excludes': ['eml']},

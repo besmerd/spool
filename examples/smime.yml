@@ -4,6 +4,34 @@ defaults:
   recipients: recipient@example.org
 
 mails:
+
+  - name: smime-signed-file
+    description: A S/MIME signed message
+    subject: S/MIME Signed Message
+    smime:
+      from_key_file: smime/sender.key.pem
+      from_crt_file: smime/sender.crt.pem
+    text_body: |
+        A sign of our times.
+
+  - name: smime-encrypted
+    description: A S/MIME encrypted message
+    subject: S/MIME Encrypted Message
+    smime:
+      to_crts_file: smime/recipient.crt.pem
+    text_body: |
+        A sign of our times.
+
+  - name: smime-signed-encrypted
+    description: A S/MIME signed and encrypted message
+    subject: S/MIME Signed and Encrypted Message
+    smime:
+      from_key_file: smime/sender.key.pem
+      from_crt_file: smime/sender.crt.pem
+      to_crts_file: smime/recipient.crt.pem
+    text_body: |
+        A sign of our times.
+
   - name: smime-signed
     description: A S/MIME signed message
     subject: S/MIME Signed Message

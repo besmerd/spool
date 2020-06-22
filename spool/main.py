@@ -139,6 +139,23 @@ def run():
                 mail.pop('description', None)
                 attachments = mail.pop('attachments', [])
 
+                copy_properties = [
+                    ('from_key_file', 'from_key'),
+                    ('from_crt_file', 'from_crt'),
+                    ('to_crts_file', 'to_crts'),
+                ]
+
+                for src, dst in copy_properties:
+
+                    if src not in mail['smime']:
+                        continue
+
+                    with open(path.parent / mail['smime'][src], 'r') as fh:
+                        mail['smime'][dst] = fh.read()
+
+                    del mail['smime'][src]
+
+
                 msg = Message(**mail)
 
                 if isinstance(attachments, str):
