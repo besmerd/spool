@@ -107,7 +107,8 @@ def test_success_with_loop(smtp_server, tmp_path):
     assert len(smtp_server.messages) == 3
 
 
-@pytest.mark.parametrize('config', EXAMPLE_DIR.glob('*.yml'))
+@pytest.mark.parametrize(
+    'config', EXAMPLE_DIR.glob('*.yml'), ids=lambda f: f.name)
 def test_examples(smtp_server, tmp_path, caplog, config):
 
     args = ['spool', '--relay', smtp_server.host,
