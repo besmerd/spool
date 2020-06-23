@@ -64,6 +64,11 @@ def parse_args(args):
     )
 
     parser.add_argument(
+        '-t', '--tags',
+        help='tags to execute',
+    )
+
+    parser.add_argument(
         '--starttls',
         action='store_true',
         help=''
@@ -90,6 +95,16 @@ def parse_args(args):
     )
 
     return parser.parse_args(args)
+
+
+def tags_matches_mail(tags, mail):
+
+    if tags is None:
+        return True
+
+    tags = [tag.strip() for tag in tags.split(',')]
+
+    return any(tag in mail for tag in tags)
 
 
 def config_logger(verbosity):
@@ -129,6 +144,11 @@ def run():
 
             for mail in config.mails:
 
+                if not tags_matches_mail(args.tags, mail.pop('tags', [])):
+                    LOG.debug('Skipping message "%s", does not match tags: %s',
+                              mail['name'], args.tags)
+                    continue
+
                 if not first and args.delay:
                     LOG.debug('Delay sending of next message by %.2f seconds.',
                               args.delay)
@@ -147,7 +167,7 @@ def run():
 
                 for src, dst in copy_properties:
 
-                    if src not in mail['smime']:
+                    if 'smime' not in mail or src not in mail['smime']:
                         continue
 
                     with open(path.parent / mail['smime'][src], 'r') as fh:

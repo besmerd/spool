@@ -8,6 +8,16 @@ from .exceptions import SpoolError
 
 LOG = logging.getLogger(__name__)
 
+
+def to_list(string):
+    """Returns a list of values from a comma separated string"""
+
+    if isinstance(string, list):
+        return string
+
+    return [item.strip() for item in string.split(',')]
+
+
 CONFIG_SCHEMA = {
     'defaults': {'type': 'dict', 'allow_unknown': True},
     'vars': {'type': 'dict', 'allow_unknown': True},
@@ -89,6 +99,10 @@ CONFIG_SCHEMA = {
                     'excludes': ['eml'],
                 },
                 'loop': {'type': 'list'},
+                'tags': {
+                    'type': ['string', 'list'],
+                    'coerce': to_list
+                },
             },
         },
     },
