@@ -98,8 +98,9 @@ def parse_args(args):
 
 
 def tags_matches_mail(tags, mail):
+    """Returns True if mail has a matching tag."""
 
-    if tags is None:
+    if not tags:
         return True
 
     tags = [tag.strip() for tag in tags.split(',')]
