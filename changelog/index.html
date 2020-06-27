@@ -6,11 +6,11 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="Send mails with YAML." name="description"/>
-<link href="https://besmerd.github.io/spool/reference/" rel="canonical"/>
+<link href="https://besmerd.github.io/spool/changelog/" rel="canonical"/>
 <meta content="Daniel Besmer" name="author"/>
 <link href="../assets/images/favicon.png" rel="shortcut icon"/>
 <meta content="mkdocs-1.1.2, mkdocs-material-5.3.1" name="generator"/>
-<title>Reference - Spool</title>
+<title>Release History - Spool</title>
 <link href="../assets/stylesheets/main.fe0cca5b.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
@@ -21,7 +21,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#reference">
+<a class="md-skip" href="#release-history">
           Skip to content
         </a>
 </div>
@@ -42,7 +42,7 @@
           </span>
 <span class="md-header-nav__topic md-ellipsis">
             
-              Reference
+              Release History
             
           </span>
 </div>
@@ -126,16 +126,26 @@
       Examples
     </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/" title="Reference">
+      Reference
+    </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api/" title="Developer Interface">
+      Developer Interface
+    </a>
+</li>
 <li class="md-nav__item md-nav__item--active">
 <input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
 <label class="md-nav__link md-nav__link--active" for="__toc">
-        Reference
+        Release History
         <span class="md-nav__icon md-icon">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"></path></svg>
 </span>
 </label>
-<a class="md-nav__link md-nav__link--active" href="./" title="Reference">
-      Reference
+<a class="md-nav__link md-nav__link--active" href="./" title="Release History">
+      Release History
     </a>
 <nav aria-label="Table of contents" class="md-nav md-nav--secondary">
 <label class="md-nav__title" for="__toc">
@@ -146,32 +156,31 @@
     </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#defaults">
-    Defaults
+<a class="md-nav__link" href="#090-2020-06-27">
+    0.9.0 (2020-06-27)
+  </a>
+<nav aria-label="0.9.0 (2020-06-27)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#features">
+    Features
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#vars">
-    Vars
+<a class="md-nav__link" href="#improvements">
+    Improvements
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#mails">
-    Mails
+<a class="md-nav__link" href="#bugfixes">
+    Bugfixes
   </a>
 </li>
 </ul>
 </nav>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../api/" title="Developer Interface">
-      Developer Interface
-    </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../changelog/" title="Release History">
-      Release History
-    </a>
+</ul>
+</nav>
 </li>
 </ul>
 </nav>
@@ -190,19 +199,28 @@
     </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#defaults">
-    Defaults
+<a class="md-nav__link" href="#090-2020-06-27">
+    0.9.0 (2020-06-27)
+  </a>
+<nav aria-label="0.9.0 (2020-06-27)" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#features">
+    Features
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#vars">
-    Vars
+<a class="md-nav__link" href="#improvements">
+    Improvements
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#mails">
-    Mails
+<a class="md-nav__link" href="#bugfixes">
+    Bugfixes
   </a>
+</li>
+</ul>
+</nav>
 </li>
 </ul>
 </nav>
@@ -211,90 +229,25 @@
 </div>
 <div class="md-content">
 <article class="md-content__inner md-typeset">
-<a class="md-content__button md-icon" href="https://github.com/besmerd/spool/edit/master/docs/reference.md" title="Edit this page">
+<a class="md-content__button md-icon" href="https://github.com/besmerd/spool/edit/master/docs/changelog.md" title="Edit this page">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"></path></svg>
 </a>
-<h1 id="reference">Reference</h1>
-<h2 id="defaults">Defaults</h2>
-<p>The <code>defaults</code> section can be used for properties that should apply for all
-messages in a given configuration file. Properties defined in the <code>mails</code>
-section have a higher precedence and therefore overwrite the default values.</p>
-<p>The following configuration would result in a message from <em>sender@example.com</em>
-to <em>recipient@example.net</em></p>
-<div class="codehilite"><pre><span></span><code><span class="nn">---</span>
-<span class="nt">defaults</span><span class="p">:</span>
-  <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender@example.com</span>
-  <span class="nt">recipients</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">recipient@example.com</span>
-
-<span class="nt">mails</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">subject</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Hello World</span>
-    <span class="nt">text_body</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">This is a simple hello.</span>
-
-  <span class="p p-Indicator">-</span> <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">other@example.com</span>
-    <span class="nt">subject</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Hello World</span>
-    <span class="nt">text_body</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">This is a simple hello.</span>
-</code></pre></div>
-<h2 id="vars">Vars</h2>
-<p>The <code>vars</code> section holds variables which can be used in other sections
-like <code>mails</code> or <code>defaults</code>.</p>
-<div class="codehilite"><pre><span></span><code><span class="nn">---</span>
-<span class="nt">vars</span><span class="p">:</span>
-  <span class="nt">names</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Alice</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Bob</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">Rachel</span>
-
-<span class="nt">mails</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender@example.com</span>
-    <span class="nt">recipients</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">recipient@example.com</span>
-    <span class="nt">subject</span><span class="p">:</span> <span class="s">'Hello</span><span class="nv"> </span><span class="s">{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}'</span>
-    <span class="nt">text_body</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">This is a simple hello.</span>
-    <span class="nt">loop</span><span class="p">:</span> <span class="s">'{{</span><span class="nv"> </span><span class="s">names</span><span class="nv"> </span><span class="s">}}'</span>
-</code></pre></div>
-<h2 id="mails">Mails</h2>
-<p>The <code>mails</code> section defines the messages which should be generated. The
-following configuration would create a message from 'sender@example.com' to
-'recipient@example.com'</p>
-<div class="codehilite"><pre><span></span><code><span class="nn">---</span>
-<span class="nt">mails</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">hello-world</span>
-    <span class="nt">sender</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sender@example.com</span>
-    <span class="nt">recipients</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">recipient@example.com</span>
-    <span class="nt">subject</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Hello World</span>
-    <span class="nt">text_body</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">This is a simple hello.</span>
-</code></pre></div>
-<dl>
-<dt>name</dt>
-<dd>An reference name for the message</dd>
-<dt>description</dt>
-<dd>An optional description for the message</dd>
-<dt>sender</dt>
-<dd>Defines the envelope sender</dd>
-<dt>recipients</dt>
-<dd>Defines a single or a list of recipients</dd>
-<dt>subject</dt>
-<dd>Subject of the message</dd>
-<dt>from</dt>
-<dd>Corresponds to the <code>from</code> header in <a href="https://tools.ietf.org/html/rfc5322">IMF</a>, defaults to <code>sender</code></dd>
-<dt>to</dt>
-<dd>Corresponds to the <code>to</code> header in <a href="https://tools.ietf.org/html/rfc5322">IMF</a>, defaults to <code>recipients</code></dd>
-<dt>cc</dt>
-<dd>Corresponds to the <code>cc</code> header in <a href="https://tools.ietf.org/html/rfc5322">IMF</a></dd>
-<dt>bcc</dt>
-<dd>Corresponds to the <code>bcc</code> header in <a href="https://tools.ietf.org/html/rfc5322">IMF</a></dd>
-<dt>text_body</dt>
-<dd>A MIME part of type <code>text/plain</code></dd>
-<dt>text_html</dt>
-<dd>A MIME part of type <code>text/html</code></dd>
-<dt>attachments</dt>
-<dd>List of files which are attached to the message</dd>
-<dt>dkim</dt>
-<dd>Specifies the settings for dkim signing</dd>
-<dt>smime</dt>
-<dd>Specifies the parameters for smime singing/encryption</dd>
-<dt>loop</dt>
-<dd>List of parameters to loop over.</dd>
-</dl>
+<h1 id="release-history">Release History</h1>
+<h2 id="090-2020-06-27">0.9.0 (2020-06-27)</h2>
+<h4 id="features">Features</h4>
+<ul>
+<li>Add support for S/MIME encryption</li>
+<li>Allow to use tags</li>
+</ul>
+<h4 id="improvements">Improvements</h4>
+<ul>
+<li>Drop dependency from <code>m2crypto</code></li>
+</ul>
+<h4 id="bugfixes">Bugfixes</h4>
+<ul>
+<li>Fix MIME type if only <code>html_body</code> is set</li>
+<li>Fix header handling for smime signing</li>
+</ul>
 </article>
 </div>
 </div>
@@ -302,7 +255,7 @@ following configuration would create a message from 'sender@example.com' to
 <footer class="md-footer">
 <div class="md-footer-nav">
 <nav aria-label="Footer" class="md-footer-nav__inner md-grid">
-<a class="md-footer-nav__link md-footer-nav__link--prev" href="../examples/" rel="prev" title="Examples">
+<a class="md-footer-nav__link md-footer-nav__link--prev" href="../api/" rel="prev" title="Developer Interface">
 <div class="md-footer-nav__button md-icon">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"></path></svg>
 </div>
@@ -311,21 +264,8 @@ following configuration would create a message from 'sender@example.com' to
 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Examples
-              </div>
-</div>
-</a>
-<a class="md-footer-nav__link md-footer-nav__link--next" href="../api/" rel="next" title="Developer Interface">
-<div class="md-footer-nav__title">
-<div class="md-ellipsis">
-<span class="md-footer-nav__direction">
-                  Next
-                </span>
                 Developer Interface
               </div>
-</div>
-<div class="md-footer-nav__button md-icon">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"></path></svg>
 </div>
 </a>
 </nav>

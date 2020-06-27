@@ -1,0 +1,2167 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Send mails with YAML." name="description"/>
+<link href="https://besmerd.github.io/spool/api/" rel="canonical"/>
+<meta content="Daniel Besmer" name="author"/>
+<link href="../assets/images/favicon.png" rel="shortcut icon"/>
+<meta content="mkdocs-1.1.2, mkdocs-material-5.3.1" name="generator"/>
+<title>Developer Interface - Spool</title>
+<link href="../assets/stylesheets/main.fe0cca5b.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
+<style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+</head>
+<body dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#developer-interface">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header-nav md-grid">
+<a aria-label="Spool" class="md-header-nav__button md-logo" href="https://besmerd.github.io/spool" title="Spool">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 4H7a5 5 0 00-5 5v11h18a2 2 0 002-2V9a5 5 0 00-5-5m-7 14H4V9a3 3 0 013-3 3 3 0 013 3v9m9-3h-2v-2h-4v-2h6v4M9 11H5V9h4v2z"></path></svg>
+</a>
+<label class="md-header-nav__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"></path></svg>
+</label>
+<div class="md-header-nav__title" data-md-component="header-title">
+<div class="md-header-nav__ellipsis">
+<span class="md-header-nav__topic md-ellipsis">
+            Spool
+          </span>
+<span class="md-header-nav__topic md-ellipsis">
+            
+              Developer Interface
+            
+          </span>
+</div>
+</div>
+<label class="md-header-nav__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" data-md-state="active" name="query" placeholder="Search" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"></path></svg>
+</label>
+<button aria-label="Clear" class="md-search__icon md-icon" data-md-component="search-reset" tabindex="-1" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"></path></svg>
+</button>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header-nav__source">
+<a class="md-source" href="https://github.com/besmerd/spool/" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    besmerd/spool
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Spool" class="md-nav__button md-logo" href="https://besmerd.github.io/spool" title="Spool">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 4H7a5 5 0 00-5 5v11h18a2 2 0 002-2V9a5 5 0 00-5-5m-7 14H4V9a3 3 0 013-3 3 3 0 013 3v9m9-3h-2v-2h-4v-2h6v4M9 11H5V9h4v2z"></path></svg>
+</a>
+    Spool
+  </label>
+<div class="md-nav__source">
+<a class="md-source" href="https://github.com/besmerd/spool/" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    besmerd/spool
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href=".." title="Spool">
+      Spool
+    </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../installation/" title="Installation">
+      Installation
+    </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../examples/" title="Examples">
+      Examples
+    </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/" title="Reference">
+      Reference
+    </a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+        Developer Interface
+        <span class="md-nav__icon md-icon">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"></path></svg>
+</span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./" title="Developer Interface">
+      Developer Interface
+    </a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"></path></svg>
+</span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool">
+    spool
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.exceptions">
+    exceptions
+  </a>
+<nav aria-label="exceptions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.exceptions.SpoolError">
+    SpoolError
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer">
+    mailer
+  </a>
+<nav aria-label="mailer" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.Mailer">
+    Mailer
+  </a>
+<nav aria-label="Mailer" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.Mailer.dump">
+    dump()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.Mailer.get_helo_name">
+    get_helo_name()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.Mailer.send">
+    send()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.MailerError">
+    MailerError
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.RemoteNotFoundError">
+    RemoteNotFoundError
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.main">
+    main
+  </a>
+<nav aria-label="main" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.main.cli">
+    cli()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.main.parse_args">
+    parse_args()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.main.run">
+    run()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.main.tags_matches_mail">
+    tags_matches_mail()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message">
+    message
+  </a>
+<nav aria-label="message" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.EmailHeaders">
+    EmailHeaders
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.Message">
+    Message
+  </a>
+<nav aria-label="Message" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.Message.headers">
+    headers
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.Message.as_string">
+    as_string()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.Message.attach">
+    attach()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.MessageError">
+    MessageError
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.parse_addrs">
+    parse_addrs()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser">
+    parser
+  </a>
+<nav aria-label="parser" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser.Config">
+    Config
+  </a>
+<nav aria-label="Config" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser.Config.load">
+    load()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser.ConfigError">
+    ConfigError
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser.ValidationError">
+    ValidationError
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser.to_list">
+    to_list()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.smime">
+    smime
+  </a>
+<nav aria-label="smime" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.smime.encode_cms">
+    encode_cms()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.smime.encrypt">
+    encrypt()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.smime.parse_pem">
+    parse_pem()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.smime.sign">
+    sign()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../changelog/" title="Release History">
+      Release History
+    </a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"></path></svg>
+</span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool">
+    spool
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.exceptions">
+    exceptions
+  </a>
+<nav aria-label="exceptions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.exceptions.SpoolError">
+    SpoolError
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer">
+    mailer
+  </a>
+<nav aria-label="mailer" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.Mailer">
+    Mailer
+  </a>
+<nav aria-label="Mailer" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.Mailer.dump">
+    dump()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.Mailer.get_helo_name">
+    get_helo_name()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.Mailer.send">
+    send()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.MailerError">
+    MailerError
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.mailer.RemoteNotFoundError">
+    RemoteNotFoundError
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.main">
+    main
+  </a>
+<nav aria-label="main" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.main.cli">
+    cli()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.main.parse_args">
+    parse_args()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.main.run">
+    run()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.main.tags_matches_mail">
+    tags_matches_mail()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message">
+    message
+  </a>
+<nav aria-label="message" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.EmailHeaders">
+    EmailHeaders
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.Message">
+    Message
+  </a>
+<nav aria-label="Message" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.Message.headers">
+    headers
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.Message.as_string">
+    as_string()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.Message.attach">
+    attach()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.MessageError">
+    MessageError
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.message.parse_addrs">
+    parse_addrs()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser">
+    parser
+  </a>
+<nav aria-label="parser" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser.Config">
+    Config
+  </a>
+<nav aria-label="Config" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser.Config.load">
+    load()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser.ConfigError">
+    ConfigError
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser.ValidationError">
+    ValidationError
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.parser.to_list">
+    to_list()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.smime">
+    smime
+  </a>
+<nav aria-label="smime" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.smime.encode_cms">
+    encode_cms()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.smime.encrypt">
+    encrypt()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.smime.parse_pem">
+    parse_pem()
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spool.smime.sign">
+    sign()
+  </a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content">
+<article class="md-content__inner md-typeset">
+<a class="md-content__button md-icon" href="https://github.com/besmerd/spool/edit/master/docs/api.md" title="Edit this page">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"></path></svg>
+</a>
+<h1 id="developer-interface">Developer Interface</h1>
+<div class="doc doc-object doc-module">
+<h2 class="hidden-toc" href="#spool" id="spool" style="visibility: hidden; width: 0; height: 0;">
+</h2>
+<div class="doc doc-contents first">
+<div class="doc doc-children">
+<div class="doc doc-object doc-module">
+<h2 class="doc doc-heading" id="spool.exceptions">
+<code>exceptions</code>
+</h2>
+<div class="doc doc-contents">
+<div class="doc doc-children">
+<div class="doc doc-object doc-class">
+<h3 class="doc doc-heading" id="spool.exceptions.SpoolError">
+<code>SpoolError</code>
+</h3>
+<div class="doc doc-contents">
+<p>Base class for exceptions.</p>
+<div class="doc doc-children">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="doc doc-object doc-module">
+<h2 class="doc doc-heading" id="spool.mailer">
+<code>mailer</code>
+</h2>
+<div class="doc doc-contents">
+<div class="doc doc-children">
+<div class="doc doc-object doc-class">
+<h3 class="doc doc-heading" id="spool.mailer.Mailer">
+<code>Mailer</code>
+</h3>
+<div class="doc doc-contents">
+<p>Represents an SMTP connection.</p>
+<div class="doc doc-children">
+<div class="doc doc-object doc-method">
+<h4 class="doc doc-heading" id="spool.mailer.Mailer.dump">
+<code class="highlight language-python">
+dump<span class="p">(</span><span class="n">msg</span><span class="p">)</span> </code>
+<span class="doc doc-properties">
+<small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
+</span>
+</h4>
+<div class="doc doc-contents">
+<p>Print a message to console.</p>
+<p>Prints a given message to console in Internet Message Format (IMF).</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>msg</code></td>
+<td><code></code></td>
+<td>
+<p>A message.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+<summary>Source code in <code>spool/mailer.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+    <span class="sd">"""Print a message to console.</span>
+
+<span class="sd">    Prints a given message to console in Internet Message Format (IMF).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        msg: A message.</span>
+<span class="sd">    """</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">MAIL_OUT_PREFIX</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">as_string</span><span class="p">(),</span> <span class="n">MAIL_OUT_SUFFIX</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h4 class="doc doc-heading" id="spool.mailer.Mailer.get_helo_name">
+<code class="highlight language-python">
+get_helo_name<span class="p">()</span> </code>
+<span class="doc doc-properties">
+<small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
+</span>
+</h4>
+<div class="doc doc-contents">
+<p>Retrive the helo/ehlo name based on the hostname.</p>
+<details class="quote">
+<summary>Source code in <code>spool/mailer.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span> 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">get_helo_name</span><span class="p">():</span>
+    <span class="sd">"""Retrive the helo/ehlo name based on the hostname."""</span>
+
+    <span class="n">fqdn</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">getfqdn</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">'.'</span> <span class="ow">in</span> <span class="n">fqdn</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fqdn</span>
+
+    <span class="c1"># Use a domain literal for the EHLO/HELO verb, as specified in RFC 2821</span>
+    <span class="n">address</span> <span class="o">=</span> <span class="s1">'127.0.0.1'</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">())</span>
+    <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">gaierror</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'[</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s1">]'</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h4 class="doc doc-heading" id="spool.mailer.Mailer.send">
+<code class="highlight language-python">
+send<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">print_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
+</h4>
+<div class="doc doc-contents">
+<p>Send a message.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>msg</code></td>
+<td><code></code></td>
+<td>
+<p>The message to send (or print to console)</p>
+</td>
+<td><em>required</em></td>
+</tr>
+<tr>
+<td><code>print_only</code></td>
+<td><code></code></td>
+<td>
+<p>obj: <code>bool</code>, optional): Whether to print the
+message to console instead of sending to remote.</p>
+</td>
+<td><code>True</code></td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+<summary>Source code in <code>spool/mailer.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">print_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">"""Send a message.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        msg: The message to send (or print to console)</span>
+<span class="sd">        print_only (:obj: `bool`, optional): Whether to print the</span>
+<span class="sd">            message to console instead of sending to remote.</span>
+<span class="sd">    """</span>
+
+    <span class="k">if</span> <span class="n">print_only</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">sender</span> <span class="o">=</span> <span class="n">formataddr</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">sender</span><span class="p">)</span>
+
+    <span class="n">recipients</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">recipients</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">cc_addrs</span> <span class="o">+</span> <span class="n">msg</span><span class="o">.</span><span class="n">bcc_addrs</span>
+    <span class="n">recipients</span> <span class="o">=</span> <span class="p">[</span><span class="n">formataddr</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">recipients</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">relay</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">relay</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">recipients</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">domain</span><span class="p">(</span><span class="n">address</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">address</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'@'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reorder_recipients</span><span class="p">:</span>
+            <span class="n">recipients</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">recipients</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">domain</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">domain</span><span class="p">,</span> <span class="n">recipients</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">recipients</span><span class="p">,</span> <span class="n">domain</span><span class="p">):</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_remote</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nameservers</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="n">RemoteNotFoundError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s1">'Failed to send message: </span><span class="si">%s</span><span class="s1"> [name=</span><span class="si">%s</span><span class="s1">]'</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_send_message</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">recipients</span><span class="p">),</span> <span class="n">msg</span><span class="p">)</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="doc doc-object doc-class">
+<h3 class="doc doc-heading" id="spool.mailer.MailerError">
+<code>MailerError</code>
+</h3>
+<div class="doc doc-contents">
+<p>Base class for all errors related to the mailer.</p>
+</div>
+</div>
+<div class="doc doc-object doc-class">
+<h3 class="doc doc-heading" id="spool.mailer.RemoteNotFoundError">
+<code>RemoteNotFoundError</code>
+</h3>
+<div class="doc doc-contents">
+<p>Remote server could not be evaluated.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="doc doc-object doc-module">
+<h2 class="doc doc-heading" id="spool.main">
+<code>main</code>
+</h2>
+<div class="doc doc-contents">
+<div class="doc doc-children">
+<div class="doc doc-object doc-function">
+<h3 class="doc doc-heading" id="spool.main.cli">
+<code class="highlight language-python">
+cli<span class="p">()</span> </code>
+</h3>
+<div class="doc doc-contents">
+<p>Main cli entry point.</p>
+<details class="quote">
+<summary>Source code in <code>spool/main.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">cli</span><span class="p">():</span>
+    <span class="sd">"""Main cli entry point."""</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">run</span><span class="p">()</span>
+
+    <span class="k">except</span> <span class="n">SpoolError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="s1">'Unexpected error occured.'</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h3 class="doc doc-heading" id="spool.main.parse_args">
+<code class="highlight language-python">
+parse_args<span class="p">(</span><span class="n">args</span><span class="p">)</span> </code>
+</h3>
+<div class="doc doc-contents">
+<p>Parse command line arguments.</p>
+<details class="quote">
+<summary>Source code in <code>spool/main.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">"""Parse command line arguments."""</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Send mails with YAML.'</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'-r'</span><span class="p">,</span> <span class="s1">'--relay'</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'smtp relay smtp server'</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'-p'</span><span class="p">,</span> <span class="s1">'--port'</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'port on remote server, default: 25'</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'-n'</span><span class="p">,</span> <span class="s1">'--nameservers'</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'nameservers for lookup of MX records'</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'-d'</span><span class="p">,</span> <span class="s1">'--delay'</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'delay delivery by a given number of seconds after each mail'</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'-D'</span><span class="p">,</span> <span class="s1">'--debug'</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">'store_true'</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'enable debugging on smtp conversation'</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'-P'</span><span class="p">,</span> <span class="s1">'--print-only'</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">'store_true'</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'print, but do not send messages'</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'-H'</span><span class="p">,</span> <span class="s1">'--helo'</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'helo name used when connecting to the smtp server'</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'-c'</span><span class="p">,</span> <span class="s1">'--check'</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">'store_true'</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'check config files and quit'</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'-t'</span><span class="p">,</span> <span class="s1">'--tags'</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'tags to execute'</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'--starttls'</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">'store_true'</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">''</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'path'</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="s1">'+'</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">'config'</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">Path</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'path of spool config'</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">output_group</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_mutually_exclusive_group</span><span class="p">()</span>
+
+    <span class="n">output_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'-v'</span><span class="p">,</span> <span class="s1">'--verbose'</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">'count'</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">'verbosity'</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'verbose output (repeat for increased verbosity)'</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">output_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">'-s'</span><span class="p">,</span> <span class="s1">'--silent'</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">'store_const'</span><span class="p">,</span> <span class="n">const</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">'verbosity'</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s1">'quiet output (show errors only)'</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h3 class="doc doc-heading" id="spool.main.run">
+<code class="highlight language-python">
+run<span class="p">()</span> </code>
+</h3>
+<div class="doc doc-contents">
+<p>Main method.</p>
+<details class="quote">
+<summary>Source code in <code>spool/main.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="sd">"""Main method."""</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parse_args</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">config_logger</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">verbosity</span><span class="p">)</span>
+
+    <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">'No such file, skipping. [path=</span><span class="si">%s</span><span class="s1">]'</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">check</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+        <span class="k">except</span> <span class="n">ConfigError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">'Error while parsing config: </span><span class="si">%s</span><span class="s1"> [path=</span><span class="si">%s</span><span class="s1">]'</span><span class="p">,</span> <span class="n">ex</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">with</span> <span class="n">Mailer</span><span class="p">(</span><span class="n">relay</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">relay</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="n">helo</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">helo</span><span class="p">,</span>
+                    <span class="n">debug</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span> <span class="n">nameservers</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">nameservers</span><span class="p">,</span>
+                    <span class="n">starttls</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">starttls</span><span class="p">)</span> <span class="k">as</span> <span class="n">mailer</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">mails</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">tags_matches_mail</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span> <span class="n">mail</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'tags'</span><span class="p">,</span> <span class="p">[])):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">'Skipping message "</span><span class="si">%s</span><span class="s1">", does not match tags: </span><span class="si">%s</span><span class="s1">'</span><span class="p">,</span>
+                              <span class="n">mail</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span> <span class="n">args</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">first</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">delay</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">'Delay sending of next message by </span><span class="si">%.2f</span><span class="s1"> seconds.'</span><span class="p">,</span>
+                              <span class="n">args</span><span class="o">.</span><span class="n">delay</span><span class="p">)</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">delay</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="n">mail</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'description'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">mail</span> <span class="o">=</span> <span class="n">parse_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mail</span><span class="p">)</span>
+                <span class="n">attachments</span> <span class="o">=</span> <span class="n">mail</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'attachments'</span><span class="p">,</span> <span class="p">[])</span>
+
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="o">**</span><span class="n">mail</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attachments</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">attachments</span> <span class="o">=</span> <span class="p">[</span><span class="n">attachments</span><span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">attachment</span> <span class="ow">in</span> <span class="n">attachments</span><span class="p">:</span>
+                    <span class="n">file_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">attachment</span>
+                    <span class="n">msg</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">mailer</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">print_only</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="n">MessageError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="s1">'Failed to create message: </span><span class="si">%s</span><span class="s1">. [name=</span><span class="si">%s</span><span class="s1">, path=</span><span class="si">%s</span><span class="s1">]'</span><span class="p">,</span>
+                        <span class="n">ex</span><span class="p">,</span> <span class="n">mail</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span> <span class="n">path</span>
+                    <span class="p">)</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h3 class="doc doc-heading" id="spool.main.tags_matches_mail">
+<code class="highlight language-python">
+tags_matches_mail<span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">mail</span><span class="p">)</span> </code>
+</h3>
+<div class="doc doc-contents">
+<p>Returns True if mail has a matching tag.</p>
+<details class="quote">
+<summary>Source code in <code>spool/main.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>100
+101
+102
+103
+104
+105
+106
+107
+108</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">tags_matches_mail</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">mail</span><span class="p">):</span>
+    <span class="sd">"""Returns True if mail has a matching tag."""</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tags</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">tag</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">tag</span> <span class="ow">in</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">)</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="doc doc-object doc-module">
+<h2 class="doc doc-heading" id="spool.message">
+<code>message</code>
+</h2>
+<div class="doc doc-contents">
+<div class="doc doc-children">
+<div class="doc doc-object doc-class">
+<h3 class="doc doc-heading" id="spool.message.EmailHeaders">
+<code>EmailHeaders</code>
+</h3>
+<div class="doc doc-contents">
+<p>Case insensitive dictionary to store email headers.</p>
+<div class="codehilite">
+<pre><span></span><code><span class="n">Copied</span> <span class="k">from</span> <span class="n">Requests</span> <span class="n">CaseInsensitiveDict</span><span class="p">.</span>
+
+<span class="p">..</span><span class="n">_</span> <span class="n">Requests</span><span class="p">:</span>
+    <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">requests</span><span class="p">.</span><span class="n">readthedocs</span><span class="p">.</span><span class="n">io</span>
+</code></pre>
+</div>
+<div class="doc doc-children">
+</div>
+</div>
+</div>
+<div class="doc doc-object doc-class">
+<h3 class="doc doc-heading" id="spool.message.Message">
+<code>Message</code>
+</h3>
+<div class="doc doc-contents">
+<p>Represents a single email message.</p>
+<div class="doc doc-children">
+<div class="doc doc-object doc-attribute">
+<h4 class="doc doc-heading" id="spool.message.Message.headers">
+<code class="highlight">
+headers        </code>
+<span class="doc doc-properties">
+<small class="doc doc-property doc-property-property"><code>property</code></small>
+<small class="doc doc-property doc-property-readonly"><code>readonly</code></small>
+</span>
+</h4>
+<div class="doc doc-contents">
+<p>Get the message headers.</p>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h4 class="doc doc-heading" id="spool.message.Message.as_string">
+<code class="highlight language-python">
+as_string<span class="p">(</span><span class="bp">self</span><span class="p">)</span> </code>
+</h4>
+<div class="doc doc-contents">
+<p>Return the entire message flattened as a string.</p>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>str</code></td>
+<td>
+<p>The message as Internet Message Format (IMF)
+    formatted string.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+<summary>Source code in <code>spool/message.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">as_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">"""Return the entire message flattened as a string.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The message as Internet Message Format (IMF)</span>
+<span class="sd">            formatted string.</span>
+<span class="sd">    """</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attachments</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">ical</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multipart</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plaintext</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">smime</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">'from_key'</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">smime</span> <span class="ow">and</span> <span class="s1">'from_crt'</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">smime</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">sign</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">smime</span><span class="p">[</span><span class="s1">'from_key'</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">smime</span><span class="p">[</span><span class="s1">'from_crt'</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s1">'to_crts'</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">smime</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">encrypt</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">smime</span><span class="p">[</span><span class="s1">'to_crts'</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">msg</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkim</span><span class="p">:</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dkim</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dkim</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+
+        <span class="n">dkim_header</span> <span class="o">=</span> <span class="n">dkim_sign</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">as_bytes</span><span class="p">(),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">dkim</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">dkim_header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">msg</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">as_string</span><span class="p">()</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h4 class="doc doc-heading" id="spool.message.Message.attach">
+<code class="highlight language-python">
+attach<span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span> </code>
+</h4>
+<div class="doc doc-contents">
+<p>Add file to message attachments.</p>
+<p>Adds a given path to the set of files which are appended to
+the generated message when the method <code>as_string</code> is called.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file_path</code></td>
+<td><code>str</code></td>
+<td>
+<p>relative or absolute path to the file.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+<summary>Source code in <code>spool/message.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">):</span>
+    <span class="sd">"""Add file to message attachments.</span>
+
+<span class="sd">    Adds a given path to the set of files which are appended to</span>
+<span class="sd">    the generated message when the method `as_string` is called.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        file_path (str): relative or absolute path to the file.</span>
+<span class="sd">    """</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">attachments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="doc doc-object doc-class">
+<h3 class="doc doc-heading" id="spool.message.MessageError">
+<code>MessageError</code>
+</h3>
+<div class="doc doc-contents">
+<p>Base class for message related errors.</p>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h3 class="doc doc-heading" id="spool.message.parse_addrs">
+<code class="highlight language-python">
+parse_addrs<span class="p">(</span><span class="n">addrs</span><span class="p">)</span> </code>
+</h3>
+<div class="doc doc-contents">
+<p>Parses a comma separated string to list of email addresses.</p>
+<p>Wrapper arround pythons <code>email.utils.parseaddr</code> function to parse a
+comma separated list of email addresses.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>addrs</code></td>
+<td><code></code></td>
+<td>
+<p>Comma separated string or list of email addresses to parse</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>list</code></td>
+<td>
+<p>A list of tuples consiting of <em>realname</em> and <em>email address</em>
+    parts</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples:</strong></p>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>1
+2
+3
+4</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">parse_addrs</span><span class="p">(</span><span class="s1">'john doe &lt;john@example.com&gt;, jane.doe@example.com'</span><span class="p">)</span>
+<span class="p">[(</span><span class="s1">'john doe'</span><span class="p">,</span> <span class="s1">'john@example.com'</span><span class="p">),</span> <span class="p">(</span><span class="s1">''</span><span class="p">,</span> <span class="s1">'jane.doe@example.com'</span><span class="p">)]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parse_addrs</span><span class="p">(</span><span class="s1">', john doe &lt;john.doe@example.com&gt;'</span><span class="p">)</span>
+<span class="p">[(</span><span class="s1">'john doe'</span><span class="p">,</span> <span class="s1">'john.doe@example.com'</span><span class="p">)]</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+<details class="quote">
+<summary>Source code in <code>spool/message.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">parse_addrs</span><span class="p">(</span><span class="n">addrs</span><span class="p">):</span>
+    <span class="sd">"""Parses a comma separated string to list of email addresses.</span>
+
+<span class="sd">    Wrapper arround pythons `email.utils.parseaddr` function to parse a</span>
+<span class="sd">    comma separated list of email addresses.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        addrs: Comma separated string or list of email addresses to parse</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: A list of tuples consiting of *realname* and *email address*</span>
+<span class="sd">            parts</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; parse_addrs('john doe &lt;john@example.com&gt;, jane.doe@example.com')</span>
+<span class="sd">        [('john doe', 'john@example.com'), ('', 'jane.doe@example.com')]</span>
+<span class="sd">        &gt;&gt;&gt; parse_addrs(', john doe &lt;john.doe@example.com&gt;')</span>
+<span class="sd">        [('john doe', 'john.doe@example.com')]</span>
+<span class="sd">    """</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">addrs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">addrs</span> <span class="o">=</span> <span class="n">addrs</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">addrs</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">parseaddr</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">addrs</span> <span class="k">if</span> <span class="n">item</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">parseaddr</span><span class="p">(</span><span class="n">addrs</span><span class="p">)]</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="doc doc-object doc-module">
+<h2 class="doc doc-heading" id="spool.parser">
+<code>parser</code>
+</h2>
+<div class="doc doc-contents">
+<div class="doc doc-children">
+<div class="doc doc-object doc-class">
+<h3 class="doc doc-heading" id="spool.parser.Config">
+<code>Config</code>
+</h3>
+<div class="doc doc-contents">
+<p>Represents a single mail instance config.</p>
+<div class="doc doc-children">
+<div class="doc doc-object doc-method">
+<h4 class="doc doc-heading" id="spool.parser.Config.load">
+<code class="highlight language-python">
+load<span class="p">(</span><span class="n">config</span><span class="p">)</span> </code>
+<span class="doc doc-properties">
+<small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
+</span>
+</h4>
+<div class="doc doc-contents">
+<p>Create a config object from a config file.</p>
+<details class="quote">
+<summary>Source code in <code>spool/parser.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>163
+164
+165
+166
+167
+168
+169
+170
+171</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="sd">"""Create a config object from a config file."""</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">'Parsing config file. [path=</span><span class="si">%s</span><span class="s1">]'</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="doc doc-object doc-class">
+<h3 class="doc doc-heading" id="spool.parser.ConfigError">
+<code>ConfigError</code>
+</h3>
+<div class="doc doc-contents">
+<p>Base class for all parsing errors.</p>
+</div>
+</div>
+<div class="doc doc-object doc-class">
+<h3 class="doc doc-heading" id="spool.parser.ValidationError">
+<code>ValidationError</code>
+</h3>
+<div class="doc doc-contents">
+<p>Validation Error.</p>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h3 class="doc doc-heading" id="spool.parser.to_list">
+<code class="highlight language-python">
+to_list<span class="p">(</span><span class="n">string</span><span class="p">)</span> </code>
+</h3>
+<div class="doc doc-contents">
+<p>Returns a list of values from a comma separated string</p>
+<details class="quote">
+<summary>Source code in <code>spool/parser.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>12
+13
+14
+15
+16
+17
+18</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="sd">"""Returns a list of values from a comma separated string"""</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">string</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">','</span><span class="p">)]</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="doc doc-object doc-module">
+<h2 class="doc doc-heading" id="spool.smime">
+<code>smime</code>
+</h2>
+<div class="doc doc-contents">
+<div class="doc doc-children">
+<div class="doc doc-object doc-function">
+<h3 class="doc doc-heading" id="spool.smime.encode_cms">
+<code class="highlight language-python">
+encode_cms<span class="p">(</span><span class="n">mime_part</span><span class="p">)</span> </code>
+</h3>
+<div class="doc doc-contents">
+<p>Encodes a cms structure</p>
+<details class="quote">
+<summary>Source code in <code>spool/smime.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">encode_cms</span><span class="p">(</span><span class="n">mime_part</span><span class="p">):</span>
+    <span class="sd">"""Encodes a cms structure"""</span>
+
+    <span class="n">mime_part</span><span class="p">[</span><span class="s1">'Content-Transfer-Encoding'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'base64'</span>
+
+    <span class="k">if</span> <span class="n">mime_part</span><span class="o">.</span><span class="n">get_payload</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mime_part</span>
+
+    <span class="n">cms</span> <span class="o">=</span> <span class="n">mime_part</span><span class="o">.</span><span class="n">get_payload</span><span class="p">()</span><span class="o">.</span><span class="n">pem</span><span class="p">()</span>
+
+    <span class="n">match</span> <span class="o">=</span> <span class="n">PEM_RE</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">cms</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Failed to retrive cms'</span><span class="p">)</span>
+
+    <span class="n">mime_part</span><span class="o">.</span><span class="n">set_payload</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">mime_part</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h3 class="doc doc-heading" id="spool.smime.encrypt">
+<code class="highlight language-python">
+encrypt<span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">certs</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">'des3'</span><span class="p">)</span> </code>
+</h3>
+<div class="doc doc-contents">
+<p>Encrypt a given message.</p>
+<details class="quote">
+<summary>Source code in <code>spool/smime.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">encrypt</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">certs</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">'des3'</span><span class="p">):</span>
+    <span class="sd">"""Encrypt a given message."""</span>
+
+    <span class="n">certs</span><span class="p">,</span> <span class="n">cipher</span> <span class="o">=</span> <span class="n">parse_pem</span><span class="p">(</span><span class="n">certs</span><span class="p">),</span> <span class="n">CipherType</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span>
+
+    <span class="n">cms</span> <span class="o">=</span> <span class="n">EnvelopedData</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">certs</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">as_bytes</span><span class="p">(),</span> <span class="n">cipher</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">encrypted</span> <span class="o">=</span> <span class="n">MIMEApplication</span><span class="p">(</span><span class="n">cms</span><span class="p">,</span> <span class="s1">'pkcs7-mime'</span><span class="p">,</span> <span class="n">encode_cms</span><span class="p">,</span>
+                                <span class="n">smime_type</span><span class="o">=</span><span class="s1">'enveloped-data'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'smime.p7m'</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">encrypted</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h3 class="doc doc-heading" id="spool.smime.parse_pem">
+<code class="highlight language-python">
+parse_pem<span class="p">(</span><span class="n">certstack</span><span class="p">)</span> </code>
+</h3>
+<div class="doc doc-contents">
+<p>Extract PEM strings from <em>certstack</em>.</p>
+<details class="quote">
+<summary>Source code in <code>spool/smime.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>23
+24
+25
+26
+27
+28
+29
+30
+31</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">parse_pem</span><span class="p">(</span><span class="n">certstack</span><span class="p">):</span>
+    <span class="sd">"""Extract PEM strings from *certstack*."""</span>
+
+    <span class="n">certs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">X509</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="k">for</span> <span class="n">match</span>
+        <span class="ow">in</span> <span class="n">PEM_RE</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">certstack</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">certs</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h3 class="doc doc-heading" id="spool.smime.sign">
+<code class="highlight language-python">
+sign<span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">cert</span><span class="p">,</span> <span class="n">detached</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> </code>
+</h3>
+<div class="doc doc-contents">
+<p>Sign a a given message.</p>
+<details class="quote">
+<summary>Source code in <code>spool/smime.py</code></summary>
+<table class="highlighttable">
+<tr>
+<td class="linenos">
+<div class="linenodiv">
+<pre><span></span>53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82</pre>
+</div>
+</td>
+<td class="code">
+<div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">cert</span><span class="p">,</span> <span class="n">detached</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">"""Sign a a given message."""</span>
+
+    <span class="c1"># FIXME</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">detached</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="n">signed</span> <span class="o">=</span> <span class="n">MIMEMultipart</span><span class="p">(</span>
+        <span class="s1">'signed'</span><span class="p">,</span> <span class="n">micalg</span><span class="o">=</span><span class="s1">'sha-256'</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'application/pkcs7-signature'</span><span class="p">)</span>
+    <span class="n">signed</span><span class="o">.</span><span class="n">preamble</span> <span class="o">=</span> <span class="n">SIGNED_PREAMBLE</span>
+
+    <span class="n">signed</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="n">cann</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">as_bytes</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\r\n</span><span class="s1">'</span><span class="p">)</span>
+
+    <span class="n">key</span><span class="p">,</span> <span class="n">certstack</span> <span class="o">=</span> <span class="n">PKey</span><span class="p">(</span><span class="n">privkey</span><span class="o">=</span><span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">()),</span> <span class="n">parse_pem</span><span class="p">(</span><span class="n">cert</span><span class="p">)</span>
+
+    <span class="n">flags</span> <span class="o">=</span> <span class="n">Flags</span><span class="o">.</span><span class="n">DETACHED</span><span class="o">+</span><span class="n">Flags</span><span class="o">.</span><span class="n">BINARY</span>
+
+    <span class="n">cms</span> <span class="o">=</span> <span class="n">SignedData</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">cann</span><span class="p">,</span> <span class="n">certstack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">key</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">flags</span><span class="p">,</span>
+                            <span class="n">certs</span><span class="o">=</span><span class="n">certstack</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">signature</span> <span class="o">=</span> <span class="n">MIMEApplication</span><span class="p">(</span>
+        <span class="n">cms</span><span class="p">,</span> <span class="s1">'pkcs7-signature'</span><span class="p">,</span> <span class="n">encode_cms</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'smime.p7s'</span><span class="p">)</span>
+    <span class="n">signature</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span>
+        <span class="s1">'Content-Disposition'</span><span class="p">,</span> <span class="s1">'attachment'</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">'smime.p7s'</span><span class="p">)</span>
+
+    <span class="n">signed</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">signature</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">signed</span>
+</code></pre>
+</div>
+</td>
+</tr>
+</table>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+</div>
+</main>
+<footer class="md-footer">
+<div class="md-footer-nav">
+<nav aria-label="Footer" class="md-footer-nav__inner md-grid">
+<a class="md-footer-nav__link md-footer-nav__link--prev" href="../reference/" rel="prev" title="Reference">
+<div class="md-footer-nav__button md-icon">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"></path></svg>
+</div>
+<div class="md-footer-nav__title">
+<div class="md-ellipsis">
+<span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Reference
+              </div>
+</div>
+</a>
+<a class="md-footer-nav__link md-footer-nav__link--next" href="../changelog/" rel="next" title="Release History">
+<div class="md-footer-nav__title">
+<div class="md-ellipsis">
+<span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Release History
+              </div>
+</div>
+<div class="md-footer-nav__button md-icon">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"></path></svg>
+</div>
+</a>
+</nav>
+</div>
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+          Material for MkDocs
+        </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<script src="../assets/javascripts/vendor.d710d30a.min.js"></script>
+<script src="../assets/javascripts/bundle.5532dfb7.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+<script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.7a2ea5ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+</body>
+</html>
