@@ -85,7 +85,7 @@ class Mailer:
             for domain, recipients in itertools.groupby(recipients, domain):
 
                 try:
-                    host = self._get_remote(domain, self.nameservers)
+                    host = self.get_remote(domain, self.nameservers)
 
                 except RemoteNotFoundError as err:
                     LOG.error(
@@ -112,7 +112,21 @@ class Mailer:
         return f'[{address}]'
 
     @staticmethod
-    def _get_remote(domain, nameservers=None):
+    def get_remote(domain, nameservers=None):
+        """Returns the mail exchange server for a given domain.
+
+        Args:
+            domain (str): Domain name to retrieve MX records from.
+            nameservers (:obj: `list`, optional): List of nameservers (`str`)
+                to query against.
+
+        Returns:
+            str: Hostname or address of MX record with the highest preference
+                (lowest priority value).
+
+        Raises:
+            RemoteNotFoundError: If no MX resource record was found.
+        """
 
         match = DOMAIN_LITERAL.fullmatch(domain)
         if match:
@@ -128,7 +142,7 @@ class Mailer:
         try:
             answers = resolver.query(domain, 'MX')
             peer = min(answers, key=lambda rdata: rdata.preference).exchange
-            return peer.to_text().rstrip('.')
+            return peer.to_text().rstrip('.') or peer.to_text()
 
         except NXDOMAIN:
             raise RemoteNotFoundError(

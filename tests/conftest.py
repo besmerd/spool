@@ -11,7 +11,7 @@ RecordedMessage = namedtuple(
 )
 
 
-class Server(smtpd.SMTPServer, threading.Thread):
+class MailServer(smtpd.SMTPServer, threading.Thread):
 
     def __init__(self, host='localhost', port=0):
 
@@ -64,5 +64,5 @@ class Server(smtpd.SMTPServer, threading.Thread):
 
 @pytest.fixture
 def smtp_server():
-    with Server() as server:
+    with MailServer() as server:
         yield server

@@ -1,10 +1,11 @@
 import smtplib
 import logging
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
+import dns
 import pytest
 
 from spool.message import Message
-from spool.mailer import Mailer
+from spool.mailer import MAIL_OUT_PREFIX, MAIL_OUT_SUFFIX, Mailer
 
 
 @pytest.fixture()
@@ -94,18 +95,96 @@ def test_remote_dropped_connection(mock_send, mailer, message, caplog):
     assert 'Failed to send message: Connection closed by remote host.' in msg
 
 
-@pytest.mark.parametrize('err_code, err_msg', [
-    (554, b'5.7.1 Spam message rejected'),#, 'permanent'),
-    (451, b'4.7.1 Try again later'),#, 'temporary'),
-])
+@pytest.mark.parametrize('error', [
+    (554, b'5.7.1 Spam message rejected', 'permanent'),
+    (451, b'4.7.1 Try again later', 'temporary'),
+], ids=lambda error: error[2])
 @patch.object(smtplib.SMTP, 'sendmail')
-def test_remote_response_error(
-        mock_send, err_code, err_msg, mailer, message, caplog):
+def test_remote_response_error(mock_send, error, mailer, message, caplog):
 
-    mock_send.side_effect = smtplib.SMTPResponseException(err_code, err_msg)
+    mock_send.side_effect = smtplib.SMTPResponseException(error[0], error[1])
     mailer.send(message)
 
     assert len(caplog.record_tuples) == 1
     _, severity, msg = caplog.record_tuples[0]
     assert severity == logging.ERROR
-    assert f'Error while sending message: {err_code} - {err_msg.decode()}' in msg
+    assert f'Error while sending message: {error[0]} - {error[1].decode()}' in msg
+
+
+class MockResourceRecord:
+
+    class DNSName:
+
+        def __init__(self, name):
+            self.name = name
+
+        def to_text(self):
+            return str(self.name)
+
+    def __init__(self, name, preference):
+        self.exchange = self.DNSName(name)
+        self.preference = preference
+
+
+dns_data = [
+    {
+        'domain': 'example.org',
+        'response': [
+            MockResourceRecord('.', 0)
+        ],
+        'expected': '.',
+        'case': 'is-root-server',
+    },
+    {
+        'domain': 'example.org',
+        'response': [
+            MockResourceRecord('mail.example.org.', 0)
+        ],
+        'expected': 'mail.example.org',
+        'case': 'is-non-root-server',
+    },
+    {
+        'domain': 'example.org',
+        'response': [
+            MockResourceRecord('mail1.example.org.', 10),
+            MockResourceRecord('mail2.example.org.', 10),
+        ],
+        'expected': 'mail1.example.org',
+        'case': 'ordered-equal-priority',
+    },
+    {
+        'domain': 'example.org',
+        'response': [
+            MockResourceRecord('mail1.example.org.', 20),
+            MockResourceRecord('mail2.example.org.', 10),
+        ],
+        'expected': 'mail2.example.org',
+        'case': 'has-priority'
+    },
+]
+
+
+@pytest.mark.parametrize('data', dns_data, ids=lambda data: data['case'])
+def test_get_remote(mailer, data):
+    with patch.object(dns.resolver.Resolver, 'query', return_value=data['response']) as mock_query:
+        assert mailer.get_remote(data['domain']) == data['expected']
+
+
+def test_dump_to_console(mailer, message, capsys):
+
+    mailer.dump(message)
+    out, err = capsys.readouterr()
+
+    assert err == ''
+
+    assert out.startswith(MAIL_OUT_PREFIX)
+    assert message.as_string() in out
+    assert out.endswith(MAIL_OUT_SUFFIX + '\n')
+
+
+@patch.object(smtplib.SMTP, 'sendmail')
+def test_send_not_called_when_dump_to_console(mock_send, mailer, message):
+
+    mailer.dump(message)
+
+    mock_send.assert_not_called()
