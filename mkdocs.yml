@@ -12,6 +12,7 @@ nav:
   - examples.md
   - reference.md
   - api.md
+  - changelog.md
 
 theme:
   name: material
