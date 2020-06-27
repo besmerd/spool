@@ -1,10 +1,7 @@
 import asyncore
-import email
 import smtpd
 import threading
-
 from collections import namedtuple
-
 import pytest
 
 
@@ -29,6 +26,14 @@ class Server(smtpd.SMTPServer, threading.Thread):
         self.threadName = self.__class__.__name__
         threading.Thread.__init__(self, name=self.threadName)
 
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, *exc):
+
+        self.stop()
+
     def process_message(self, peer, mailfrom, rcpttos, data, **kwargs):
 
         recorded = RecordedMessage(
@@ -38,24 +43,26 @@ class Server(smtpd.SMTPServer, threading.Thread):
         self.messages.append(recorded)
 
     def run(self):
+
         while not self._stopevent.is_set():
             asyncore.loop(timeout=0.001, count=1)
 
     def stop(self, timeout=None):
+
         self._stopevent.set()
         threading.Thread.join(self, timeout)
         self.close()
 
     def __del__(self):
+
         self.stop()
 
     def __repr__(self):
+
         return '<smtp.Server %s:%s>' % self.addr
 
 
 @pytest.fixture
 def smtp_server():
-    server = Server()
-    server.start()
-    yield server
-    server.stop()
+    with Server() as server:
+        yield server

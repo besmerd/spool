@@ -55,7 +55,7 @@ class Mailer:
     def __exit__(self, exc_type, exc_value, traceback):
         pass
 
-    def send(self, msg, print_only=True):
+    def send(self, msg, print_only=False):
         """Send a message.
 
         Args:
@@ -165,19 +165,30 @@ class Mailer:
             refused = connection.sendmail(sender, recipients, msg.as_string())
 
         except smtplib.SMTPResponseException as err:
-            LOG.error(('Error while sending message: %s - %s '
-                       '[name=%s, host=%s, port=%s]'), err.smtp_code,
-                      err.smtp_error.decode(), msg.name, host, self.port)
+
+            if isinstance(err, smtplib.SMTPSenderRefused):
+                LOG.error(('Failed to send message: Sender rejected.'
+                           '[name=%s, host=%s, port=%s]'),
+                          msg.name, host, self.port)
+            else:
+                LOG.error(('Error while sending message: %s - %s '
+                           '[name=%s, host=%s, port=%s]'), err.smtp_code,
+                          err.smtp_error.decode(), msg.name, host, self.port)
 
         except smtplib.SMTPException as err:
+
+            if isinstance(err, smtplib.SMTPRecipientsRefused):
+                err = 'Remote refused all recipients.'
+            elif isinstance(err, smtplib.SMTPServerDisconnected):
+                err = 'Connection closed by remote host.'
+
             LOG.error('Failed to send message: %s [name=%s, host=%s, port=%s]',
                       err, msg.name, host, self.port)
 
         else:
             for recipient, (code, response) in refused.items():
-                LOG.warning('Remote refused recipient: %s - %s '
-                            '[recpient=%s, host=%s, port=%s]',
-                            code, response, recipient, host, self.port)
+                LOG.warning('Remote refused recipient: %s [host=%s, port=%s]',
+                            recipient, host, self.port)
 
             LOG.info('Message sent. [name=%s, host=%s, port=%s]',
                      msg.name, host, self.port)

@@ -46,7 +46,7 @@ def parse_addrs(addrs):
     if isinstance(addrs, list):
         return [parseaddr(item) for item in addrs if item]
 
-    return [parseaddr(addrs)]
+    raise TypeError(f'Expected str or list, received: {type(addrs)}')
 
 
 class MessageError(SpoolError):
