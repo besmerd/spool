@@ -28,7 +28,7 @@ class RemoteNotFoundError(MailerError):
 
 
 class Mailer:
-    """Represents an SMTP connection"""
+    """Represents an SMTP connection."""
 
     def __init__(self, relay=None, port=25, helo=None, timeout=5,
                  starttls=False, nameservers=None, debug=False):
@@ -56,10 +56,16 @@ class Mailer:
         pass
 
     def send(self, msg, print_only=True):
-        """Send a message"""
+        """Send a message.
+
+        Args:
+            msg: The message to send (or print to console)
+            print_only (:obj: `bool`, optional): Whether to print the
+                message to console instead of sending to remote.
+        """
 
         if print_only:
-            return self.dump(msg)
+            self.dump(msg)
 
         sender = formataddr(msg.sender)
 
@@ -90,7 +96,7 @@ class Mailer:
 
     @staticmethod
     def get_helo_name():
-        """Retrive the helo/ehlo name based on the hostname"""
+        """Retrive the helo/ehlo name based on the hostname."""
 
         fqdn = socket.getfqdn()
         if '.' in fqdn:
@@ -168,15 +174,22 @@ class Mailer:
                       err, msg.name, host, self.port)
 
         else:
-            for rcpt, (code, resp) in refused.items():
-                LOG.warning('Remote refused recipient: %s [host=%s, port=%s]',
-                            rcpt, host, self.port)
+            for recipient, (code, response) in refused.items():
+                LOG.warning('Remote refused recipient: %s - %s '
+                            '[recpient=%s, host=%s, port=%s]',
+                            code, response, recipient, host, self.port)
 
             LOG.info('Message sent. [name=%s, host=%s, port=%s]',
                      msg.name, host, self.port)
 
     @staticmethod
     def dump(msg):
-        """Print a message to console"""
+        """Print a message to console.
+
+        Prints a given message to console in Internet Message Format (IMF).
+
+        Args:
+            msg: A message.
+        """
 
         print(MAIL_OUT_PREFIX, msg.as_string(), MAIL_OUT_SUFFIX, sep='\n')

@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 
 from .exceptions import SpoolError
-from .mailer import Mailer, MailerError
+from .mailer import Mailer
 from .message import Message, MessageError
 from .parser import Config, ConfigError
 
@@ -108,6 +108,26 @@ def tags_matches_mail(tags, mail):
     return any(tag in mail for tag in tags)
 
 
+def parse_files(path, mail):
+    copy_properties = [
+        ('from_key_file', 'from_key'),
+        ('from_crt_file', 'from_crt'),
+        ('to_crts_file', 'to_crts'),
+    ]
+
+    for src, dst in copy_properties:
+
+        if 'smime' not in mail or src not in mail['smime']:
+            continue
+
+        with open(path.parent / mail['smime'][src], 'r') as fh:
+            mail['smime'][dst] = fh.read()
+
+        del mail['smime'][src]
+
+    return mail
+
+
 def config_logger(verbosity):
     verbosity = min(verbosity, 2)
     log_level = logging.WARNING - verbosity * 10
@@ -158,32 +178,16 @@ def run():
                     first = False
 
                 mail.pop('description', None)
+                mail = parse_files(path, mail)
                 attachments = mail.pop('attachments', [])
-
-                copy_properties = [
-                    ('from_key_file', 'from_key'),
-                    ('from_crt_file', 'from_crt'),
-                    ('to_crts_file', 'to_crts'),
-                ]
-
-                for src, dst in copy_properties:
-
-                    if 'smime' not in mail or src not in mail['smime']:
-                        continue
-
-                    with open(path.parent / mail['smime'][src], 'r') as fh:
-                        mail['smime'][dst] = fh.read()
-
-                    del mail['smime'][src]
-
 
                 msg = Message(**mail)
 
                 if isinstance(attachments, str):
                     attachments = [attachments]
 
-                for a in attachments:
-                    file_path = path.parent / a
+                for attachment in attachments:
+                    file_path = path.parent / attachment
                     msg.attach(file_path)
 
                 try:

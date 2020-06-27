@@ -7,8 +7,7 @@ from email.header import Header
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.utils import (COMMASPACE, formataddr, formatdate, make_msgid,
-                         parseaddr)
+from email.utils import formataddr, formatdate, make_msgid, parseaddr
 from pathlib import Path
 
 from dkim import dkim_sign
@@ -18,25 +17,50 @@ from .smime import encrypt, sign
 
 LOG = logging.getLogger(__name__)
 DEFAULT_ATTACHMENT_MIME_TYPE = 'application/octet-stream'
+COMMASPACE = ', '
 
 
 def parse_addrs(addrs):
+    """Parses a comma separated string to list of email addresses.
+
+    Wrapper arround pythons `email.utils.parseaddr` function to parse a
+    comma separated list of email addresses.
+
+    Args:
+        addrs: Comma separated string or list of email addresses to parse
+
+    Returns:
+        list: A list of tuples consiting of *realname* and *email address*
+            parts
+
+    Examples:
+        >>> parse_addrs('john doe <john@example.com>, jane.doe@example.com')
+        [('john doe', 'john@example.com'), ('', 'jane.doe@example.com')]
+        >>> parse_addrs(', john doe <john.doe@example.com>')
+        [('john doe', 'john.doe@example.com')]
+    """
 
     if isinstance(addrs, str):
         addrs = addrs.split(',')
 
     if isinstance(addrs, list):
-        return [parseaddr(i) for i in addrs]
+        return [parseaddr(item) for item in addrs if item]
 
     return [parseaddr(addrs)]
 
 
 class MessageError(SpoolError):
-    """Base class for essage errors."""
+    """Base class for message related errors."""
 
 
 class EmailHeaders(MutableMapping):
-    """Copied from requests CaseInsensitiveDict"""
+    """Case insensitive dictionary to store email headers.
+
+    Copied from Requests CaseInsensitiveDict.
+
+    .._ Requests:
+        https://requests.readthedocs.io
+    """
 
     def __init__(self, data=None, **kwargs):
         self._store = OrderedDict()
@@ -65,14 +89,12 @@ class EmailHeaders(MutableMapping):
 
 
 class Message:
+    """Represents a single email message."""
 
     def __init__(self, name, sender, recipients,
                  from_addr=None, to_addrs=None, subject=None, cc_addrs=None,
                  bcc_addrs=None, headers=None, text_body=None, html_body=None,
                  ical=None, dkim=None, smime=None, charset='utf-8'):
-
-        # FIXME
-        self.make_msgid = True
 
         self.name = name
 
@@ -116,13 +138,17 @@ class Message:
 
     @property
     def headers(self):
+        """Get the message headers."""
 
         headers = EmailHeaders({
             'From': formataddr(self.from_addr),
             'To': COMMASPACE.join([formataddr(r) for r in self.to_addrs]),
             'Subject': Header(self.subject, self.charset),
             'Date': formatdate(localtime=True),
-            'Message-ID': make_msgid(),
+            # do not call make_msgid unless it's required, since make_msgid
+            # depends on dns resolution on the hostname
+            'Message-ID': make_msgid() if 'message-id' not in self._headers
+                          else self._headers['message-id'],
         })
 
         if self.cc_addrs:
@@ -140,12 +166,24 @@ class Message:
         return headers
 
     def attach(self, file_path):
-        """Add file to message attachments."""
+        """Add file to message attachments.
+
+        Adds a given path to the set of files which are appended to
+        the generated message when the method `as_string` is called.
+
+        Args:
+            file_path (str): relative or absolute path to the file.
+        """
 
         self.attachments.append(file_path)
 
     def as_string(self):
-        """Return the entire message flattened as a string."""
+        """Return the entire message flattened as a string.
+
+        Returns:
+            str: The message as Internet Message Format (IMF)
+                formatted string.
+        """
 
         if self.attachments or self.ical:
             msg = self._multipart()
@@ -181,8 +219,8 @@ class Message:
             part = MIMEText(self.ical, 'calendar;method=REQUEST', self.charset)
             msg.attach(part)
 
-        for a in self.attachments:
-            msg.attach(self._get_attachment_part(a))
+        for attachment in self.attachments:
+            msg.attach(self._get_attachment_part(attachment))
 
         return msg
 
@@ -227,5 +265,5 @@ class Message:
 
     def __str__(self):
         recipients = COMMASPACE.join([a for n, a in self.recipients])
-        return '[sender={0}, recipients={1}, subject={2}]'.format(
-            self.sender[1], recipients, self.subject)
+        return (f'[sender={self.sender[1]}, recipients={recipients}, '
+                f'subject={self.subject}]')
