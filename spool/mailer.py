@@ -6,7 +6,7 @@ import socket
 import ssl
 from email.utils import formataddr
 
-from dns.resolver import NXDOMAIN, Resolver
+from dns.resolver import NXDOMAIN, Resolver, Cache
 
 from .exceptions import SpoolError
 
@@ -30,8 +30,8 @@ class RemoteNotFoundError(MailerError):
 class Mailer:
     """Represents an SMTP connection."""
 
-    def __init__(self, relay=None, port=25, helo=None, timeout=5,
-                 starttls=False, nameservers=None, debug=False):
+    def __init__(self, relay=None, port=25, helo=None, timeout=5, debug=False,
+                 starttls=False, nameservers=None, no_cache=False):
 
         self.port = port
         self.relay = relay
@@ -43,8 +43,21 @@ class Mailer:
 
         self.timeout = timeout
         self.starttls = starttls
-        self.nameservers = nameservers
         self.debug = debug
+        self.no_cache = no_cache
+
+        if nameservers:
+            self.resolver = Resolver(configure=False)
+            self.resolver.nameservers = [
+                n.strip() for n in nameservers.split(',')
+            ]
+
+        else:
+            self.resolver = Resolver()
+
+        if not self.no_cache:
+            self.resolver.cache = Cache()
+
 
         # TODO: Add option to parser
         self.reorder_recipients = True
@@ -85,7 +98,7 @@ class Mailer:
             for domain, recipients in itertools.groupby(recipients, domain):
 
                 try:
-                    host = self.get_remote(domain, self.nameservers)
+                    host = self.get_remote(domain)
 
                 except RemoteNotFoundError as err:
                     LOG.error(
@@ -111,8 +124,7 @@ class Mailer:
 
         return f'[{address}]'
 
-    @staticmethod
-    def get_remote(domain, nameservers=None):
+    def get_remote(self, domain, nameservers=None):
         """Returns the mail exchange server for a given domain.
 
         Args:
@@ -132,15 +144,8 @@ class Mailer:
         if match:
             return match.group('ip_address')
 
-        if nameservers:
-            resolver = Resolver(configure=False)
-            resolver.nameservers = [n.strip() for n in nameservers.split(',')]
-
-        else:
-            resolver = Resolver()
-
         try:
-            answers = resolver.query(domain, 'MX')
+            answers = self.resolver.query(domain, 'MX')
             peer = min(answers, key=lambda rdata: rdata.preference).exchange
             return peer.to_text().rstrip('.') or peer.to_text()
 

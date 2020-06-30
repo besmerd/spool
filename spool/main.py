@@ -35,6 +35,12 @@ def parse_args(args):
     )
 
     parser.add_argument(
+        '-N', '--no-cache',
+        action='store_true',
+        help='disable dns cache'
+    )
+
+    parser.add_argument(
         '-d', '--delay',
         type=float,
         help='delay delivery by a given number of seconds after each mail'
@@ -161,7 +167,7 @@ def run():
 
         with Mailer(relay=args.relay, port=args.port, helo=args.helo,
                     debug=args.debug, nameservers=args.nameservers,
-                    starttls=args.starttls) as mailer:
+                    starttls=args.starttls, no_cache=args.no_cache) as mailer:
 
             for mail in config.mails:
 
