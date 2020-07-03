@@ -166,13 +166,15 @@ dns_data = [
 
 @pytest.mark.parametrize('data', dns_data, ids=lambda data: data['case'])
 def test_get_remote(mailer, data):
-    with patch.object(dns.resolver.Resolver, 'query', return_value=data['response']) as mock_query:
+    with patch.object(dns.resolver.Resolver, 'query',
+                      return_value=data['response']) as mock_query:
         assert mailer.get_remote(data['domain']) == data['expected']
 
 
-def test_dump_to_console(mailer, message, capsys):
+@patch.object(smtplib.SMTP, 'sendmail')
+def test_dump_to_console(mock_send, mailer, message, capsys):
 
-    mailer.dump(message)
+    mailer.send(message, print_only=True)
     out, err = capsys.readouterr()
 
     assert err == ''
@@ -180,11 +182,5 @@ def test_dump_to_console(mailer, message, capsys):
     assert out.startswith(MAIL_OUT_PREFIX)
     assert message.as_string() in out
     assert out.endswith(MAIL_OUT_SUFFIX + '\n')
-
-
-@patch.object(smtplib.SMTP, 'sendmail')
-def test_send_not_called_when_dump_to_console(mock_send, mailer, message):
-
-    mailer.dump(message)
 
     mock_send.assert_not_called()
