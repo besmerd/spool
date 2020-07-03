@@ -78,7 +78,7 @@ class Mailer:
         """
 
         if print_only:
-            self.dump(msg)
+            return self.dump(msg)
 
         sender = formataddr(msg.sender)
 
