@@ -2,6 +2,8 @@ import argparse
 import logging
 import sys
 import time
+import random
+import string
 from pathlib import Path
 
 from .exceptions import SpoolError
@@ -9,8 +11,10 @@ from .mailer import Mailer
 from .message import Message, MessageError
 from .parser import Config, ConfigError
 
-LOG = logging.getLogger(__name__)
+
 LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
+LOG = logging.getLogger(__name__)
+
 
 
 def parse_args(args):
@@ -134,11 +138,52 @@ def parse_files(path, mail):
     return mail
 
 
+class LogFormatter(logging.Formatter):
+
+    GREY = '\x1b[38;21m'
+    YELLOW = '\x1b[33;21m'
+    RED = '\x1b[31;21m'
+    BOLD_RED = '\x1b[31;1m'
+    RESET = '\x1b[0m'
+
+    FORMATS = {
+        logging.DEBUG: GREY + LOG_FORMAT + RESET,
+        logging.INFO: GREY + LOG_FORMAT + RESET,
+        logging.WARNING: YELLOW + LOG_FORMAT + RESET,
+        logging.ERROR: RED + LOG_FORMAT + RESET,
+        logging.CRITICAL: BOLD_RED + LOG_FORMAT + RESET,
+    }
+
+    def __init__(self, *args, **kwargs):
+        self.has_color = hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
+        super().__init__(*args, **kwargs)
+
+
+    def format(self, record):
+
+        if self.has_color:
+            log_fmt = self.FORMATS[record.levelno]
+        else:
+            log_fmt = LOG_FORMAT
+
+        formatter = logging.Formatter(log_fmt)
+
+        return formatter.format(record)
+
+
 def config_logger(verbosity):
     verbosity = min(verbosity, 2)
     log_level = logging.WARNING - verbosity * 10
 
-    logging.basicConfig(level=log_level, format=LOG_FORMAT)
+    console = logging.StreamHandler()
+    console.setFormatter(LogFormatter())
+
+    logging.basicConfig(level=log_level, handlers=[console,])
+
+
+def get_uuid(length=6):
+    uuid = random.sample(string.digits + string.ascii_lowercase, length)
+    return ''.join(uuid)
 
 
 def run():

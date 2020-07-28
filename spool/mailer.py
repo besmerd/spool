@@ -170,8 +170,13 @@ class Mailer:
         LOG.info('Connecting to remote server. [host=%s, port=%s, helo=%s]',
                  host, port, self.helo)
 
-        server = smtplib.SMTP(host, port, timeout=self.timeout,
-                              local_hostname=self.helo)
+        try:
+            server = smtplib.SMTP(host, port, timeout=self.timeout,
+                                  local_hostname=self.helo)
+
+        except ConnectionRefusedError:
+            raise MailerError(
+                f'Remote refused connection. [host={host}, port={port}]')
 
         if self.debug:
             server.set_debuglevel(2)
