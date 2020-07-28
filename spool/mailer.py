@@ -7,6 +7,7 @@ import ssl
 from email.utils import formataddr
 
 from dns.resolver import NXDOMAIN, Resolver, Cache
+from dns.exception import Timeout
 
 from .exceptions import SpoolError
 
@@ -25,6 +26,10 @@ class MailerError(SpoolError):
 
 class RemoteNotFoundError(MailerError):
     """Remote server could not be evaluated."""
+
+
+class ResolverTimeoutError(MailerError):
+    """Resolver query timed out."""
 
 
 class Mailer:
@@ -124,13 +129,15 @@ class Mailer:
 
         return f'[{address}]'
 
-    def get_remote(self, domain, nameservers=None):
+    def get_remote(self, domain, nameservers=None, lifetime=10.0):
         """Returns the mail exchange server for a given domain.
 
         Args:
             domain (str): Domain name to retrieve MX records from.
             nameservers (:obj: `list`, optional): List of nameservers (`str`)
                 to query against.
+            lifetime (:obj: `float`, optional): Number of seconds (`float`)
+                until the query times out.
 
         Returns:
             str: Hostname or address of MX record with the highest preference
@@ -138,6 +145,7 @@ class Mailer:
 
         Raises:
             RemoteNotFoundError: If no MX resource record was found.
+            ResolverTimeoutError: DNS operation timed out.
         """
 
         match = DOMAIN_LITERAL.fullmatch(domain)
@@ -145,13 +153,17 @@ class Mailer:
             return match.group('ip_address')
 
         try:
-            answers = self.resolver.query(domain, 'MX')
+            answers = self.resolver.query(domain, 'MX', lifetime=lifetime)
             peer = min(answers, key=lambda rdata: rdata.preference).exchange
             return peer.to_text().rstrip('.') or peer.to_text()
 
+        except Timeout:
+            raise ResolverTimeoutError('Query for mx record timed out. '
+                f'[domain={domain}, timeout={lifetime}s]')
+
         except NXDOMAIN:
             raise RemoteNotFoundError(
-                f'No mx record found for domain: {domain}')
+                f'No mx record found for domain. [domain={domain}]')
 
     def _connect(self, host, port):
 

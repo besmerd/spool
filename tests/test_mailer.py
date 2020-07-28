@@ -1,6 +1,6 @@
 import smtplib
 import logging
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, Mock
 import dns
 import pytest
 
@@ -20,11 +20,8 @@ def message():
 
 @pytest.fixture()
 def mailer(smtp_server):
-
-    # Use relay to prevent dns lookup
-    return Mailer(
-        relay=smtp_server.host, port=smtp_server.port, helo='mail.example.com')
-
+    return Mailer(relay=smtp_server.host,
+                  port=smtp_server.port, helo='mail.example.com')
 
 
 @patch.object(smtplib.SMTP, 'sendmail')
@@ -55,7 +52,6 @@ def test_remote_refused_sender(mock_send, mailer, message, caplog):
     assert 'Failed to send message: Sender rejected.' in msg
 
 
-
 @patch.object(smtplib.SMTP, 'sendmail')
 def test_remote_refused_recipient(mock_send, mailer, message, caplog):
 
@@ -80,7 +76,6 @@ def test_remote_refused_all_recipients(mock_send, mailer, message, caplog):
     _, severity, msg = caplog.record_tuples[0]
     assert severity == logging.ERROR
     assert 'Failed to send message: Remote refused all recipients.' in msg
-
 
 
 @patch.object(smtplib.SMTP, 'sendmail')
