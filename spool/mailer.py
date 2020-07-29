@@ -178,6 +178,10 @@ class Mailer:
             raise MailerError(
                 f'Remote refused connection. [host={host}, port={port}]')
 
+        except socket.timeout:
+            raise MailerError(
+                f'Timeout while connecting to remote. [host={host}, port={port}]')
+
         if self.debug:
             server.set_debuglevel(2)
 
