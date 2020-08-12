@@ -1,4 +1,5 @@
 import logging
+import os.path
 
 import jinja2
 import yaml
@@ -108,6 +109,11 @@ CONFIG_SCHEMA = {
     },
 }
 
+FILTERS = {
+    'basename': lambda p: os.path.basename(p),
+    'dirname': lambda p: os.path.dirname(p),
+}
+
 
 class ConfigError(SpoolError):
     """Base class for all parsing errors."""
@@ -117,12 +123,18 @@ class ValidationError(ConfigError):
     """Validation Error."""
 
 
+
 class Config:
     """Represents a single mail instance config."""
+
 
     def __init__(self, config):
 
         env = jinja2.Environment()
+
+        for f in FILTERS:
+            env.filters[f] = FILTERS[f]
+
         env.globals = config.get('vars', None)
 
         mails = []

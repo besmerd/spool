@@ -70,7 +70,7 @@ def sign(message, key, cert, detached=True):
     flags = Flags.DETACHED+Flags.BINARY
 
     cms = SignedData.create(cann, certstack[-1], key, flags=flags,
-                            certs=certstack[0:-1])
+                            certs=certstack[:-1])
 
     signature = MIMEApplication(
         cms, 'pkcs7-signature', encode_cms, name='smime.p7s')
