@@ -1,0 +1,12 @@
+---
+mails:
+  - name: attachments
+    description: A test message with attachments
+    sender: sender@example.org
+    recipients: recipient@example.org
+    subject: Test Message
+    text_body: |
+        This is a test message.
+    attachments:
+      - test.txt
+      - test.png
