@@ -2,7 +2,7 @@ import logging
 import mimetypes
 from collections import OrderedDict
 from collections.abc import MutableMapping
-from email import encoders
+from email import encoders, message_from_string
 from email.header import Header
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
@@ -94,7 +94,7 @@ class Message:
     def __init__(self, name, sender, recipients,
                  from_addr=None, to_addrs=None, subject=None, cc_addrs=None,
                  bcc_addrs=None, headers=None, text_body=None, html_body=None,
-                 ical=None, dkim=None, smime=None, charset='utf-8'):
+                 ical=None, dkim=None, smime=None, eml=None, charset='utf-8'):
 
         self.name = name
 
@@ -133,6 +133,8 @@ class Message:
         self.smime = smime
 
         self.attachments = []
+
+        self.eml = eml
 
         self._headers = EmailHeaders(headers)
 
@@ -187,6 +189,8 @@ class Message:
 
         if self.attachments or self.ical:
             msg = self._multipart()
+        elif self.eml:
+            msg = self._get_eml(self.eml)
         else:
             msg = self._plaintext()
 
@@ -223,6 +227,21 @@ class Message:
             msg.attach(self._get_attachment_part(attachment))
 
         return msg
+
+    @staticmethod
+    def _get_eml(file_path):
+
+        path = Path(file_path)
+        if not path.is_file():
+            raise MessageError('File not found: %s' % file_path)
+
+        from jinja2 import Template
+        with open(path) as fh:
+            template = Template(fh.read())
+
+        rendered = template.render()
+
+        return message_from_string(rendered)
 
     @staticmethod
     def _get_attachment_part(file_path):
