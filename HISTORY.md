@@ -1,5 +1,10 @@
 # Release History
 
+## 0.9.5 (2021-03-10)
+
+### Features
+- Add support for eml templates
+
 ## 0.9.0 (2020-06-27)
 
 #### Features
