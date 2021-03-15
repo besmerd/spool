@@ -229,7 +229,11 @@ class Message:
         return msg
 
     @staticmethod
-    def _get_eml(file_path):
+    def _get_eml(eml):
+
+        file_path, vars = eml, {}
+        if isinstance(eml, dict):
+            file_path, vars = eml['template'], eml['vars']
 
         path = Path(file_path)
         if not path.is_file():
@@ -239,7 +243,7 @@ class Message:
         with open(path) as fh:
             template = Template(fh.read())
 
-        rendered = template.render()
+        rendered = template.render(**vars)
 
         return message_from_string(rendered)
 

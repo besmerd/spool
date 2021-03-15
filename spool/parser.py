@@ -20,8 +20,14 @@ def to_list(string):
 
 
 CONFIG_SCHEMA = {
-    'defaults': {'type': 'dict', 'allow_unknown': True},
-    'vars': {'type': 'dict', 'allow_unknown': True},
+    'defaults': {
+        'type': 'dict',
+        'allow_unknown': True,
+    },
+    'vars': {
+        'type': 'dict',
+        'allow_unknown': True,
+    },
     'mails': {
         'type': 'list',
         'schema': {
@@ -47,7 +53,16 @@ CONFIG_SCHEMA = {
                 'cc': {'type': ['string', 'list'], 'rename': 'cc_addrs'},
                 'bcc': {'type': ['string', 'list'], 'rename': 'bcc_addrs'},
                 'eml': {
-                    'type': 'string',
+                    'type': ['string', 'dict'],
+                    'schema': {
+                        'template': {
+                            'type': 'string',
+                        },
+                        'vars': {
+                            'type': 'dict',
+                            'allow_unknown': True,
+                        },
+                    },
                     'excludes': [
                         'text_body',
                         'html_body',
