@@ -29,9 +29,6 @@ jobs:
       - name: Run tests
         run: tox -e py
 
-      - name: Generate XML coverage report
-        run: coverage xml
-
   build-and-publish:
     name: Build and publish distribution packages
     runs-on: ubuntu-latest
