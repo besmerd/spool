@@ -150,7 +150,7 @@ class Config:
         for f in FILTERS:
             env.filters[f] = FILTERS[f]
 
-        env.globals = config.get('vars', None)
+        env.globals = config.get('vars', {})
 
         mails = []
         for mail in config.get('mails', []):
