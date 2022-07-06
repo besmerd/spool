@@ -35,6 +35,17 @@ def parse_pem(certstack):
     return certs
 
 
+def parse_pem_old(certstack):
+    """Extract PEM strings from *certstack*."""
+
+    certs = [
+        X509(match.group(0)) for match
+        in PEM_RE.finditer(certstack)
+    ]
+
+    return certs
+
+
 def encode_cms(mime_part):
     """Encodes a cms structure"""
 
@@ -81,14 +92,11 @@ def sign(message, key, cert, detached=True):
 
     options = [
         pkcs7.PKCS7Options.DetachedSignature,
-        #pkcs7.PKCS7Options.NoAttributes,
     ]
+
     cms = cms.sign(
         serialization.Encoding.PEM, options
     )
-
-    print(cms)
-    print(signed)
 
     signature = MIMEApplication(
         cms, 'pkcs7-signature', encode_cms, name='smime.p7s')
@@ -103,7 +111,7 @@ def sign(message, key, cert, detached=True):
 def encrypt(message, certs, algorithm='des3'):
     """Encrypt a given message."""
 
-    certs, cipher = parse_pem(certs), CipherType(algorithm)
+    certs, cipher = parse_pem_old(certs), CipherType(algorithm)
 
     cms = EnvelopedData.create(certs, message.as_bytes(), cipher, flags=0)
 
