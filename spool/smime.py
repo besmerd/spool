@@ -65,6 +65,25 @@ def encode_cms(mime_part):
     return mime_part
 
 
+def encode_cms_old(mime_part):
+    """Encodes a cms structure"""
+
+    mime_part['Content-Transfer-Encoding'] = 'base64'
+
+    if mime_part.get_payload() is None:
+        return mime_part
+
+    cms = mime_part.get_payload().pem()
+
+    match = PEM_RE.search(cms)
+    if not match:
+        raise ValueError('Failed to retrive cms')
+
+    mime_part.set_payload(match.group(2))
+
+    return mime_part
+
+
 def sign(message, key, cert, detached=True):
     """Sign a a given message."""
 
@@ -115,7 +134,7 @@ def encrypt(message, certs, algorithm='des3'):
 
     cms = EnvelopedData.create(certs, message.as_bytes(), cipher, flags=0)
 
-    encrypted = MIMEApplication(cms, 'pkcs7-mime', encode_cms,
+    encrypted = MIMEApplication(cms, 'pkcs7-mime', encode_cms_old,
                                 smime_type='enveloped-data', name='smime.p7m')
 
     return encrypted
