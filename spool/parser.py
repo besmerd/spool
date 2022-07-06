@@ -1,3 +1,4 @@
+import codecs
 import logging
 import os.path
 
@@ -127,6 +128,8 @@ CONFIG_SCHEMA = {
 FILTERS = {
     'basename': lambda p: os.path.basename(p),
     'dirname': lambda p: os.path.dirname(p),
+    'base64': lambda s: codecs.encode(s.encode(), 'base64').decode(),
+    'quoted_printable': lambda s: codecs.encode(s.encode(), 'quoted_printable').decode(),
 }
 
 
