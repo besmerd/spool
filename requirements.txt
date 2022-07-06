@@ -12,11 +12,6 @@ pytest
 pylint
 tox
 
-# Documentation
-mkdocs
-mkdocs-material
-mkdocstrings
-
 # Distribution
 twine
 wheel
