@@ -8,6 +8,10 @@ from ctypescrypto.cms import EnvelopedData, Flags, SignedData
 from ctypescrypto.pkey import PKey
 from ctypescrypto.x509 import X509
 
+from cryptography import x509
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.serialization import pkcs7
+
 LOG = logging.getLogger(__name__)
 
 PEM_RE = re.compile(
@@ -24,7 +28,7 @@ def parse_pem(certstack):
     """Extract PEM strings from *certstack*."""
 
     certs = [
-        X509(match.group(0)) for match
+        x509.load_pem_x509_certificate(match.group(0).encode('ascii')) for match
         in PEM_RE.finditer(certstack)
     ]
 
@@ -39,7 +43,7 @@ def encode_cms(mime_part):
     if mime_part.get_payload() is None:
         return mime_part
 
-    cms = mime_part.get_payload().pem()
+    cms = mime_part.get_payload()
 
     match = PEM_RE.search(cms)
     if not match:
@@ -65,12 +69,26 @@ def sign(message, key, cert, detached=True):
 
     cann = message.as_bytes().replace(b'\n', b'\r\n')
 
-    key, certstack = PKey(privkey=key.encode()), parse_pem(cert)
+    certstack = parse_pem(cert)
+    key = serialization.load_pem_private_key(key.encode('ascii'), None)
 
-    flags = Flags.DETACHED+Flags.BINARY
+    cms = pkcs7.PKCS7SignatureBuilder().set_data(cann).add_signer(
+        certstack[-1], key, hashes.SHA256()
+    )
 
-    cms = SignedData.create(cann, certstack[-1], key, flags=flags,
-                            certs=certstack[:-1])
+    for c in certstack[:-1]:
+        cms = cms.add_certificate(c)
+
+    options = [
+        pkcs7.PKCS7Options.DetachedSignature,
+        #pkcs7.PKCS7Options.NoAttributes,
+    ]
+    cms = cms.sign(
+        serialization.Encoding.PEM, options
+    )
+
+    print(cms)
+    print(signed)
 
     signature = MIMEApplication(
         cms, 'pkcs7-signature', encode_cms, name='smime.p7s')
