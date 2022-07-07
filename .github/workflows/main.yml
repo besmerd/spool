@@ -29,7 +29,7 @@ jobs:
           python -m pip install --upgrade --upgrade-strategy=eager coverage tox
 
       - name: Run tests
-        run: python -m tox
+        run: tox -e py
 
   build-and-publish:
     name: Build and publish distribution packages
