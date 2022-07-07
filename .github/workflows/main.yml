@@ -1,4 +1,4 @@
-name: Publish python distribution packages to PyPI
+name: Run tests and publish to pypi on tagging
 on: push
 jobs:
   test:
@@ -12,39 +12,45 @@ jobs:
           - '3.7'
           - '3.8'
           - '3.9'
+          - '3.10'
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip wheel
+          python -VV
+          python -m pip install --upgrade pip setuptools wheel
           python -m pip install --upgrade --upgrade-strategy=eager coverage tox
 
       - name: Run tests
-        run: tox -e py
+        run: python -m tox
 
   build-and-publish:
     name: Build and publish distribution packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - name: Check out repository
+        uses: actions/checkout@v2
 
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v1
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
         with:
-          python-version: 3.7
+          python-version: 3.9
 
       - name: Install pypa/build
         run: python -m pip install build --user
 
       - name: Build a binary wheel and a source tarball
         run: python -m build --sdist --wheel --outdir dist/ .
+
+      - name: List build artefacts
+        run: ls -l dist
 
       - name: Publish distribution packages to Test PyPI
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
