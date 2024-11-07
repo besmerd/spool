@@ -1,16 +1,15 @@
 import argparse
 import logging
-import sys
-import time
 import random
 import string
+import sys
+import time
 from pathlib import Path
 
 from .exceptions import SpoolError
 from .mailer import Mailer
 from .message import Message, MessageError
 from .parser import Config, ConfigError
-
 
 LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
 LOG = logging.getLogger(__name__)

@@ -237,10 +237,10 @@ class Message:
 
         path = Path(file_path)
         if not path.is_file():
-            raise MessageError('File not found: %s' % file_path)
+            raise MessageError(f'File not found: {file_path}')
 
         from jinja2 import Template
-        with open(path) as fh:
+        with open(path, 'r') as fh:
             template = Template(fh.read())
 
         rendered = template.render(**vars)
@@ -252,7 +252,7 @@ class Message:
 
         path = Path(file_path)
         if not path.is_file():
-            raise MessageError('File not found: %s' % file_path)
+            raise MessageError(f'File not found: {file_path}')
 
         mime_type, encoding = mimetypes.guess_type(str(file_path))
 

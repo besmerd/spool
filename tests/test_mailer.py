@@ -1,11 +1,12 @@
-import smtplib
 import logging
-from unittest.mock import patch, Mock
+import smtplib
+from unittest.mock import Mock, patch
+
 import dns
 import pytest
 
-from spool.message import Message
 from spool.mailer import MAIL_OUT_PREFIX, MAIL_OUT_SUFFIX, Mailer
+from spool.message import Message
 
 
 @pytest.fixture()

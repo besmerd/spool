@@ -1,6 +1,7 @@
+from email.parser import HeaderParser
+
 import pytest
 
-from email.parser import HeaderParser
 from spool.message import Message, parse_addrs
 
 combinations = [

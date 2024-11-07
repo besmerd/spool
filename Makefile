@@ -48,7 +48,7 @@ coverage: test ## run code coverage
 	cd htmlcov && python -m http.server
 
 isort: ## sort package imports with isort
-	isort --verbose --recursive .
+	isort --verbose .
 
 build: ## bulid packages
 	$(PYTHON_BIN)/python setup.py sdist bdist_wheel

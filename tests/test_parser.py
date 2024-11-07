@@ -1,4 +1,5 @@
 import pytest
+
 from spool.parser import Config, ConfigError
 
 

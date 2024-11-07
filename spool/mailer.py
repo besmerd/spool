@@ -6,8 +6,8 @@ import socket
 import ssl
 from email.utils import formataddr
 
-from dns.resolver import NXDOMAIN, Resolver, Cache
 from dns.exception import Timeout
+from dns.resolver import NXDOMAIN, Cache, Resolver
 
 from .exceptions import SpoolError
 
@@ -83,7 +83,8 @@ class Mailer:
         """
 
         if print_only:
-            return self.dump(msg)
+            self.dump(msg)
+            return
 
         sender = formataddr(msg.sender)
 
@@ -157,13 +158,13 @@ class Mailer:
             peer = min(answers, key=lambda rdata: rdata.preference).exchange
             return peer.to_text().rstrip('.') or peer.to_text()
 
-        except Timeout:
+        except Timeout as exc:
             raise ResolverTimeoutError('Query for mx record timed out. '
-                f'[domain={domain}, timeout={lifetime}s]')
+                f'[domain={domain}, timeout={lifetime}s]') from exc
 
-        except NXDOMAIN:
+        except NXDOMAIN as exc:
             raise RemoteNotFoundError(
-                f'No mx record found for domain. [domain={domain}]')
+                f'No mx record found for domain. [domain={domain}]') from exc
 
     def _connect(self, host, port):
 
@@ -174,13 +175,13 @@ class Mailer:
             server = smtplib.SMTP(host, port, timeout=self.timeout,
                                   local_hostname=self.helo)
 
-        except ConnectionRefusedError:
+        except ConnectionRefusedError as exc:
             raise MailerError(
-                f'Remote refused connection. [host={host}, port={port}]')
+                f'Remote refused connection. [host={host}, port={port}]') from exc
 
-        except socket.timeout:
+        except socket.timeout as exc:
             raise MailerError(
-                f'Timeout while connecting to remote. [host={host}, port={port}]')
+                f'Timeout while connecting to remote. [host={host}, port={port}]') from exc
 
         if self.debug:
             server.set_debuglevel(2)
@@ -219,6 +220,7 @@ class Mailer:
 
             if isinstance(err, smtplib.SMTPRecipientsRefused):
                 err = 'Remote refused all recipients.'
+
             elif isinstance(err, smtplib.SMTPServerDisconnected):
                 err = 'Connection closed by remote host.'
 

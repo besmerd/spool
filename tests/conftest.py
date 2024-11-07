@@ -2,8 +2,8 @@ import asyncore
 import smtpd
 import threading
 from collections import namedtuple
-import pytest
 
+import pytest
 
 RecordedMessage = namedtuple(
     'RecordedMessage',

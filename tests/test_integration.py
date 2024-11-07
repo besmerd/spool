@@ -1,10 +1,9 @@
-import pytest
-
 from pathlib import Path
 from unittest import mock
 
-from spool import main
+import pytest
 
+from spool import main
 
 SIMPLE = '''\
 ---
