@@ -15,91 +15,101 @@ LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
 LOG = logging.getLogger(__name__)
 
 
-
 def parse_args(args):
     """Parse command line arguments."""
 
     parser = argparse.ArgumentParser(description='Send mails with YAML.')
 
     parser.add_argument(
-        '-r', '--relay',
+        '-r',
+        '--relay',
         help='smtp relay smtp server',
     )
 
     parser.add_argument(
-        '-p', '--port',
-        type=int, default=25,
+        '-p',
+        '--port',
+        type=int,
+        default=25,
         help='port on remote server, default: 25',
     )
 
-    parser.add_argument(
-        '-n', '--nameservers',
-        help='nameservers for lookup of MX records'
-    )
+    parser.add_argument('-n',
+                        '--nameservers',
+                        help='nameservers for lookup of MX records')
+
+    parser.add_argument('-N',
+                        '--no-cache',
+                        action='store_true',
+                        help='disable dns cache')
 
     parser.add_argument(
-        '-N', '--no-cache',
-        action='store_true',
-        help='disable dns cache'
-    )
-
-    parser.add_argument(
-        '-d', '--delay',
+        '-d',
+        '--delay',
         type=float,
-        help='delay delivery by a given number of seconds after each mail'
-    )
+        help='delay delivery by a given number of seconds after each mail')
 
     parser.add_argument(
-        '-D', '--debug',
+        '-D',
+        '--debug',
         action='store_true',
         help='enable debugging on smtp conversation',
     )
 
     parser.add_argument(
-        '-P', '--print-only',
+        '-P',
+        '--print-only',
         action='store_true',
         help='print, but do not send messages',
     )
 
     parser.add_argument(
-        '-H', '--helo',
+        '-H',
+        '--helo',
         help='helo name used when connecting to the smtp server',
     )
 
     parser.add_argument(
-        '-c', '--check',
+        '-c',
+        '--check',
         action='store_true',
         help='check config files and quit',
     )
 
     parser.add_argument(
-        '-t', '--tags',
+        '-t',
+        '--tags',
         help='tags to execute',
     )
 
-    parser.add_argument(
-        '--starttls',
-        action='store_true',
-        help=''
-    )
+    parser.add_argument('--starttls', action='store_true', help='')
 
     parser.add_argument(
         'path',
-        nargs='+', metavar='config', type=Path,
+        nargs='+',
+        metavar='config',
+        type=Path,
         help='path of spool config',
     )
 
     output_group = parser.add_mutually_exclusive_group()
 
     output_group.add_argument(
-        '-v', '--verbose',
-        action='count', default=0, dest='verbosity',
+        '-v',
+        '--verbose',
+        action='count',
+        default=0,
+        dest='verbosity',
         help='verbose output (repeat for increased verbosity)',
     )
 
     output_group.add_argument(
-        '-s', '--silent',
-        action='store_const', const=-1, default=0, dest='verbosity',
+        '-s',
+        '--silent',
+        action='store_const',
+        const=-1,
+        default=0,
+        dest='verbosity',
         help='quiet output (show errors only)',
     )
 
@@ -157,7 +167,6 @@ class LogFormatter(logging.Formatter):
         self.has_color = hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
         super().__init__(*args, **kwargs)
 
-
     def format(self, record):
 
         if self.has_color:
@@ -177,7 +186,9 @@ def config_logger(verbosity):
     console = logging.StreamHandler()
     console.setFormatter(LogFormatter())
 
-    logging.basicConfig(level=log_level, handlers=[console,])
+    logging.basicConfig(level=log_level, handlers=[
+        console,
+    ])
 
 
 def get_uuid(length=6):
@@ -209,9 +220,13 @@ def run():
             LOG.error('Error while parsing config: %s [path=%s]', ex, path)
             continue
 
-        with Mailer(relay=args.relay, port=args.port, helo=args.helo,
-                    debug=args.debug, nameservers=args.nameservers,
-                    starttls=args.starttls, no_cache=args.no_cache) as mailer:
+        with Mailer(relay=args.relay,
+                    port=args.port,
+                    helo=args.helo,
+                    debug=args.debug,
+                    nameservers=args.nameservers,
+                    starttls=args.starttls,
+                    no_cache=args.no_cache) as mailer:
 
             for mail in config.mails:
 
@@ -243,11 +258,10 @@ def run():
                 try:
                     mailer.send(msg, args.print_only)
 
-                except MessageError as ex:
+                except MessageError as exc:
                     LOG.error(
                         'Failed to create message: %s. [name=%s, path=%s]',
-                        ex, mail['name'], path
-                    )
+                        exc, mail['name'], path)
 
 
 def cli():

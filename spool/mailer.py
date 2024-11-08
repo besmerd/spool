@@ -13,10 +13,8 @@ from .exceptions import SpoolError
 
 LOG = logging.getLogger(__name__)
 
-
 MAIL_OUT_PREFIX = '---------- MESSAGE FOLLOWS ----------'
 MAIL_OUT_SUFFIX = '------------ END MESSAGE ------------'
-
 DOMAIN_LITERAL = re.compile(r'\[(?P<ip_address>(\d{1,3}\.){3}\d{1,3})\]')
 
 
@@ -35,37 +33,26 @@ class ResolverTimeoutError(MailerError):
 class Mailer:
     """Represents an SMTP connection."""
 
-    def __init__(self, relay=None, port=25, helo=None, timeout=5, debug=False,
-                 starttls=False, nameservers=None, no_cache=False):
+    def __init__(self,
+                 relay=None,
+                 port=25,
+                 helo=None,
+                 timeout=5,
+                 debug=False,
+                 starttls=False,
+                 nameservers=None,
+                 no_cache=False):
 
         self.port = port
         self.relay = relay
-
-        if helo is None:
-            self.helo = self.get_helo_name()
-        else:
-            self.helo = helo
-
+        self.helo = helo or self._get_helo_name()
         self.timeout = timeout
         self.starttls = starttls
         self.debug = debug
         self.no_cache = no_cache
-
-        if nameservers:
-            self.resolver = Resolver(configure=False)
-            self.resolver.nameservers = [
-                n.strip() for n in nameservers.split(',')
-            ]
-
-        else:
-            self.resolver = Resolver()
-
-        if not self.no_cache:
-            self.resolver.cache = Cache()
-
-
-        # TODO: Add option to parser
         self.reorder_recipients = True
+
+        self.resolver = self._configure_resolver(nameservers)
 
     def __enter__(self):
         return self
@@ -83,7 +70,7 @@ class Mailer:
         """
 
         if print_only:
-            self.dump(msg)
+            self._dump_message(msg)
             return
 
         sender = formataddr(msg.sender)
@@ -95,6 +82,7 @@ class Mailer:
             self._send_message(self.relay, sender, recipients, msg)
 
         else:
+
             def domain(address):
                 return address.split('@', 1)[-1]
 
@@ -104,50 +92,37 @@ class Mailer:
             for domain, recipients in itertools.groupby(recipients, domain):
 
                 try:
-                    host = self.get_remote(domain)
+                    host = self._get_remote(domain)
 
                 except RemoteNotFoundError as err:
-                    LOG.error(
-                        'Failed to send message: %s [name=%s]', err, msg.name)
+                    LOG.error('Failed to send message: %s [name=%s]', err,
+                              msg.name)
                     continue
 
                 self._send_message(host, sender, list(recipients), msg)
 
-    @staticmethod
-    def get_helo_name():
-        """Retrive the helo/ehlo name based on the hostname."""
+    def _configure_resolver(self, nameservers):
+        """Configure the DNS resolver."""
+        resolver = Resolver(configure=False) if nameservers else Resolver()
 
+        if nameservers:
+            resolver.nameservers = [n.strip() for n in nameservers.split(',')]
+
+        if not self.no_cache:
+            resolver.cache = Cache()
+
+        return resolver
+
+    @staticmethod
+    def _get_helo_name():
+        """Retrieve the helo/ehlo name based on the hostname."""
         fqdn = socket.getfqdn()
         if '.' in fqdn:
             return fqdn
+        return f'[{socket.gethostbyname(socket.gethostname())}]'
 
-        # Use a domain literal for the EHLO/HELO verb, as specified in RFC 2821
-        address = '127.0.0.1'
-        try:
-            address = socket.gethostbyname(socket.gethostname())
-        except socket.gaierror:
-            pass
-
-        return f'[{address}]'
-
-    def get_remote(self, domain, nameservers=None, lifetime=10.0):
-        """Returns the mail exchange server for a given domain.
-
-        Args:
-            domain (str): Domain name to retrieve MX records from.
-            nameservers (:obj: `list`, optional): List of nameservers (`str`)
-                to query against.
-            lifetime (:obj: `float`, optional): Number of seconds (`float`)
-                until the query times out.
-
-        Returns:
-            str: Hostname or address of MX record with the highest preference
-                (lowest priority value).
-
-        Raises:
-            RemoteNotFoundError: If no MX resource record was found.
-            ResolverTimeoutError: DNS operation timed out.
-        """
+    def _get_remote(self, domain, lifetime=10.0):
+        """Returns the mail exchange server for a given domain."""
 
         match = DOMAIN_LITERAL.fullmatch(domain)
         if match:
@@ -159,7 +134,8 @@ class Mailer:
             return peer.to_text().rstrip('.') or peer.to_text()
 
         except Timeout as exc:
-            raise ResolverTimeoutError('Query for mx record timed out. '
+            raise ResolverTimeoutError(
+                'Query for mx record timed out. '
                 f'[domain={domain}, timeout={lifetime}s]') from exc
 
         except NXDOMAIN as exc:
@@ -167,21 +143,25 @@ class Mailer:
                 f'No mx record found for domain. [domain={domain}]') from exc
 
     def _connect(self, host, port):
-
+        """Connect to the SMTP server."""
         LOG.info('Connecting to remote server. [host=%s, port=%s, helo=%s]',
                  host, port, self.helo)
 
         try:
-            server = smtplib.SMTP(host, port, timeout=self.timeout,
+            server = smtplib.SMTP(host,
+                                  port,
+                                  timeout=self.timeout,
                                   local_hostname=self.helo)
 
         except ConnectionRefusedError as exc:
             raise MailerError(
-                f'Remote refused connection. [host={host}, port={port}]') from exc
+                f'Remote refused connection. [host={host}, port={port}]'
+            ) from exc
 
         except socket.timeout as exc:
             raise MailerError(
-                f'Timeout while connecting to remote. [host={host}, port={port}]') from exc
+                f'Timeout while connecting to remote. [host={host}, port={port}]'
+            ) from exc
 
         if self.debug:
             server.set_debuglevel(2)
@@ -193,8 +173,7 @@ class Mailer:
             except smtplib.SMTPNotSupportedError:
                 LOG.warning(
                     ('No support for STARTTLS command by remote server. '
-                     '[host=%s, port=%s]'), host, port
-                )
+                     '[host=%s, port=%s]'), host, port)
 
         return server
 
@@ -209,40 +188,33 @@ class Mailer:
 
             if isinstance(err, smtplib.SMTPSenderRefused):
                 LOG.error(('Failed to send message: Sender rejected.'
-                           '[name=%s, host=%s, port=%s]'),
-                          msg.name, host, self.port)
+                           '[name=%s, host=%s, port=%s]'), msg.name, host,
+                          self.port)
             else:
                 LOG.error(('Error while sending message: %s - %s '
                            '[name=%s, host=%s, port=%s]'), err.smtp_code,
                           err.smtp_error.decode(), msg.name, host, self.port)
 
-        except smtplib.SMTPException as err:
+        except smtplib.SMTPException as exc:
 
-            if isinstance(err, smtplib.SMTPRecipientsRefused):
-                err = 'Remote refused all recipients.'
+            if isinstance(exc, smtplib.SMTPRecipientsRefused):
+                err = f'Remote refused all recipients: {exc}'
 
-            elif isinstance(err, smtplib.SMTPServerDisconnected):
-                err = 'Connection closed by remote host.'
+            elif isinstance(exc, smtplib.SMTPServerDisconnected):
+                err = f'Connection closed by remote host: {exc}'
 
             LOG.error('Failed to send message: %s [name=%s, host=%s, port=%s]',
-                      err, msg.name, host, self.port)
+                      exc, msg.name, host, self.port)
 
         else:
             for recipient, (code, response) in refused.items():
                 LOG.warning('Remote refused recipient: %s [host=%s, port=%s]',
                             recipient, host, self.port)
 
-            LOG.info('Message sent. [name=%s, host=%s, port=%s]',
-                     msg.name, host, self.port)
+            LOG.info('Message sent. [name=%s, host=%s, port=%s]', msg.name,
+                     host, self.port)
 
     @staticmethod
-    def dump(msg):
-        """Print a message to console.
-
-        Prints a given message to console in Internet Message Format (IMF).
-
-        Args:
-            msg: A message.
-        """
-
+    def _dump_message(msg):
+        """Print a message to console."""
         print(MAIL_OUT_PREFIX, msg.as_string(), MAIL_OUT_SUFFIX, sep='\n')

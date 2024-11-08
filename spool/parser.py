@@ -34,14 +34,23 @@ CONFIG_SCHEMA = {
         'schema': {
             'type': 'dict',
             'schema': {
-                'name': {'type': 'string'},
-                'description': {'type': 'string'},
-                'sender': {'type': 'string', 'required': True},
+                'name': {
+                    'type': 'string'
+                },
+                'description': {
+                    'type': 'string'
+                },
+                'sender': {
+                    'type': 'string',
+                    'required': True
+                },
                 'recipients': {
                     'type': ['string', 'list'],
                     'required': True,
                 },
-                'subject': {'type': 'string'},
+                'subject': {
+                    'type': 'string'
+                },
                 'headers': {
                     'type': 'dict',
                     'valuesrules': {
@@ -49,10 +58,22 @@ CONFIG_SCHEMA = {
                         'nullable': True,
                     },
                 },
-                'from': {'type': 'string', 'rename': 'from_addr'},
-                'to': {'type': ['string', 'list'], 'rename': 'to_addrs'},
-                'cc': {'type': ['string', 'list'], 'rename': 'cc_addrs'},
-                'bcc': {'type': ['string', 'list'], 'rename': 'bcc_addrs'},
+                'from': {
+                    'type': 'string',
+                    'rename': 'from_addr'
+                },
+                'to': {
+                    'type': ['string', 'list'],
+                    'rename': 'to_addrs'
+                },
+                'cc': {
+                    'type': ['string', 'list'],
+                    'rename': 'cc_addrs'
+                },
+                'bcc': {
+                    'type': ['string', 'list'],
+                    'rename': 'bcc_addrs'
+                },
                 'eml': {
                     'type': ['string', 'dict'],
                     'schema': {
@@ -71,14 +92,26 @@ CONFIG_SCHEMA = {
                         'ical',
                     ],
                 },
-                'text_body': {'type': 'string', 'excludes': ['eml']},
-                'html_body': {'type': 'string', 'excludes': ['eml']},
+                'text_body': {
+                    'type': 'string',
+                    'excludes': ['eml']
+                },
+                'html_body': {
+                    'type': 'string',
+                    'excludes': ['eml']
+                },
                 'dkim': {
                     'type': 'dict',
                     'schema': {
-                        'privkey': {'type': 'string'},
-                        'selector': {'type': 'string'},
-                        'domain': {'type': 'string'},
+                        'privkey': {
+                            'type': 'string'
+                        },
+                        'selector': {
+                            'type': 'string'
+                        },
+                        'domain': {
+                            'type': 'string'
+                        },
                     },
                 },
                 'smime': {
@@ -110,12 +143,17 @@ CONFIG_SCHEMA = {
                         }
                     },
                 },
-                'ical': {'type': 'string', 'excludes': ['eml']},
+                'ical': {
+                    'type': 'string',
+                    'excludes': ['eml']
+                },
                 'attachments': {
                     'type': ['string', 'list'],
                     'excludes': ['eml'],
                 },
-                'loop': {'type': 'list'},
+                'loop': {
+                    'type': 'list'
+                },
                 'tags': {
                     'type': ['string', 'list'],
                     'coerce': to_list
@@ -126,10 +164,14 @@ CONFIG_SCHEMA = {
 }
 
 FILTERS = {
-    'basename': os.path.basename,
-    'dirname': os.path.dirname,
-    'base64': lambda s: codecs.encode(s.encode(), 'base64').decode(),
-    'quoted_printable': lambda s: codecs.encode(s.encode(), 'quoted_printable').decode(),
+    'basename':
+    os.path.basename,
+    'dirname':
+    os.path.dirname,
+    'base64':
+    lambda s: codecs.encode(s.encode(), 'base64').decode(),
+    'quoted_printable':
+    lambda s: codecs.encode(s.encode(), 'quoted_printable').decode(),
 }
 
 
@@ -141,10 +183,8 @@ class ValidationError(ConfigError):
     """Validation Error."""
 
 
-
 class Config:
     """Represents a single mail instance config."""
-
 
     def __init__(self, config):
 

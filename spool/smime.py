@@ -12,8 +12,9 @@ LOG = logging.getLogger(__name__)
 def sign(message, key, cert):
     """Sign a a given message."""
 
-    signed = MIMEMultipart(
-        'signed', micalg='sha-256', protocol='application/pkcs7-signature')
+    signed = MIMEMultipart('signed',
+                           micalg='sha-256',
+                           protocol='application/pkcs7-signature')
     signed.preamble = 'This is an S/MIME signed message\n'
 
     signed.attach(message)
@@ -24,21 +25,18 @@ def sign(message, key, cert):
     key = serialization.load_pem_private_key(key.encode(), None)
 
     cms = pkcs7.PKCS7SignatureBuilder().set_data(cann).add_signer(
-        certstack[-1], key, hashes.SHA256()
-    )
+        certstack[-1], key, hashes.SHA256())
 
     for c in certstack[:-1]:
         cms = cms.add_certificate(c)
 
-
     options = [pkcs7.PKCS7Options.DetachedSignature]
-    cms = cms.sign(
-        serialization.Encoding.DER, options
-    )
+    cms = cms.sign(serialization.Encoding.DER, options)
 
     signature = MIMEApplication(cms, 'pkcs7-signature', name='smime.p7s')
-    signature.add_header(
-        'Content-Disposition', 'attachment', filename='smime.p7s')
+    signature.add_header('Content-Disposition',
+                         'attachment',
+                         filename='smime.p7s')
 
     signed.attach(signature)
 
@@ -58,5 +56,7 @@ def encrypt(message, certs):
 
     envelope = envelope.encrypt(serialization.Encoding.PEM, options)
 
-    return MIMEApplication(
-        envelope, 'pkcs7-mime', smime_type='enveloped-data', name='smime.p7m')
+    return MIMEApplication(envelope,
+                           'pkcs7-mime',
+                           smime_type='enveloped-data',
+                           name='smime.p7m')

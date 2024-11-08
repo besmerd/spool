@@ -91,10 +91,23 @@ class EmailHeaders(MutableMapping):
 class Message:
     """Represents a single email message."""
 
-    def __init__(self, name, sender, recipients,
-                 from_addr=None, to_addrs=None, subject=None, cc_addrs=None,
-                 bcc_addrs=None, headers=None, text_body=None, html_body=None,
-                 ical=None, dkim=None, smime=None, eml=None, charset='utf-8'):
+    def __init__(self,
+                 name,
+                 sender,
+                 recipients,
+                 from_addr=None,
+                 to_addrs=None,
+                 subject=None,
+                 cc_addrs=None,
+                 bcc_addrs=None,
+                 headers=None,
+                 text_body=None,
+                 html_body=None,
+                 ical=None,
+                 dkim=None,
+                 smime=None,
+                 eml=None,
+                 charset='utf-8'):
 
         self.name = name
 
@@ -143,14 +156,19 @@ class Message:
         """Get the message headers."""
 
         headers = EmailHeaders({
-            'From': formataddr(self.from_addr),
-            'To': COMMASPACE.join([formataddr(r) for r in self.to_addrs]),
-            'Subject': Header(self.subject, self.charset),
-            'Date': formatdate(localtime=True),
+            'From':
+            formataddr(self.from_addr),
+            'To':
+            COMMASPACE.join([formataddr(r) for r in self.to_addrs]),
+            'Subject':
+            Header(self.subject, self.charset),
+            'Date':
+            formatdate(localtime=True),
             # do not call make_msgid unless it's required, since make_msgid
             # depends on dns resolution on the hostname
-            'Message-ID': make_msgid() if 'message-id' not in self._headers
-                          else self._headers['message-id'],
+            'Message-ID':
+            make_msgid() if 'message-id' not in self._headers else
+            self._headers['message-id'],
         })
 
         if self.cc_addrs:
@@ -267,7 +285,8 @@ class Message:
         encoders.encode_base64(part)
 
         part.add_header('Content-Disposition',
-                        'attachment', filename=path.name)
+                        'attachment',
+                        filename=path.name)
 
         return part
 
