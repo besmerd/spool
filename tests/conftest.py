@@ -1,68 +1,60 @@
-import asyncore
-import smtpd
-import threading
-from collections import namedtuple
+from email.message import EmailMessage
 
+import asyncio
 import pytest
 
-RecordedMessage = namedtuple(
-    'RecordedMessage',
-    'peer mailfrom rcpttos data',
-)
+from aiosmtpd.controller import Controller
 
 
-class MailServer(smtpd.SMTPServer, threading.Thread):
-
-    def __init__(self, host='localhost', port=0):
-
-        smtpd.SMTPServer.__init__(self, (host, port), None, decode_data=True)
-
-        self.host, self.port = self.socket.getsockname()[0:2]
-
+class MessageHandler:
+    def __init__(self):
         self.messages = []
 
-        # initialise thread
-        self._stopevent = threading.Event()
-        self.threadName = self.__class__.__name__
-        threading.Thread.__init__(self, name=self.threadName)
+    async def handle_DATA(self, server, session, envelope):
+        self.messages.append(envelope.content.decode('utf8'))
+        return '250 OK'
+
+
+class SMTPServer:
+
+    def __init__(self, hostname='127.0.0.1', port=2525):
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
+        self.handler = MessageHandler()
+        self.controller = Controller(self.handler, hostname=hostname, port=port)
 
     def __enter__(self):
-        self.start()
+        self.controller.start()
         return self
 
-    def __exit__(self, *exc):
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.controller.stop()
+        self.loop.close()
 
-        self.stop()
+    @property
+    def messages(self):
+        return self.handler.messages
 
-    def process_message(self, peer, mailfrom, rcpttos, data, **kwargs):
+    @property
+    def host(self):
+        return self.controller.hostname
 
-        recorded = RecordedMessage(
-            peer=peer, mailfrom=mailfrom, rcpttos=rcpttos, data=data
-        )
-
-        self.messages.append(recorded)
-
-    def run(self):
-
-        while not self._stopevent.is_set():
-            asyncore.loop(timeout=0.001, count=1)
-
-    def stop(self, timeout=None):
-
-        self._stopevent.set()
-        threading.Thread.join(self, timeout)
-        self.close()
-
-    def __del__(self):
-
-        self.stop()
-
-    def __repr__(self):
-
-        return '<smtp.Server %s:%s>' % self.addr
+    @property
+    def port(self):
+        return self.controller.port
 
 
-@pytest.fixture
+class SimpleMessageHandler:
+
+    def __init__(self):
+        self.messages = []
+
+    async def handle_DATA(self, server, session, envelope):
+        self.messages.append(envelope.content.decode('utf8'))
+        return '250 OK'
+
+
+@pytest.fixture(scope='function')
 def smtp_server():
-    with MailServer() as server:
+    with SMTPServer() as server:
         yield server

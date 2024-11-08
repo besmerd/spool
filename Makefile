@@ -1,4 +1,4 @@
-.PHONY: install clean clean-build clean-pyc clean-test test lint isort coverage help
+.PHONY: install clean clean-build clean-pyc clean-test test format lint isort coverage help
 .DEFAULT_GOAL := help
 
 PROJECT := spool
@@ -24,7 +24,6 @@ clean-build: ## remove build artifacts
 	rm -rf build/
 	rm -rf dist/
 	rm -rf *.egg-info
-	find . -name '*.egg' -delete
 
 clean-pyc: ## remove python artifacts
 	find . -name '*.py[co]' -delete
@@ -37,10 +36,17 @@ clean-test: ## remove test and coverage artifacts
 	rm -rf htmlcov/
 
 test: ## run test suite
-	-tox
+	-pytest
 
 lint: ## check style with linter
 	-tox -e lint
+
+format: ## format code with isort and yapf
+	isort --verbose spool
+	yapf -ir spool
+
+check-format: ## check code formatting with yapf
+	yapf --diff --recursive spool
 
 coverage: test ## run code coverage
 	coverage report
@@ -51,7 +57,7 @@ isort: ## sort package imports with isort
 	isort --verbose .
 
 build: ## bulid packages
-	$(PYTHON_BIN)/python setup.py sdist bdist_wheel
+	$(PYTHON_BIN)/python -m build
 
 deploy: clean build ## build and deploy to pypi.org
 	$(PYTHON_BIN)/python -m twine upload dist/*

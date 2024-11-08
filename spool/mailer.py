@@ -198,13 +198,13 @@ class Mailer:
         except smtplib.SMTPException as exc:
 
             if isinstance(exc, smtplib.SMTPRecipientsRefused):
-                err = f'Remote refused all recipients: {exc}'
+                err = 'Remote refused all recipients.'
 
             elif isinstance(exc, smtplib.SMTPServerDisconnected):
-                err = f'Connection closed by remote host: {exc}'
+                err = 'Connection closed by remote host.'
 
             LOG.error('Failed to send message: %s [name=%s, host=%s, port=%s]',
-                      exc, msg.name, host, self.port)
+                      err, msg.name, host, self.port)
 
         else:
             for recipient, (code, response) in refused.items():

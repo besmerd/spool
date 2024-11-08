@@ -3,12 +3,14 @@ cryptography
 dkimpy
 dnspython
 jinja2
+python-gnupg
 pyyaml
 
 # Testing
 pytest
 pylint
 tox
+aiosmtpd
 
 # Distribution
 twine

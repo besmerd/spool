@@ -28,7 +28,7 @@ def mailer(smtp_server):
 @patch.object(smtplib.SMTP, 'sendmail')
 def test_message_sent(mock_send, mailer, message, caplog):
 
-    caplog.set_level(logging.INFO)
+    caplog.set_level(logging.INFO, logger='spool')
     mailer.send(message)
 
     assert len(caplog.record_tuples) == 2
@@ -164,7 +164,7 @@ dns_data = [
 def test_get_remote(mailer, data):
     with patch.object(dns.resolver.Resolver, 'query',
                       return_value=data['response']) as mock_query:
-        assert mailer.get_remote(data['domain']) == data['expected']
+        assert mailer._get_remote(data['domain']) == data['expected']
 
 
 @patch.object(smtplib.SMTP, 'sendmail')
