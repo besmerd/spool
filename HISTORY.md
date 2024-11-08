@@ -17,3 +17,8 @@
 #### Bugfixes
 - Fix MIME type if only `html_body` is set
 - Fix header handling for smime signing
+
+## 1.0.0 (2024-11-07)
+
+#### Improvements
+- Drop dependency from `ctypescrypto`
