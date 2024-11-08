@@ -1,5 +1,10 @@
 # Release History
 
+## 1.0.0 (2024-11-07)
+
+#### Improvements
+- Drop dependency from `ctypescrypto`
+
 ## 0.9.5 (2021-03-10)
 
 ### Features
@@ -17,8 +22,3 @@
 #### Bugfixes
 - Fix MIME type if only `html_body` is set
 - Fix header handling for smime signing
-
-## 1.0.0 (2024-11-07)
-
-#### Improvements
-- Drop dependency from `ctypescrypto`
