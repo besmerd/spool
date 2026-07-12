@@ -1,15 +1,12 @@
 import argparse
 import logging
-import random
-import string
 import sys
 import time
 from pathlib import Path
 
 from .exceptions import SpoolError
 from .mailer import Mailer
-from .message import Message, MessageError
-from .parser import Config, ConfigError
+from .parser import ConfigError, load_mails
 
 LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
 LOG = logging.getLogger(__name__)
@@ -85,6 +82,7 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
+<<<<<<< HEAD
 def tags_matches_mail(tags, mail):
     """Check if the mail has matching tags."""
 
@@ -116,6 +114,8 @@ def parse_files(file_path, mail):
     return mail
 
 
+=======
+>>>>>>> c97f07c (Modernize stack)
 class LogFormatter(logging.Formatter):
     """Custom log formatter with color support."""
 
@@ -157,39 +157,6 @@ def configure_logger(verbosity):
     ])
 
 
-def load_configurations(file_paths):
-    """Load configuration files and returning valid configurations."""
-    for path in file_paths:
-        if not path.is_file():
-            LOG.warning('No such file, skipping. [path=%s]', path)
-            continue
-        try:
-            config = Config.load(path)
-            yield path, config
-        except ConfigError as ex:
-            LOG.error('Error while parsing config: %s [path=%s]', ex, path)
-
-
-def process_message(mailer, mail, path, print_only):
-    """Process and send a single mail message."""
-
-    mail.pop('description', None)
-    mail = parse_files(path, mail)
-    attachments = mail.pop('attachments', [])
-    msg = Message(**mail)
-
-    if isinstance(attachments, str):
-        attachments = [attachments]
-    for attachment in attachments:
-        msg.attach(path.parent / attachment)
-
-    try:
-        mailer.send(msg, print_only)
-    except MessageError as exc:
-        LOG.error('Failed to create message: %s. [name=%s, path=%s]', exc,
-                 mail['name'], path)
-
-
 def run():
     """Main method."""
 
@@ -201,23 +168,44 @@ def run():
         if args.check:
             continue
 
+        try:
+            mails = load_mails(path)
 
-        with Mailer(relay=args.relay, port=args.port, helo=args.helo,
-                    debug=args.debug, nameservers=args.nameservers,
-                    starttls=args.starttls, no_cache=args.no_cache) as mailer:
+            if args.check:
+                continue
 
-            for idx, mail in enumerate(config.mails):
+        except ConfigError as ex:
+            LOG.error('Error while parsing config: %s [path=%s]', ex, path)
+            continue
 
-                if not tags_matches_mail(args.tags, mail.pop('tags', [])):
-                    LOG.debug('Skipping message "%s", does not match tags: %s',
-                              mail['name'], args.tags)
-                    continue
+        mailer = Mailer(
+            relay=args.relay, port=args.port, helo=args.helo,
+            debug=args.debug, nameservers=args.nameservers,
+            starttls=args.starttls, no_cache=args.no_cache,
+        )
 
-                process_message(mailer, mail, path, args.print_only)
+        for mail in mails:
+            if not mail.matches_tags(args.tags):
+                LOG.debug('Skipping message "%s", does not match tags: %s',
+                          mail.name, args.tags)
+                continue
 
-                if args.delay and idx < len(config.mails) - 1:
-                    LOG.debug('Delaying next message by %.2f seconds.', args.delay)
-                    time.sleep(args.delay)
+            if not first and args.delay:
+                LOG.debug('Delay sending of next message by %.2f seconds.',
+                          args.delay)
+                time.sleep(args.delay)
+            else:
+                first = False
+
+            try:
+                msg = mail.build_message(path.parent)
+                mailer.send(msg, args.print_only)
+
+            except (SpoolError, OSError) as ex:
+                LOG.error(
+                    'Failed to process message: %s. [name=%s, path=%s]',
+                    ex, mail.name, path
+                )
 
 
 def cli():

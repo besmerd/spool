@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spool"
+version = "0.9.9"
+description = "Send mails with YAML"
+readme = { file = "README.rst", content-type = "text/x-rst" }
+requires-python = ">=3.12"
+license = "BSD-3-Clause"
+license-files = ["LICENSE.rst"]
+authors = [
+    { name = "Daniel Besmer", email = "besmerd@gmail.com" },
+]
+keywords = ["email", "mailer"]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "cryptography",
+    "dkimpy",
+    "dnspython",
+    "jinja2",
+    "pydantic>=2,<3",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+test = [
+    "aiosmtpd",
+    "coverage",
+    "pytest",
+]
+lint = [
+    "pylint",
+]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+]
+release = [
+    "build",
+    "twine",
+]
+
+[project.scripts]
+spool = "spool.main:cli"
+
+[project.urls]
+Documentation = "https://besmerd.github.io/spool"
+Source = "https://github.com/besmerd/spool"
+
+[tool.setuptools.packages.find]
+include = ["spool*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["spool"]
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.pylint.main]
+disable = ["C0103"]
+output-format = "colorized"

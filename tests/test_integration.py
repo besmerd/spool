@@ -1,3 +1,4 @@
+from email import message_from_string
 from pathlib import Path
 from unittest import mock
 
@@ -54,6 +55,23 @@ mails:
     loop: '{{ friends }}'
 '''
 
+WITH_FAILURE = '''\
+---
+defaults:
+  sender: sender@example.org
+  recipients: recipient@example.org
+
+mails:
+  - name: missing-smime-files
+    smime:
+      from_key_file: missing.key.pem
+      from_crt_file: missing.crt.pem
+    text_body: This message should fail.
+
+  - name: message-after-failure
+    text_body: This message should still be sent.
+'''
+
 EXAMPLE_DIR = Path(__file__).parent / '../examples'
 
 
@@ -106,8 +124,30 @@ def test_success_with_loop(smtp_server, tmp_path):
     assert len(smtp_server.messages) == 3
 
 
+def test_mail_failure_does_not_skip_remaining_mails(
+        smtp_server, tmp_path, caplog):
+    config = tmp_path / 'with_failure.yml'
+    config.write_text(WITH_FAILURE)
+
+    with mock.patch('sys.argv', [
+        'spool', '--relay', smtp_server.host, '--port', str(smtp_server.port),
+        str(config)
+    ]):
+        main.cli()
+
+    assert len(smtp_server.messages) == 1
+    delivered = message_from_string(smtp_server.messages[0].data)
+    assert delivered.get_payload(decode=True).decode() == (
+        'This message should still be sent.')
+    assert any(
+        'Failed to process message' in record.message
+        and 'missing-smime-files' in record.message
+        for record in caplog.records
+    )
+
+
 @pytest.mark.parametrize(
-    'config', EXAMPLE_DIR.glob('*.yml'), ids=lambda f: f.name)
+    'config', list(EXAMPLE_DIR.glob('*.yml')), ids=lambda f: f.name)
 def test_examples(smtp_server, tmp_path, caplog, config):
 
     args = ['spool', '--relay', smtp_server.host,

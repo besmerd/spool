@@ -12,8 +12,8 @@ from spool.message import Message
 @pytest.fixture()
 def message():
     return Message(
-        name='test', sender='sender@example.org',
-        recipients='recipient@example.org, noreply@example.org',
+        name='test', envelope_from='sender@example.org',
+        envelope_recipients='recipient@example.org, noreply@example.org',
         # Set Message-Id header to None to prevent a dns lookup
         headers={'Message-ID': None},
     )
@@ -41,6 +41,17 @@ def test_message_sent(mock_send, mailer, message, caplog):
     assert 'Message sent.' in msg
 
 
+def test_connection_is_closed(mailer, message):
+    with patch.object(mailer, '_connect') as mock_connect:
+        connection = mock_connect.return_value.__enter__.return_value
+        connection.sendmail.return_value = {}
+
+        mailer.send(message)
+
+    mock_connect.return_value.__exit__.assert_called_once_with(
+        None, None, None)
+
+
 @patch.object(smtplib.SMTP, 'sendmail')
 def test_remote_refused_sender(mock_send, mailer, message, caplog):
     mock_send.side_effect = smtplib.SMTPSenderRefused(
@@ -57,19 +68,20 @@ def test_remote_refused_sender(mock_send, mailer, message, caplog):
 def test_remote_refused_recipient(mock_send, mailer, message, caplog):
 
     err_code, err_msg = 550, b'5.1.0 Address rejected.'
-    mock_send.return_value = {message.recipients[1][1]: (err_code, err_msg)}
+    refused_recipient = message.envelope_recipients[1][1]
+    mock_send.return_value = {refused_recipient: (err_code, err_msg)}
     mailer.send(message)
 
     assert len(caplog.record_tuples) == 1
     _, severity, msg = caplog.record_tuples[0]
     assert severity == logging.WARNING
-    assert f'Remote refused recipient: {message.recipients[1][1]}' in msg
+    assert f'Remote refused recipient: {refused_recipient}' in msg
 
 
 @patch.object(smtplib.SMTP, 'sendmail')
 def test_remote_refused_all_recipients(mock_send, mailer, message, caplog):
 
-    recipients = [rcpt[1] for rcpt in message.recipients]
+    recipients = [rcpt[1] for rcpt in message.envelope_recipients]
     mock_send.side_effect = smtplib.SMTPRecipientsRefused(recipients)
     mailer.send(message)
 
@@ -162,7 +174,7 @@ dns_data = [
 
 @pytest.mark.parametrize('data', dns_data, ids=lambda data: data['case'])
 def test_get_remote(mailer, data):
-    with patch.object(dns.resolver.Resolver, 'query',
+    with patch.object(dns.resolver.Resolver, 'resolve',
                       return_value=data['response']) as mock_query:
         assert mailer._get_remote(data['domain']) == data['expected']
 

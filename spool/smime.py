@@ -1,4 +1,4 @@
-import logging
+import re
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 
@@ -6,57 +6,73 @@ from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.serialization import pkcs7
 
-LOG = logging.getLogger(__name__)
+PEM_RE = re.compile(
+    r'-----BEGIN ([A-Z0-9 ]+)-----\r?\n'
+    r'(.*?)'
+    r'-----END \1-----\r?\n?',
+    re.DOTALL,
+)
+
+SIGNED_PREAMBLE = 'This is an S/MIME signed message\n'
+
+
+def parse_pem(certstack):
+    """Extract certificates from a PEM stack."""
+
+    return [
+        x509.load_pem_x509_certificate(match.group(0).encode('ascii'))
+        for match in PEM_RE.finditer(certstack)
+    ]
+
+
+def encode_cms(mime_part):
+    """Convert a PEM CMS payload to MIME base64 content."""
+
+    mime_part['Content-Transfer-Encoding'] = 'base64'
+    if mime_part.get_payload() is None:
+        return mime_part
+
+    match = PEM_RE.search(mime_part.get_payload())
+    if not match:
+        raise ValueError('Failed to retrieve CMS payload')
+
+    mime_part.set_payload(match.group(2))
+    return mime_part
 
 
 def sign(message, key, cert):
-    """Sign a a given message."""
+    """Return a detached S/MIME signature around a message."""
 
-    signed = MIMEMultipart('signed',
-                           micalg='sha-256',
-                           protocol='application/pkcs7-signature')
-    signed.preamble = 'This is an S/MIME signed message\n'
-
+    signed = MIMEMultipart(
+        'signed', micalg='sha-256', protocol='application/pkcs7-signature')
+    signed.preamble = SIGNED_PREAMBLE
     signed.attach(message)
 
-    cann = message.as_bytes().replace(b'\n', b'\r\n')
+    canonical_message = message.as_bytes().replace(b'\n', b'\r\n')
+    certificates = parse_pem(cert)
+    private_key = serialization.load_pem_private_key(
+        key.encode('ascii'), None)
 
-    certstack = x509.load_pem_x509_certificates(cert.encode())
-    key = serialization.load_pem_private_key(key.encode(), None)
+    builder = pkcs7.PKCS7SignatureBuilder().set_data(
+        canonical_message).add_signer(
+            certificates[-1], private_key, hashes.SHA256())
+    for certificate in certificates[:-1]:
+        builder = builder.add_certificate(certificate)
 
-    cms = pkcs7.PKCS7SignatureBuilder().set_data(cann).add_signer(
-        certstack[-1], key, hashes.SHA256())
-
-    for c in certstack[:-1]:
-        cms = cms.add_certificate(c)
-
-    options = [pkcs7.PKCS7Options.DetachedSignature]
-    cms = cms.sign(serialization.Encoding.DER, options)
-
-    signature = MIMEApplication(cms, 'pkcs7-signature', name='smime.p7s')
-    signature.add_header('Content-Disposition',
-                         'attachment',
-                         filename='smime.p7s')
-
+    cms = builder.sign(
+        serialization.Encoding.PEM,
+        [pkcs7.PKCS7Options.DetachedSignature],
+    )
+    signature = MIMEApplication(
+        cms, 'pkcs7-signature', encode_cms, name='smime.p7s')
+    signature.add_header(
+        'Content-Disposition', 'attachment', filename='smime.p7s')
     signed.attach(signature)
 
     return signed
 
 
-def encrypt(message, certs):
-    """Encrypt a given message."""
+def encrypt(_message, _certs):
+    """Encrypt a message for the supplied certificates."""
 
-    certs = x509.load_pem_x509_certificates(certs.encode())
-
-    options = [pkcs7.PKCS7Options.Text]
-    envelope = pkcs7.PKCS7EnvelopeBuilder().set_data(message.as_bytes())
-
-    for cert in certs:
-        envelope = envelope.add_recipient(cert)
-
-    envelope = envelope.encrypt(serialization.Encoding.PEM, options)
-
-    return MIMEApplication(envelope,
-                           'pkcs7-mime',
-                           smime_type='enveloped-data',
-                           name='smime.p7m')
+    raise NotImplementedError('S/MIME encryption is not implemented')

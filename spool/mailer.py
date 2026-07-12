@@ -49,16 +49,18 @@ class Mailer:
         self.timeout = timeout
         self.starttls = starttls
         self.debug = debug
-        self.no_cache = no_cache
-        self.reorder_recipients = True
 
-        self.resolver = self._configure_resolver(nameservers)
+        if nameservers:
+            self.resolver = Resolver(configure=False)
+            self.resolver.nameservers = [
+                n.strip() for n in nameservers.split(',')
+            ]
 
-    def __enter__(self):
-        return self
+        else:
+            self.resolver = Resolver()
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        pass
+        if not no_cache:
+            self.resolver.cache = Cache()
 
     def send(self, msg, print_only=False):
         """Send a message.
@@ -73,23 +75,25 @@ class Mailer:
             self._dump_message(msg)
             return
 
-        sender = formataddr(msg.sender)
+        envelope_from = formataddr(msg.envelope_from)
 
-        recipients = msg.recipients + msg.cc_addrs + msg.bcc_addrs
-        recipients = [formataddr(r) for r in recipients]
+        envelope_recipients = (
+            msg.envelope_recipients + msg.cc_addrs + msg.bcc_addrs)
+        envelope_recipients = [formataddr(r) for r in envelope_recipients]
 
         if self.relay:
-            self._send_message(self.relay, sender, recipients, msg)
+            self._send_message(
+                self.relay, envelope_from, envelope_recipients, msg)
 
         else:
 
             def domain(address):
                 return address.split('@', 1)[-1]
 
-            if self.reorder_recipients:
-                recipients = sorted(recipients, key=domain)
+            envelope_recipients = sorted(envelope_recipients, key=domain)
 
-            for domain, recipients in itertools.groupby(recipients, domain):
+            for domain, recipients in itertools.groupby(
+                    envelope_recipients, domain):
 
                 try:
                     host = self._get_remote(domain)
@@ -99,11 +103,18 @@ class Mailer:
                               msg.name)
                     continue
 
-                self._send_message(host, sender, list(recipients), msg)
+                self._send_message(
+                    host, envelope_from, list(recipients), msg)
 
+<<<<<<< HEAD
     def _configure_resolver(self, nameservers):
         """Configure the DNS resolver."""
         resolver = Resolver(configure=False) if nameservers else Resolver()
+=======
+    @staticmethod
+    def get_helo_name():
+        """Retrieve the HELO/EHLO name based on the hostname."""
+>>>>>>> c97f07c (Modernize stack)
 
         if nameservers:
             resolver.nameservers = [n.strip() for n in nameservers.split(',')]
@@ -121,15 +132,43 @@ class Mailer:
             return fqdn
         return f'[{socket.gethostbyname(socket.gethostname())}]'
 
+<<<<<<< HEAD
     def _get_remote(self, domain, lifetime=10.0):
         """Returns the mail exchange server for a given domain."""
+=======
+        # Use a domain literal for the EHLO/HELO verb, as specified in RFC 2821
+        address = '127.0.0.1'
+        try:
+            address = socket.gethostbyname(socket.gethostname())
+        except socket.gaierror:
+            pass
+
+        return f'[{address}]'
+
+    def get_remote(self, domain, lifetime=10.0):
+        """Returns the mail exchange server for a given domain.
+
+        Args:
+            domain (str): Domain name to retrieve MX records from.
+            lifetime (:obj: `float`, optional): Number of seconds (`float`)
+                until the query times out.
+
+        Returns:
+            str: Hostname or address of MX record with the highest preference
+                (lowest priority value).
+
+        Raises:
+            RemoteNotFoundError: If no MX resource record was found.
+            ResolverTimeoutError: DNS operation timed out.
+        """
+>>>>>>> c97f07c (Modernize stack)
 
         match = DOMAIN_LITERAL.fullmatch(domain)
         if match:
             return match.group('ip_address')
 
         try:
-            answers = self.resolver.query(domain, 'MX', lifetime=lifetime)
+            answers = self.resolver.resolve(domain, 'MX', lifetime=lifetime)
             peer = min(answers, key=lambda rdata: rdata.preference).exchange
             return peer.to_text().rstrip('.') or peer.to_text()
 
@@ -177,12 +216,13 @@ class Mailer:
 
         return server
 
-    def _send_message(self, host, sender, recipients, msg):
+    def _send_message(self, host, envelope_from, envelope_recipients, msg):
         """Send a message to a single remote mail server"""
 
         try:
-            connection = self._connect(host, self.port)
-            refused = connection.sendmail(sender, recipients, msg.as_string())
+            with self._connect(host, self.port) as connection:
+                refused = connection.sendmail(
+                    envelope_from, envelope_recipients, msg.as_string())
 
         except smtplib.SMTPResponseException as err:
 

@@ -1,47 +1,65 @@
-from email.message import EmailMessage
+import logging
+import socket
+from collections import namedtuple
 
-import asyncio
 import pytest
+from aiosmtpd.controller import Controller
 
 from aiosmtpd.controller import Controller
 
 
+def get_free_port():
+    """Reserve an available local TCP port for the test server."""
+
+    with socket.socket() as sock:
+        sock.bind(('localhost', 0))
+        return sock.getsockname()[1]
+
+
 class MessageHandler:
+
     def __init__(self):
         self.messages = []
 
     async def handle_DATA(self, server, session, envelope):
-        self.messages.append(envelope.content.decode('utf8'))
-        return '250 OK'
+        self.messages.append(RecordedMessage(
+            peer=session.peer,
+            mailfrom=envelope.mail_from,
+            rcpttos=envelope.rcpt_tos,
+            data=envelope.content,
+        ))
+        return '250 Message accepted for delivery'
 
 
-class SMTPServer:
+class MailServer:
 
-    def __init__(self, hostname='127.0.0.1', port=2525):
-        self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop)
+    def __init__(self, host='localhost', port=None):
+        self.host = host
+        self.port = port or get_free_port()
         self.handler = MessageHandler()
-        self.controller = Controller(self.handler, hostname=hostname, port=port)
-
-    def __enter__(self):
-        self.controller.start()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.controller.stop()
-        self.loop.close()
+        self.controller = Controller(
+            self.handler,
+            hostname=self.host,
+            port=self.port,
+            decode_data=True,
+        )
 
     @property
     def messages(self):
         return self.handler.messages
 
-    @property
-    def host(self):
-        return self.controller.hostname
+    def __enter__(self):
+        self._log_level = logging.getLogger('mail.log').level
+        logging.getLogger('mail.log').setLevel(logging.WARNING)
+        self.controller.start()
+        return self
 
-    @property
-    def port(self):
-        return self.controller.port
+    def __exit__(self, *exc):
+        self.controller.stop()
+        logging.getLogger('mail.log').setLevel(self._log_level)
+
+    def __repr__(self):
+        return f'<smtp.Server {self.host}:{self.port}>'
 
 
 class SimpleMessageHandler:

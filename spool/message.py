@@ -1,4 +1,3 @@
-import logging
 import mimetypes
 from collections import OrderedDict
 from collections.abc import MutableMapping
@@ -10,12 +9,9 @@ from email.mime.text import MIMEText
 from email.utils import formataddr, formatdate, make_msgid, parseaddr
 from pathlib import Path
 
-from dkim import dkim_sign
-
 from .exceptions import SpoolError
-from .smime import encrypt, sign
+from .transforms import apply_dkim, apply_smime
 
-LOG = logging.getLogger(__name__)
 DEFAULT_ATTACHMENT_MIME_TYPE = 'application/octet-stream'
 COMMASPACE = ', '
 
@@ -91,6 +87,7 @@ class EmailHeaders(MutableMapping):
 class Message:
     """Represents a single email message."""
 
+<<<<<<< HEAD
     def __init__(self,
                  name,
                  sender,
@@ -108,22 +105,28 @@ class Message:
                  smime=None,
                  eml=None,
                  charset='utf-8'):
+=======
+    def __init__(self, name, envelope_from, envelope_recipients,
+                 from_addr=None, to_addrs=None, subject=None, cc_addrs=None,
+                 bcc_addrs=None, headers=None, text_body=None, html_body=None,
+                 ical=None, dkim=None, smime=None, eml=None, charset='utf-8'):
+>>>>>>> c97f07c (Modernize stack)
 
         self.name = name
 
-        self.sender = parseaddr(sender)
+        self.envelope_from = parseaddr(envelope_from)
 
         if from_addr:
             self.from_addr = parseaddr(from_addr)
         else:
-            self.from_addr = self.sender
+            self.from_addr = self.envelope_from
 
-        self.recipients = parse_addrs(recipients)
+        self.envelope_recipients = parse_addrs(envelope_recipients)
 
         if to_addrs:
             self.to_addrs = parse_addrs(to_addrs)
         else:
-            self.to_addrs = self.recipients
+            self.to_addrs = self.envelope_recipients
 
         if cc_addrs:
             self.cc_addrs = parse_addrs(cc_addrs)
@@ -212,24 +215,12 @@ class Message:
         else:
             msg = self._plaintext()
 
-        if self.smime:
-            if 'from_key' in self.smime and 'from_crt' in self.smime:
-                msg = sign(msg, self.smime['from_key'], self.smime['from_crt'])
-
-            if 'to_crts' in self.smime:
-                msg = encrypt(msg, self.smime['to_crts'])
+        msg = apply_smime(msg, self.smime)
 
         for name, value in self.headers.items():
             msg[name] = value
 
-        if self.dkim:
-
-            for key, value in self.dkim.items():
-                self.dkim[key] = value.encode()
-
-            dkim_header = dkim_sign(msg.as_bytes(), **self.dkim).decode()
-            name, value = dkim_header.split(':', 1)
-            msg[name] = value
+        msg = apply_dkim(msg, self.dkim)
 
         return msg.as_string()
 
@@ -249,9 +240,9 @@ class Message:
     @staticmethod
     def _get_eml(eml):
 
-        file_path, vars = eml, {}
-        if isinstance(eml, dict):
-            file_path, vars = eml['template'], eml['vars']
+        file_path, variables = eml, {}
+        if not isinstance(eml, str):
+            file_path, variables = eml.template, eml.vars
 
         path = Path(file_path)
         if not path.is_file():
@@ -261,7 +252,7 @@ class Message:
         with open(path, 'r') as fh:
             template = Template(fh.read())
 
-        rendered = template.render(**vars)
+        rendered = template.render(**variables)
 
         return message_from_string(rendered)
 
@@ -306,6 +297,7 @@ class Message:
         return msg
 
     def __str__(self):
-        recipients = COMMASPACE.join([a for n, a in self.recipients])
-        return (f'[sender={self.sender[1]}, recipients={recipients}, '
+        recipients = COMMASPACE.join(
+            [address for _, address in self.envelope_recipients])
+        return (f'[sender={self.envelope_from[1]}, recipients={recipients}, '
                 f'subject={self.subject}]')

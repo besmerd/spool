@@ -1,77 +1,35 @@
-.PHONY: install clean clean-build clean-pyc clean-test test format lint isort coverage help
-.DEFAULT_GOAL := help
+.PHONY: install test coverage lint docs build clean server
 
-PROJECT := spool
-VIRTUAL_ENV := venv
+PYTHON := python3.12
+VENV := .venv
+BIN := $(VENV)/bin
 
-PYTHON_VERSION := python3
-PYTHON_BIN := $(VIRTUAL_ENV)/bin
+$(BIN)/python:
+	$(PYTHON) -m venv $(VENV)
+	$(BIN)/python -m pip install --upgrade pip
 
-venv/bin/activate:
-	test -d venv || $(PYTHON_VERSION) -m venv $(VIRTUAL_ENV)
-	$(PYTHON_BIN)/python -m pip install --upgrade pip
-	touch venv/bin/activate
+install: $(BIN)/python ## install development dependencies
+	$(BIN)/python -m pip install --editable '.[test,lint,docs,release]'
 
-venv: venv/bin/activate
+test: ## run the test suite
+	$(BIN)/python -m pytest
 
-install: venv
-	$(PYTHON_BIN)/python -m pip install --editable .
+coverage: ## run tests with coverage
+	$(BIN)/python -m coverage run -m pytest
+	$(BIN)/python -m coverage report
 
-clean: clean-build clean-pyc clean-test ## remove all build, test and Python artifacts
+lint: ## run the Python linter
+	$(BIN)/python -m pylint spool
 
-clean-build: ## remove build artifacts
-	rm -rf .eggs/
-	rm -rf build/
-	rm -rf dist/
-	rm -rf *.egg-info
+docs: ## build the documentation
+	$(BIN)/python -m mkdocs build
 
-clean-pyc: ## remove python artifacts
-	find . -name '*.py[co]' -delete
-	find . -name '*~'  -delete
-	find . -name '__pycache__' -delete
+build: ## build wheel and source distributions
+	$(BIN)/python -m build
 
-clean-test: ## remove test and coverage artifacts
-	rm -f .coverage
-	rm -rf .tox/
-	rm -rf htmlcov/
+clean: ## remove generated artifacts
+	rm -rf build dist site htmlcov *.egg-info
+	rm -f .coverage coverage.xml
 
-test: ## run test suite
-	-pytest
-
-lint: ## check style with linter
-	-tox -e lint
-
-format: ## format code with isort and yapf
-	isort --verbose spool
-	yapf -ir spool
-
-check-format: ## check code formatting with yapf
-	yapf --diff --recursive spool
-
-coverage: test ## run code coverage
-	coverage report
-	coverage html
-	cd htmlcov && python -m http.server
-
-isort: ## sort package imports with isort
-	isort --verbose .
-
-build: ## bulid packages
-	$(PYTHON_BIN)/python -m build
-
-deploy: clean build ## build and deploy to pypi.org
-	$(PYTHON_BIN)/python -m twine upload dist/*
-
-server: ## start local mail server (mailhog)
-ifeq (, $(shell which podman))
+server: ## start a local MailHog server
 	docker run -d -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
-else
-	podman run -d -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog
-endif
-
-help: ## show usage and exit
-	@echo "Usage:"
-	@echo "  make <target>"
-	@echo ""
-	@echo "Targets:"
-	@sed -nr "/^([a-zA-Z-]+):.*\s##/{s/^([a-zA-Z-]+):.*## (.*)/  \1: \2/;p}" $(MAKEFILE_LIST) | column -c2 -t -s :

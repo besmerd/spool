@@ -17,6 +17,7 @@ htmlcov/
 
 # Virtualenv
 venv/
+.venv/
 
 # Logs and databases
 *.sql
