@@ -82,40 +82,6 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-<<<<<<< HEAD
-def tags_matches_mail(tags, mail):
-    """Check if the mail has matching tags."""
-
-    if not tags:
-        return True
-
-    tags = [tag.strip() for tag in tags.split(',')]
-
-    return any(tag in mail for tag in tags)
-
-
-def parse_files(file_path, mail):
-    """Parse files for S/MIME-related fields."""
-    copy_properties = [
-        ('from_key_file', 'from_key'),
-        ('from_crt_file', 'from_crt'),
-        ('to_crts_file', 'to_crts'),
-    ]
-
-    for src, dst in copy_properties:
-        if 'smime' not in mail or src not in mail['smime']:
-            continue
-
-        with open(file_path.parent / mail['smime'][src], 'r') as fh:
-            mail['smime'][dst] = fh.read()
-
-        del mail['smime'][src]
-
-    return mail
-
-
-=======
->>>>>>> c97f07c (Modernize stack)
 class LogFormatter(logging.Formatter):
     """Custom log formatter with color support."""
 

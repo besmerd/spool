@@ -87,30 +87,10 @@ class EmailHeaders(MutableMapping):
 class Message:
     """Represents a single email message."""
 
-<<<<<<< HEAD
-    def __init__(self,
-                 name,
-                 sender,
-                 recipients,
-                 from_addr=None,
-                 to_addrs=None,
-                 subject=None,
-                 cc_addrs=None,
-                 bcc_addrs=None,
-                 headers=None,
-                 text_body=None,
-                 html_body=None,
-                 ical=None,
-                 dkim=None,
-                 smime=None,
-                 eml=None,
-                 charset='utf-8'):
-=======
     def __init__(self, name, envelope_from, envelope_recipients,
                  from_addr=None, to_addrs=None, subject=None, cc_addrs=None,
                  bcc_addrs=None, headers=None, text_body=None, html_body=None,
                  ical=None, dkim=None, smime=None, eml=None, charset='utf-8'):
->>>>>>> c97f07c (Modernize stack)
 
         self.name = name
 

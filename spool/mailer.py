@@ -106,15 +106,9 @@ class Mailer:
                 self._send_message(
                     host, envelope_from, list(recipients), msg)
 
-<<<<<<< HEAD
-    def _configure_resolver(self, nameservers):
-        """Configure the DNS resolver."""
-        resolver = Resolver(configure=False) if nameservers else Resolver()
-=======
     @staticmethod
     def get_helo_name():
         """Retrieve the HELO/EHLO name based on the hostname."""
->>>>>>> c97f07c (Modernize stack)
 
         if nameservers:
             resolver.nameservers = [n.strip() for n in nameservers.split(',')]
@@ -132,10 +126,6 @@ class Mailer:
             return fqdn
         return f'[{socket.gethostbyname(socket.gethostname())}]'
 
-<<<<<<< HEAD
-    def _get_remote(self, domain, lifetime=10.0):
-        """Returns the mail exchange server for a given domain."""
-=======
         # Use a domain literal for the EHLO/HELO verb, as specified in RFC 2821
         address = '127.0.0.1'
         try:
@@ -161,7 +151,6 @@ class Mailer:
             RemoteNotFoundError: If no MX resource record was found.
             ResolverTimeoutError: DNS operation timed out.
         """
->>>>>>> c97f07c (Modernize stack)
 
         match = DOMAIN_LITERAL.fullmatch(domain)
         if match:
